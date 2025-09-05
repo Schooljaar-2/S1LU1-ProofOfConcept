@@ -30,5 +30,5 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 app.listen(3000, "localhost", () => {
-  console.log("Bro ik ga luisteren op port " + 3000);
+  console.log("Now listening on http://localhost:" + 3000);
 });
