@@ -4,8 +4,8 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import {create} from "express-handlebars"
 
-import indexRouter from "./routes/index.js";
-import usersRouter from "./routes/users.js";
+import indexRouter from "./src/routes/index.js";
+import usersRouter from "./src/routes/users.js";
 
 const app = express();
 
