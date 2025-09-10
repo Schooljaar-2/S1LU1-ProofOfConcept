@@ -1,0 +1,2 @@
+We moeten control.render in de controllers gebruiken nadat er iets is opgezogd in db ofz.
+Staat in gelaagde architectuur op brightspace meer.
