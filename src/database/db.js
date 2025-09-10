@@ -14,4 +14,8 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-export default pool;
+const query = (sql, params, callback) => {
+  pool.query(sql, params, callback);
+};
+
+export default query;
