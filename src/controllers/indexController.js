@@ -1,4 +1,4 @@
-import { getTop10Films } from "../database/dao/proof.js";
+import { getTop10Films } from "../database/dao/movies.js";
 
 export const index = (req, res, next) => {
   getTop10Films((error, response) => {

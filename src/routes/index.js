@@ -1,5 +1,5 @@
 import express from "express";
-import {index} from "../controllers/index.js";
+import {index} from "../controllers/indexController.js";
 const router = express.Router();
 
 /* GET home page. */
