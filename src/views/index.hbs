@@ -1,2 +1,28 @@
-<h1>Welkom</h1>
-{{page}}
+<main role="main" class="d-flex flex-column justify-content-center align-items-center text-center bg-gray" style="padding-top: 80px;">
+  <div class="cover-container">
+    <h1 class="display-4 fw-bold mb-3">Welkom bij CineRent!</h1>
+    <p class="lead mb-4">Ontdek de populairste films van dit moment. Laat je inspireren en vind jouw volgende filmavond!</p>
+    <img src="https://via.placeholder.com/300x200?text=MovieMania" class="img-fluid rounded shadow-sm mb-4" alt="MovieMania Banner">
+    {{!-- TODO: Will go to about page --}}
+    <p>
+      <a href="#" class="btn btn-lg btn-primary fw-bold">Lees meer</a>
+    </p>
+    <section class="mt-5">
+      <h2 class="h4 fw-bold mb-3">Hot Movies</h2>
+      <div class="row justify-content-center" id="hot-movies">
+        {{#each hotMovies}}
+          <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+              <img src="{{this.posterUrl}}" class="card-img-top" alt="{{this.title}}">
+              <div class="card-body">
+                <h5 class="card-title">{{this.title}}</h5>
+                <p class="card-text">{{this.description}}</p>
+                <a href="/movies/{{this.id}}" class="btn btn-sm btn-outline-primary">Bekijk</a>
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </section>
+  </div>
+</main>
