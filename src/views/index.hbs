@@ -1,79 +1,97 @@
-<main role="main" class="d-flex flex-column justify-content-center align-items-center text-center bg-gray" style="padding-top: 80px;">
-  <div class="cover-container">
-    <h1 class="display-4 fw-bold mb-3" style="color: #ffbb00;">Welkom bij CineRent!</h1>
-    <p class="lead mb-4">Ontdek de populairste films van dit moment. Laat je inspireren en vind jouw volgende filmavond!</p>
-    <p>
-      <a href="#" class="btn btn-lg btn-primary fw-bold">Lees meer</a>
-    </p>
+<div class="container-fluid h-100">
+  <div class="row h-100">
+    <!-- Left Column -->
+    <div class="col-md-6 half left d-flex flex-column">
+      <h2>Welcome To CineRent!</h2>
+      <p>
+        Discover the magic of movies with CineRent. Browse our extensive library, reserve your favorites, 
+        and enjoy cinematic experiences right from the comfort of your home. Let the adventure begin!
+      </p>
+      <button class="btn btn-warning btn-lg mt-auto align-self-start">Get Started</button>
+    </div>
 
-    <section class="mt-5">
-      <h2 class="h4 fw-bold mb-3">Hot Movies</h2>
-
-      <!-- Bootstrap Carousel zonder automatisch cyclen -->
-      <div id="hotMoviesCarousel" class="carousel slide position-relative">
-        <div class="carousel-inner">
-
-          {{!-- Loop per groep (chunk van 3 films) --}}
-          {{#each hotMoviesGrouped}}
-            <div class="carousel-item {{#if @first}}active{{/if}}">
-              <div class="row justify-content-center">
-                {{#each this}}
-                  <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm h-100">
-                      <img src="{{#if posterUrl}}{{posterUrl}}{{else}}https://media.themoviedb.org/t/p/w300_and_h450_bestv2/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg{{/if}}" 
-                           class="card-img-top" alt="{{title}}">
-                      <div class="card-body">
-                        <h5 class="card-title">{{title}}</h5>
-                        <p class="card-text">{{description}}</p>
-                        <a href="/movies/{{id}}" class="btn btn-sm btn-outline-primary">Bekijk</a>
+    <!-- Right Column -->
+    <div class="col-md-6 half right d-flex flex-column">
+    <h2>10 Populair Movies:</h2>
+        <div id="hotMoviesCarousel" class="carousel slide">
+          <div class="carousel-inner">
+            {{#each hotMoviesGrouped}}
+              <div class="carousel-item{{#if @first}} active{{/if}}">
+                <div class="row justify-content-center">
+                  {{#each this}}
+                    <div class="col-md-4 d-flex justify-content-center">
+                      <div class="card shadow-sm h-100 w-100">
+                        <img 
+                          src="{{#if this.posterUrl}}{{this.posterUrl}}{{else}}https://media.themoviedb.org/t/p/w300_and_h450_bestv2/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg{{/if}}"
+                          class="card-img-top" 
+                          alt="{{this.title}}"
+                          style="width: 100%; height: 300px; object-fit: cover;" 
+                        />
+                        <div class="card-body">
+                          <h5 class="card-title">{{this.title}}</h5>
+                          <p class="card-text">{{this.description}}</p>
+                          <a href="/movies/{{this.id}}" class="btn btn-sm btn-outline-primary">Bekijk</a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                {{/each}}
+                  {{/each}}
+                </div>
               </div>
-            </div>
-          {{/each}}
-
+            {{/each}}
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#hotMoviesCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#hotMoviesCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
         </div>
-
-        <!-- Controls buiten de cards -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#hotMoviesCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon bg-dark rounded-circle p-3"></span>
-          <span class="visually-hidden">Vorige</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#hotMoviesCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon bg-dark rounded-circle p-3"></span>
-          <span class="visually-hidden">Volgende</span>
-        </button>
-      </div>
-    </section>
+    </div>
   </div>
-</main>
+</div>
 
-<style>
-/* Carousel knoppen visueel verbeteren en buiten de films plaatsen */
-#hotMoviesCarousel {
-  position: relative;
-}
+  <style>
+  html, body {
+    height: 95vh;
+    margin: 0;
+  }
+  .half {
+    height: 95vh;
+  }
+  .right {
+    background-color: #1c1c1c;
+    align-items: center;
+    justify-content: center;
+  }
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  }
+  .carousel, .slide{
+    width: 80%;
+  }
+  .left {
+    background-color: #1c1c1c; /* dark background */
+    color: #ffc107; /* amber yellow for title */
+    justify-content: center; /* center content vertically */
+    padding: 40px;
+  }
+  .left h2 {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+  }
 
-.carousel-control-prev,
-.carousel-control-next {
-  top: 50%;
-  transform: translateY(-50%);
-  width: 50px; /* breedte van knop */
-  height: 50px; /* hoogte van knop */
-}
+  .left p {
+    font-size: 1.25rem;
+    color: #f8f9fa; /* light description text */
+    max-width: 500px;
+  }
 
-.carousel-control-prev {
-  left: -60px; /* zet knop buiten de films links */
-}
-
-.carousel-control-next {
-  right: -60px; /* zet knop buiten de films rechts */
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-size: 100%, 100%;
-}
+  .left button {
+    margin-top: 20px;
+  }
 </style>
