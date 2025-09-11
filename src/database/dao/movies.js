@@ -8,7 +8,7 @@ export const getTop10Films = (callback) => {
         join rental on rental.inventory_id = inventory.inventory_id
         group by film.title
         order by rental_count desc
-        limit 10
+        limit 6
     `;
   query(sql, [], callback);
 };

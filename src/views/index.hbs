@@ -1,28 +1,79 @@
 <main role="main" class="d-flex flex-column justify-content-center align-items-center text-center bg-gray" style="padding-top: 80px;">
   <div class="cover-container">
-    <h1 class="display-4 fw-bold mb-3">Welkom bij CineRent!</h1>
+    <h1 class="display-4 fw-bold mb-3" style="color: #ffbb00;">Welkom bij CineRent!</h1>
     <p class="lead mb-4">Ontdek de populairste films van dit moment. Laat je inspireren en vind jouw volgende filmavond!</p>
-    <img src="https://via.placeholder.com/300x200?text=MovieMania" class="img-fluid rounded shadow-sm mb-4" alt="MovieMania Banner">
-    {{!-- TODO: Will go to about page --}}
     <p>
       <a href="#" class="btn btn-lg btn-primary fw-bold">Lees meer</a>
     </p>
+
     <section class="mt-5">
       <h2 class="h4 fw-bold mb-3">Hot Movies</h2>
-      <div class="row justify-content-center" id="hot-movies">
-        {{#each hotMovies}}
-          <div class="col-md-4 mb-4">
-            <div class="card shadow-sm h-100">
-              <img src="{{this.posterUrl}}" class="card-img-top" alt="{{this.title}}">
-              <div class="card-body">
-                <h5 class="card-title">{{this.title}}</h5>
-                <p class="card-text">{{this.description}}</p>
-                <a href="/movies/{{this.id}}" class="btn btn-sm btn-outline-primary">Bekijk</a>
+
+      <!-- Bootstrap Carousel zonder automatisch cyclen -->
+      <div id="hotMoviesCarousel" class="carousel slide position-relative">
+        <div class="carousel-inner">
+
+          {{!-- Loop per groep (chunk van 3 films) --}}
+          {{#each hotMoviesGrouped}}
+            <div class="carousel-item {{#if @first}}active{{/if}}">
+              <div class="row justify-content-center">
+                {{#each this}}
+                  <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                      <img src="{{#if posterUrl}}{{posterUrl}}{{else}}https://media.themoviedb.org/t/p/w300_and_h450_bestv2/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg{{/if}}" 
+                           class="card-img-top" alt="{{title}}">
+                      <div class="card-body">
+                        <h5 class="card-title">{{title}}</h5>
+                        <p class="card-text">{{description}}</p>
+                        <a href="/movies/{{id}}" class="btn btn-sm btn-outline-primary">Bekijk</a>
+                      </div>
+                    </div>
+                  </div>
+                {{/each}}
               </div>
             </div>
-          </div>
-        {{/each}}
+          {{/each}}
+
+        </div>
+
+        <!-- Controls buiten de cards -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#hotMoviesCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon bg-dark rounded-circle p-3"></span>
+          <span class="visually-hidden">Vorige</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#hotMoviesCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon bg-dark rounded-circle p-3"></span>
+          <span class="visually-hidden">Volgende</span>
+        </button>
       </div>
     </section>
   </div>
 </main>
+
+<style>
+/* Carousel knoppen visueel verbeteren en buiten de films plaatsen */
+#hotMoviesCarousel {
+  position: relative;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px; /* breedte van knop */
+  height: 50px; /* hoogte van knop */
+}
+
+.carousel-control-prev {
+  left: -60px; /* zet knop buiten de films links */
+}
+
+.carousel-control-next {
+  right: -60px; /* zet knop buiten de films rechts */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-size: 100%, 100%;
+}
+</style>
