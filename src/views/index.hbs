@@ -7,12 +7,12 @@
         Discover the magic of movies with CineRent. Browse our extensive library, reserve your favorites, 
         and enjoy cinematic experiences right from the comfort of your home. Let the adventure begin!
       </p>
-      <button class="btn btn-warning btn-lg mt-auto align-self-start">Get Started</button>
+      {{!-- <button class="btn btn-warning btn-lg mt-auto align-self-start">Get Started</button> --}}
     </div>
 
     <!-- Right Column -->
     <div class="col-md-6 half right d-flex flex-column">
-    <h2>10 Populair Movies:</h2>
+    <h2>What's Being Watched</h2>
         <div id="hotMoviesCarousel" class="carousel slide">
           <div class="carousel-inner">
             {{#each hotMoviesGrouped}}
@@ -57,11 +57,8 @@
     height: 95vh;
     margin: 0;
   }
-  .half {
-    height: 95vh;
-  }
   .right {
-    background-color: #1c1c1c;
+    background-color: #363636;
     align-items: center;
     justify-content: center;
   }
@@ -74,21 +71,26 @@
     width: 80%;
   }
   .left {
-    background-color: #1c1c1c; /* dark background */
-    color: #ffc107; /* amber yellow for title */
+    display: flex;
+    background-color: #363636; /* dark background */
     justify-content: center; /* center content vertically */
-    padding: 40px;
+    align-items: center;
+    height: 100%;
+    padding: 2vw;
   }
-  .left h2 {
-    font-size: 3rem;
+  .left h2, .right h2 {
+    font-size: 4em;
     font-weight: 900;
     margin-bottom: 20px;
+    color: #ffc107;
+    text-align: center;
   }
 
   .left p {
-    font-size: 1.25rem;
+    font-size: 2em;
     color: #f8f9fa; /* light description text */
-    max-width: 500px;
+    max-width: 75%;
+    text-align: center;
   }
 
   .left button {
