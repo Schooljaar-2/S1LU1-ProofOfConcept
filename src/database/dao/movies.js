@@ -47,13 +47,44 @@ LIMIT 6;
 
 export const getMovieByID = (id, callback) => {
   const sql = `
-  select f.title, f.description, f.release_year, f.length, f.rating, f.special_features, l.name, c.name, fi.image_url 
+  select 
+    f.title, 
+    f.description,
+    f.release_year,
+    f.length,
+    f.rating, 
+    f.special_features, 
+    f.rental_rate,
+    f.replacement_cost,
+    l.name AS language, 
+    c.name AS category, 
+    fi.image_url 
   from film f 
   join language l on f.language_id  = l.language_id 
   join film_image fi on f.film_id = fi.film_id 
   join film_category fc on f.film_id = fc.film_id 
   join category c on fc.category_id = c.category_id 
   where f.film_id = ?
+  `;
+  query(sql, [id], callback);
+};
+
+export const checkMovieAvailabilityAndTotalInventoryPerStoreByID = (
+  id,
+  callback
+) => {
+  const sql = `
+  SELECT 
+      s.store_name,
+      COUNT(i.inventory_id) AS total_copies,
+      SUM(CASE WHEN r.rental_id IS NULL THEN 1 ELSE 0 END) AS copies_available
+  FROM inventory i
+  JOIN store s ON i.store_id = s.store_id
+  LEFT JOIN rental r 
+      ON i.inventory_id = r.inventory_id 
+      AND r.return_date IS NULL 
+  WHERE i.film_id = ?
+  GROUP BY s.store_name;
   `;
   query(sql, [id], callback);
 };
