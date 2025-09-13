@@ -22,10 +22,9 @@ export function moviePage(req, res, next) {
       movieID,
       (error2, availability) => {
         if (error2) return next(error2);
+        // If no availability, pass empty array and handle in view
         if (!availability || availability.length === 0) {
-          const err = new Error("Movie not found");
-          err.status = 404;
-          return next(err);
+          availability = [];
         }
         function toPascalCase(str) {
           return str
@@ -43,12 +42,19 @@ export function moviePage(req, res, next) {
             .join(", ");
         }
 
-        if (movie[0].actors) {
-          movie[0].actors = toPascalCase(movie[0].actors);
+        // Clone movie object before mutating
+        const movieData = { ...movie[0] };
+        if (movieData.actors) {
+          movieData.actors = toPascalCase(movieData.actors);
         }
 
+        // Debug log for movieID and title
+        console.log(
+          `Rendering movie page for ID: ${movieID}, Title: ${movieData.title}`
+        );
+
         res.render("./customer/moviePage.hbs", {
-          movie: movie[0],
+          movie: movieData,
           availability,
         });
       }

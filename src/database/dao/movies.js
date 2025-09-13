@@ -67,7 +67,7 @@ export const getMovieByID = (id, callback) => {
   JOIN category c ON fc.category_id = c.category_id 
   JOIN film_actor fa ON f.film_id = fa.film_id
   JOIN actor a ON fa.actor_id = a.actor_id
-  WHERE f.film_id = 2
+  WHERE f.film_id = ?
   GROUP BY 
       f.film_id, f.title, f.description, f.release_year, f.length, 
       f.rating, f.special_features, f.rental_rate, f.replacement_cost, 

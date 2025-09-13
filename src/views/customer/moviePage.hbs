@@ -79,6 +79,7 @@
                 </div>
             </div>
             <h4 class="text-white mb-3">Availability</h4>
+            {{#if availability.length}}
             <table class="table table-dark table-bordered rounded" style="background-color: #232323;">
                 <thead>
                     <tr>
@@ -99,6 +100,15 @@
                     {{/each}}
                 </tbody>
             </table>
+            {{else}}
+            <div class="table table-dark table-bordered rounded mb-4" style="background-color: #232323;">
+                <div class="d-flex align-items-center p-3">
+                    <i class="bi bi-exclamation-circle text-warning" title="Not Available"
+                        style="font-size: 1.3rem; vertical-align: middle;"></i>
+                    <strong class="ms-2 text-warning">Not available inside our stores.</strong>
+                </div>
+            </div>
+            {{/if}}
         </div>
     </div>
 </div>
