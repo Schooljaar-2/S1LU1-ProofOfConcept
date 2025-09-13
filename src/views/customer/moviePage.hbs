@@ -3,12 +3,21 @@
         <!-- Movie Image -->
         <div class="col-md-5 text-center">
             {{#if movie.image_url}}
-            <img src="{{movie.image_url}}" alt="{{movie.title}}" class="img-fluid rounded shadow"
-                style="max-height: 400px; width: 100%; object-fit: cover;">
+            {{#unless movie.image_url}}
+            <div
+                style="background: #111; display: inline-block; border-radius: 0.5rem; box-shadow: 0 0 40px 0 #ff9800, 0 4px 16px rgba(0,0,0,0.8);">
+                <img src="/images/imageNotFound.png" alt="Image Not Found" class="img-fluid rounded"
+                    style="width: 300px; height: 450px; object-fit: cover;">
+            </div>
             {{else}}
-            <div class="bg-secondary d-flex align-items-center justify-content-center rounded shadow"
-                style="height: 400px; width: 100%;">
-                <span class="text-light">No Image Available</span>
+            <img src="{{movie.image_url}}" alt="{{movie.title}}" class="img-fluid rounded shadow"
+                style="width: 300px; height: 450px; object-fit: cover; box-shadow: 0 0 40px 0 #ff9800, 0 4px 16px rgba(0,0,0,0.8);">
+            {{/unless}}
+            {{else}}
+            <div
+                style="background: #111; display: inline-block; border-radius: 0.5rem; box-shadow: 0 0 40px 0 #ff9800, 0 4px 16px rgba(0,0,0,0.8);">
+                <img src="/images/imageNotFound.png" alt="Image Not Found" class="img-fluid rounded"
+                    style="width: 300px; height: 450px; object-fit: cover;">
             </div>
             {{/if}}
         </div>
