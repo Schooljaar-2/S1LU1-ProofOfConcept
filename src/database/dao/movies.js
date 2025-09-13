@@ -45,4 +45,15 @@ LIMIT 6;
   query(sql, [], callback);
 };
 
-export const getMovieByID = (id, callback) => {};
+export const getMovieByID = (id, callback) => {
+  const sql = `
+  select f.title, f.description, f.release_year, f.length, f.rating, f.special_features, l.name, c.name, fi.image_url 
+  from film f 
+  join language l on f.language_id  = l.language_id 
+  join film_image fi on f.film_id = fi.film_id 
+  join film_category fc on f.film_id = fc.film_id 
+  join category c on fc.category_id = c.category_id 
+  where f.film_id = ?
+  `;
+  query(sql, [id], callback);
+};
