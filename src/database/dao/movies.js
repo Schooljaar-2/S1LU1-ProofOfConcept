@@ -47,24 +47,31 @@ LIMIT 6;
 
 export const getMovieByID = (id, callback) => {
   const sql = `
-  select 
-    f.title, 
-    f.description,
-    f.release_year,
-    f.length,
-    f.rating, 
-    f.special_features, 
-    f.rental_rate,
-    f.replacement_cost,
-    l.name AS language, 
-    c.name AS category, 
-    fi.image_url 
-  from film f 
-  join language l on f.language_id  = l.language_id 
-  join film_image fi on f.film_id = fi.film_id 
-  join film_category fc on f.film_id = fc.film_id 
-  join category c on fc.category_id = c.category_id 
-  where f.film_id = ?
+  SELECT 
+      f.title, 
+      f.description,
+      f.release_year,
+      f.length,
+      f.rating, 
+      f.special_features, 
+      f.rental_rate,
+      f.replacement_cost,
+      l.name AS language, 
+      c.name AS category, 
+      fi.image_url,
+      GROUP_CONCAT(CONCAT(a.first_name, ' ', a.last_name) SEPARATOR ', ') AS actors
+  FROM film f
+  JOIN language l ON f.language_id = l.language_id 
+  JOIN film_image fi ON f.film_id = fi.film_id 
+  JOIN film_category fc ON f.film_id = fc.film_id 
+  JOIN category c ON fc.category_id = c.category_id 
+  JOIN film_actor fa ON f.film_id = fa.film_id
+  JOIN actor a ON fa.actor_id = a.actor_id
+  WHERE f.film_id = 2
+  GROUP BY 
+      f.film_id, f.title, f.description, f.release_year, f.length, 
+      f.rating, f.special_features, f.rental_rate, f.replacement_cost, 
+      l.name, c.name, fi.image_url;
   `;
   query(sql, [id], callback);
 };
