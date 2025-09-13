@@ -29,6 +29,18 @@ app.set("views", path.join(process.cwd(), "src/views"));
 app.use("/", indexRouter);
 app.use("/", authRouter);
 
+// Error handling
+app.use((req, res, next) => {
+  const err = new Error("Page Not Found");
+  err.status = 404;
+  next(err);
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.render("error", { error: err });
+});
+
 app.listen(3000, "localhost", () => {
   console.log("Now listening on http://localhost:" + 3000);
 });
