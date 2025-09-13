@@ -6,6 +6,7 @@ import { create } from "express-handlebars";
 
 import indexRouter from "./src/routes/index.js";
 import authRouter from "./src/routes/auth.js";
+import customerRouter from "./src/routes/customer.js";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.set("views", path.join(process.cwd(), "src/views"));
 // Routes
 app.use("/", indexRouter);
 app.use("/", authRouter);
+app.use("/", customerRouter);
 
 // Error handling
 app.use((req, res, next) => {
