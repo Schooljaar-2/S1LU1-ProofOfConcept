@@ -75,11 +75,13 @@ export function movies(req, res, next) {
   const rating = req.query.rating || "";
   const category = req.query.category || "";
   const orderBy = req.query.sort || "";
-  const offset = 0;
+  const offset = req.query.pagination || 0;
+  const parsedOffset = parseInt(offset, 10);
+  const safeOffset = isNaN(parsedOffset) ? 0 : parsedOffset;
+  console.log(safeOffset);
 
   // Select order option by index, default to index 1 if out of bounds
   let orderIndex = parseInt(orderBy, 10);
-  // console.log(orderIndex);
   if (isNaN(orderIndex) || orderIndex < 0 || orderIndex >= orderOptions.length) {
     orderIndex = 0;
   }
@@ -95,18 +97,13 @@ export function movies(req, res, next) {
         error2.status = 500;
         return next(error2);
       }
-      getTotalAmountOfMovies((error3, amountOfMovies) => {
-        if (error3) {
-          error3.status = 500;
-          return next(error3);
+      getFilteredMovies(title, rating, category, safeOffset, selectedOrderBy, (error4, movies) => {
+        if (error4) {
+          error4.status = 500;
+          return next(error4);
         }
-        getFilteredMovies(title, rating, category, offset, selectedOrderBy, (error4, movies) => {
-          if (error4) {
-            error4.status = 500;
-            return next(error4);
-          }
-          res.render("./customer/movies.hbs", { categories, ratings, amountOfMovies, movies });
-        });
+        // console.log(movies);
+        res.render("./customer/movies.hbs", { categories, ratings, movies });
       });
     });
   });

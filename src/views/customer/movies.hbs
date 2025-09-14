@@ -1,6 +1,7 @@
 <div class="container pt-2 pb-5">
     <!-- Removed page title for tighter layout -->
     <form class="bg-dark p-3 rounded shadow mb-3 w-100" style="margin-left: 0;">
+    <input type="hidden" name="pagination" value="{{pagination}}">
         <div class="row g-3 align-items-end w-100">
             <div class="col-12 col-md-3">
                 <label for="searchTitle" class="form-label text-light">Title</label>
@@ -84,5 +85,14 @@
                 </tr>
             {{/each}}
         </tbody>
-    </table>
+        </table>
+
+        <!-- Pagination Buttons -->
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                        <button type="button" id="prevBtn" class="btn btn-secondary btn-sm {{#if disablePrev}}disabled{{/if}}">Prev</button>
+                        <span class="align-self-center mx-2 text-light">-- Navigate --</span>
+                        <button type="button" id="nextBtn" class="btn btn-secondary btn-sm {{#if disableNext}}disabled{{/if}}">Next</button>
+                </div>
+        </div>
+
 </div>
