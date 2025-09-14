@@ -97,18 +97,6 @@ export const checkMovieAvailabilityAndTotalInventoryPerStoreByID = (
 };
 
 export const getFilteredMovies = (title, rating, category, orderBy, callback) => {
-
-  const orderOptions = {
-  "title_asc": "f.title ASC",
-  "title_desc": "f.title DESC",
-  "year_asc": "f.release_year ASC",
-  "year_desc": "f.release_year DESC",
-  "length_asc": "f.length ASC",
-  "length_desc": "f.length DESC",
-  "rating_asc": "f.rating ASC",
-  "rating_desc": "f.rating DESC"
-  };
-
   const sql = `
   select 
     f.title, 
@@ -123,10 +111,11 @@ export const getFilteredMovies = (title, rating, category, orderBy, callback) =>
     join film_category fc on f.film_id = fc.film_id 
     join category c on fc.category_id = c.category_id 
   WHERE (f.title LIKE CONCAT('%', ?, '%') OR ? IS NULL OR ? = '')
-    AND (f.rating  = ? OR '' IS null or ? = ?)
-    AND (c.name = ? OR ? IS null or ? = ?)
-  order by ${orderOptions[orderBy] || 'f.title ASC'}
+    AND (f.rating  = ? OR '' IS null or ? = '')
+    AND (c.name = ? OR ? IS null or ? = '')
+  order by ${(!orderBy || orderBy === "") ? "f.title asc" : orderBy}
   `;
+  // console.log(sql);
   query(sql, [title, title, title, rating, rating, rating, category, category, category], callback);
 };
 
