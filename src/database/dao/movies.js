@@ -96,7 +96,7 @@ export const checkMovieAvailabilityAndTotalInventoryPerStoreByID = (
   query(sql, [id], callback);
 };
 
-export const getFilteredMovies = (title, rating, category, orderBy, callback) => {
+export const getFilteredMovies = (title, rating, category, offset, orderBy, callback) => {
   const sql = `
   select 
     ANY_VALUE(f.title) AS title,
@@ -111,14 +111,13 @@ export const getFilteredMovies = (title, rating, category, orderBy, callback) =>
     join film_category fc on f.film_id = fc.film_id 
     join category c on fc.category_id = c.category_id 
   WHERE (f.title LIKE CONCAT('%', ?, '%') OR ? IS NULL OR ? = '')
-    AND (f.rating  = ? OR '' IS null or ? = '')
+    AND (f.rating  = ? OR ? IS null or ? = '')
     AND (c.name = ? OR ? IS null or ? = '')
   group by f.film_id
   order by ${(!orderBy || orderBy === "") ? "f.title asc" : orderBy}
-  limit 10
+  limit 10 OFFSET ?
   `;
-  // console.log(sql);
-  query(sql, [title, title, title, rating, rating, rating, category, category, category], callback);
+  query(sql, [title, title, title, rating, rating, rating, category, category, category, offset], callback);
 };
 
 // =======================================================================
@@ -137,6 +136,14 @@ export const getAllMovieRatings = (callback) => {
   const sql = `
     select distinct f.rating
     from film f
+  `;
+  query(sql, [], callback);
+};
+
+export const getTotalAmountOfMovies = (callback) => {
+  const sql = `
+    select count(*) as totalAmountOfMovies
+    from film f 
   `;
   query(sql, [], callback);
 };
