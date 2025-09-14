@@ -95,3 +95,42 @@ export const checkMovieAvailabilityAndTotalInventoryPerStoreByID = (
   `;
   query(sql, [id], callback);
 };
+
+export const getFilteredMovies = (title, rating, category, orderBy, callback) => {
+  const sql = `
+  select 
+    f.title, 
+    f.release_year, 
+    f.film_id, 
+    f.length, 
+    fi.image_url, 
+    f.rating, 
+    c.name 
+  from film f
+    join film_image fi on f.film_id = fi.film_id 
+    join film_category fc on f.film_id = fc.film_id 
+    join category c on fc.category_id = c.category_id 
+  WHERE (f.title LIKE CONCAT('%', ?, '%') OR ? IS NULL OR ? = '')
+    AND (f.rating  = ? OR '' IS null or ? = ?)
+    AND (c.name = ? OR ? IS null or ? = ?)
+  order by f.
+  `;
+  query(sql, [title, title, title, rating, rating, rating, category, category, category], callback);
+};
+
+//Querys to fill search bar of /movies page.
+export const getAllMovieCategories = (callback) => {
+  const sql = `
+    select distinct c.name 
+    from category c 
+  `;
+  query(sql, [], callback);
+};
+
+export const getAllMovieRatings = (callback) => {
+  const sql = `
+    select distinct f.rating
+    from film f
+  `;
+  query(sql, [], callback);
+};

@@ -1,11 +1,9 @@
 import {
   getMovieByID,
   checkMovieAvailabilityAndTotalInventoryPerStoreByID,
+  getAllMovieCategories,
+  getAllMovieRatings,
 } from "../database/dao/movies.js";
-
-export function movies(req, res) {
-  res.render("./customer/movies.hbs");
-}
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -48,16 +46,21 @@ export function moviePage(req, res, next) {
           movieData.actors = toPascalCase(movieData.actors);
         }
 
-        // Debug log for movieID and title
-        console.log(
-          `Rendering movie page for ID: ${movieID}, Title: ${movieData.title}`
-        );
-
         res.render("./customer/moviePage.hbs", {
           movie: movieData,
           availability,
         });
       }
     );
+  });
+}
+
+export function movies(req, res, next) {
+  getAllMovieCategories((error, categories) => {
+    if (error) return next(error);
+    getAllMovieRatings((error2, ratings) => {
+      if (error2) return next(error2);
+      res.render("./customer/movies.hbs", { categories, ratings });
+    });
   });
 }
