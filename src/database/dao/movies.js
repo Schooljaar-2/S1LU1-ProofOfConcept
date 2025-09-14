@@ -115,6 +115,7 @@ export const getFilteredMovies = (title, rating, category, orderBy, callback) =>
     AND (c.name = ? OR ? IS null or ? = '')
   group by f.film_id
   order by ${(!orderBy || orderBy === "") ? "f.title asc" : orderBy}
+  limit 10
   `;
   // console.log(sql);
   query(sql, [title, title, title, rating, rating, rating, category, category, category], callback);
