@@ -118,6 +118,9 @@ export const getFilteredMovies = (title, rating, category, orderBy, callback) =>
   query(sql, [title, title, title, rating, rating, rating, category, category, category], callback);
 };
 
+// =======================================================================
+// ===================== SEARCH BAR FILL FUNCTIONS =======================
+// =======================================================================
 //Querys to fill search bar of /movies page.
 export const getAllMovieCategories = (callback) => {
   const sql = `
@@ -134,3 +137,6 @@ export const getAllMovieRatings = (callback) => {
   `;
   query(sql, [], callback);
 };
+// =======================================================================
+// ===================== SEARCH BAR FILL FUNCTIONS =======================
+// =======================================================================
