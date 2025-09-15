@@ -66,6 +66,10 @@ app.use((err, req, res, next) => {
   res.render("error", { error: err });
 });
 
-app.listen(3000, "localhost", () => {
-  console.log("Now listening on http://localhost:" + 3000);
+const port = process.env.PORT || 3000;
+const host = "0.0.0.0";
+
+app.listen(port, host, () => {
+  const displayHost = process.env.PORT ? host : "localhost";
+  console.log(`Now listening on http://${displayHost}:${port}`);
 });
