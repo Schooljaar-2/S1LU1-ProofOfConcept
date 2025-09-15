@@ -21,6 +21,11 @@ const handlebars = create({
   extname: "hbs",
   layoutsDir: path.join("src/views/layouts"),
   defaultLayout: "main",
+  helpers: {
+    ifCond: function (v1, v2, options) {
+      return v1 === v2 ? options.fn(this) : options.inverse(this);
+    },
+  },
 });
 app.engine("hbs", handlebars.engine);
 app.set("view engine", "hbs");

@@ -58,7 +58,6 @@ export function moviePage(req, res, next) {
 }
 
 export function movies(req, res, next) {
-
   const orderOptions = [
     "f.title ASC",
     "f.title DESC",
@@ -67,7 +66,7 @@ export function movies(req, res, next) {
     "f.rental_rate ASC",
     "f.rental_rate DESC",
     "f.length ASC",
-    "f.length DESC"
+    "f.length DESC",
   ];
 
   // Read all filter params from query, default to empty string
@@ -82,7 +81,11 @@ export function movies(req, res, next) {
 
   // Select order option by index, default to index 1 if out of bounds
   let orderIndex = parseInt(orderBy, 10);
-  if (isNaN(orderIndex) || orderIndex < 0 || orderIndex >= orderOptions.length) {
+  if (
+    isNaN(orderIndex) ||
+    orderIndex < 0 ||
+    orderIndex >= orderOptions.length
+  ) {
     orderIndex = 0;
   }
   const selectedOrderBy = orderOptions[orderIndex];
@@ -97,14 +100,32 @@ export function movies(req, res, next) {
         error2.status = 500;
         return next(error2);
       }
-      getFilteredMovies(title, rating, category, safeOffset, selectedOrderBy, (error4, movies) => {
-        if (error4) {
-          error4.status = 500;
-          return next(error4);
+      getFilteredMovies(
+        title,
+        rating,
+        category,
+        safeOffset,
+        selectedOrderBy,
+        (error4, movies) => {
+          if (error4) {
+            error4.status = 500;
+            return next(error4);
+          }
+          // console.log(movies);
+          res.render("./customer/movies.hbs", {
+            categories,
+            ratings,
+            movies,
+            filters: {
+              title,
+              rating,
+              category,
+              sort: orderBy,
+              pagination: safeOffset,
+            },
+          });
         }
-        // console.log(movies);
-        res.render("./customer/movies.hbs", { categories, ratings, movies });
-      });
+      );
     });
   });
 }

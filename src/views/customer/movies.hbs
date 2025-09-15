@@ -1,18 +1,18 @@
 <div class="container pt-2 pb-5">
     <!-- Removed page title for tighter layout -->
     <form class="bg-dark p-3 rounded shadow mb-3 w-100" style="margin-left: 0;">
-    <input type="hidden" name="pagination" value="{{pagination}}">
+    <input type="hidden" name="pagination" value="{{filters.pagination}}">
         <div class="row g-3 align-items-end w-100">
             <div class="col-12 col-md-3">
                 <label for="searchTitle" class="form-label text-light">Title</label>
-                <input type="text" class="form-control" id="searchTitle" name="title" placeholder="Search by title">
+                <input type="text" class="form-control" id="searchTitle" name="title" placeholder="Search by title" value="{{filters.title}}">
             </div>
             <div class="col-12 col-md-3">
                 <label for="searchCategory" class="form-label text-light">Category</label>
                 <select class="form-select" id="searchCategory" name="category">
                     <option value="">All Categories</option>
                     {{#each categories}}
-                    <option value="{{this.name}}">{{this.name}}</option>
+                    <option value="{{this.name}}" {{#ifCond ../filters.category this.name}}selected{{/ifCond}}>{{this.name}}</option>
                     {{/each}}
                 </select>
             </div>
@@ -21,7 +21,7 @@
                 <select class="form-select" id="searchRating" name="rating">
                     <option value="">All Ratings</option>
                     {{#each ratings}}
-                    <option value="{{this.rating}}">{{this.rating}}</option>
+                    <option value="{{this.rating}}" {{#ifCond ../filters.rating this.rating}}selected{{/ifCond}}>{{this.rating}}</option>
                     {{/each}}
                 </select>
             </div>
@@ -29,14 +29,14 @@
                 <div class="flex-grow-1">
                     <label for="searchSort" class="form-label text-light">Sort By</label>
                     <select class="form-select" id="searchSort" name="sort">
-                        <option value="0">Title (A-Z)</option>
-                        <option value="1">Title (Z-A)</option>
-                        <option value="2">Release Year (Ascending)</option>
-                        <option value="3">Release Year (Descending)</option>
-                        <option value="4">Rental Rate (Ascending)</option>
-                        <option value="5">Rental Rate (Descending)</option>
-                        <option value="6">Movie Length (Ascending)</option>
-                        <option value="7">Movie Length (Descending)</option>
+                        <option value="0" {{#ifCond filters.sort "0"}}selected{{/ifCond}}>Title (A-Z)</option>
+                        <option value="1" {{#ifCond filters.sort "1"}}selected{{/ifCond}}>Title (Z-A)</option>
+                        <option value="2" {{#ifCond filters.sort "2"}}selected{{/ifCond}}>Release Year (Ascending)</option>
+                        <option value="3" {{#ifCond filters.sort "3"}}selected{{/ifCond}}>Release Year (Descending)</option>
+                        <option value="4" {{#ifCond filters.sort "4"}}selected{{/ifCond}}>Rental Rate (Ascending)</option>
+                        <option value="5" {{#ifCond filters.sort "5"}}selected{{/ifCond}}>Rental Rate (Descending)</option>
+                        <option value="6" {{#ifCond filters.sort "6"}}selected{{/ifCond}}>Movie Length (Ascending)</option>
+                        <option value="7" {{#ifCond filters.sort "7"}}selected{{/ifCond}}>Movie Length (Descending)</option>
                     </select>
                 </div>
                 <div class="d-flex gap-2">
