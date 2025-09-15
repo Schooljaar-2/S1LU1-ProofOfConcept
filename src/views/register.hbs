@@ -8,15 +8,19 @@
   >
     {{! TODO: Make place to show errors to user. Like e-mail already in use }}
     <h2 class="mb-4 text-center text-warning">Register</h2>
-    <form method="POST" action="/register" onsubmit="return checkPasswords();">
+    <form
+      method="POST"
+      action="/auth//register"
+      onsubmit="return checkPasswords();"
+    >
       <div class="mb-3">
         <label for="username" class="form-label" style="color: #fff;"><b
           >Username:</b></label>
         <input
           type="text"
           class="form-control"
-          id="username"
-          name="username"
+          id="e-mail"
+          name="e-mail"
           required
         />
       </div>
