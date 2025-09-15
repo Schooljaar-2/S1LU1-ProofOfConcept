@@ -3,10 +3,36 @@ import authDao from "../database/dao/auth.js";
 
 
 export const handleLogin = (credentials, callback) => {
-  // Kijk db of email bestaat of niet
-  // Kijk of w8w overeenkomt
-  // Need to have express-session package
-  // Met de session houden we ingelogde gebruiker en rol bij.
+  try {
+    // Check if email exists
+    authDao.checkEmailAvailability(credentials.email, (err, user) => {
+      if (err) {
+        return callback(err);
+      }
+
+      if (!user || user.length === 0) {
+        return callback({ status: 401, message: "Incorrect e-mail or password" });
+      }
+
+      const dbUser = user[0]; // { email, password_hash }
+
+      bcrypt.compare(credentials.password, dbUser.password_hash, (compareErr, isMatch) => {
+        if (compareErr) {
+          return callback(compareErr);
+        }
+
+        if (!isMatch) {
+          return callback({ status: 401, message: "Incorrect e-mail or password" });
+        }
+
+        // const { password_hash, ...userWithoutPassword } = dbUser;
+        // return callback(null, { status: 200, message: "Login successful", user: userWithoutPassword });
+        return callback(null, { status: 200, message: "Login successful" });
+      });
+    });
+  } catch (error) {
+    callback(error);
+  }
 };
 
 export const handleRegister = async (credentials, callback) => {
@@ -16,7 +42,7 @@ export const handleRegister = async (credentials, callback) => {
       if (err) {
         return callback(err);
       }
-      console.log(isAvailable);
+      // console.log(isAvailable);
       if (isAvailable && isAvailable.length > 0) {
         return callback({ status: 400, message: "E-mail already in use" });
       }
@@ -39,12 +65,23 @@ export const handleRegister = async (credentials, callback) => {
         return callback({ status: 400, message: "Password must contain at least one special character" });
       }
 
-      // Hash the password
-      // const hashedPassword = await bcrypt.hash(credentials.password, 10);
-
-      // Save user to database (pseudo code)
-      // db.saveUser({ ...credentials, password: hashedPassword });
-      callback(null, { success: true });
+      // Hash the password and save user
+      bcrypt.hash(password, 10, (hashErr, hashedPassword) => {
+        if (hashErr) {
+          return callback(hashErr);
+        }
+        const hashedCredentials = {
+          email: credentials.email,
+          password: hashedPassword
+        };
+        // Insert new user into database
+        authDao.insertNewUserIntoDatabase(hashedCredentials, (insertErr, result) => {
+          if (insertErr) {
+            return callback(insertErr);
+          }
+          callback(null, { status: 201, message: "User registered successfully", user: result });
+        });
+      });
     });
   } catch (error) {
     callback(error);

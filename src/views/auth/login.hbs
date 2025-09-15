@@ -7,8 +7,16 @@
     style="width: 50%; background-color: #212529; color: #fff;"
   >
     <h1 class="mb-4 text-center text-warning"><b>Login</b></h1>
-    {{! TODO: Make Post Work }}
-    {{! TODO: Make place to show error handling. Like incorrect pass or etc,. }}
+    {{#if success}}
+      <div class="alert alert-success text-center" role="alert">
+        {{success}}
+      </div>
+    {{/if}}
+    {{#if err}}
+      <div class="alert alert-danger text-center" role="alert">
+        {{err}}
+      </div>
+    {{/if}}
     <form method="POST" action="login">
       <div class="mb-3">
         <label for="email" class="form-label" style="color: #fff;"><b
@@ -19,6 +27,7 @@
           id="email"
           name="email"
           required
+          value="{{email}}"
         />
       </div>
       <div class="mb-3">
