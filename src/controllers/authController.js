@@ -1,7 +1,11 @@
 export function login(req, res) {
-  res.render("login");
+  res.render("./auth/login");
 }
 
 export function register(req, res) {
-  res.render("register");
+  res.render("./auth/register");
 }
+
+export function postLogin(req, res) {}
+
+export function postRegister(req, res) {}
