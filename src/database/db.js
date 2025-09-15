@@ -18,6 +18,8 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+isDeployment ? console.log("USING ONLINE DB") : console.log("USING LOCAL DB");
+
 const query = (sql, params, callback) => {
   pool.query(sql, params, callback);
 };
