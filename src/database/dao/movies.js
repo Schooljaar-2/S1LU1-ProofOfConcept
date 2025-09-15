@@ -56,6 +56,7 @@ export const getMovieByID = (id, callback) => {
       f.special_features, 
       f.rental_rate,
       f.replacement_cost,
+      f.rental_duration,
       l.name AS language, 
       c.name AS category, 
       fi.image_url,
@@ -71,7 +72,7 @@ export const getMovieByID = (id, callback) => {
   GROUP BY 
       f.film_id, f.title, f.description, f.release_year, f.length, 
       f.rating, f.special_features, f.rental_rate, f.replacement_cost, 
-      l.name, c.name, fi.image_url;
+      l.name, c.name, fi.image_url, f.rental_duration;
   `;
   query(sql, [id], callback);
 };
@@ -96,7 +97,14 @@ export const checkMovieAvailabilityAndTotalInventoryPerStoreByID = (
   query(sql, [id], callback);
 };
 
-export const getFilteredMovies = (title, rating, category, offset, orderBy, callback) => {
+export const getFilteredMovies = (
+  title,
+  rating,
+  category,
+  offset,
+  orderBy,
+  callback
+) => {
   const sql = `
   select 
     ANY_VALUE(f.title) AS title,
@@ -114,10 +122,25 @@ export const getFilteredMovies = (title, rating, category, offset, orderBy, call
     AND (f.rating  = ? OR ? IS null or ? = '')
     AND (c.name = ? OR ? IS null or ? = '')
   group by f.film_id
-  order by ${(!orderBy || orderBy === "") ? "f.title asc" : orderBy}
+  order by ${!orderBy || orderBy === "" ? "f.title asc" : orderBy}
   limit 10 OFFSET ?
   `;
-  query(sql, [title, title, title, rating, rating, rating, category, category, category, offset], callback);
+  query(
+    sql,
+    [
+      title,
+      title,
+      title,
+      rating,
+      rating,
+      rating,
+      category,
+      category,
+      category,
+      offset,
+    ],
+    callback
+  );
 };
 
 // =======================================================================
