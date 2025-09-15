@@ -1,4 +1,4 @@
-import { handleLogin } from "../services/auth.service";
+// import { handleLogin } from "../services/auth.service";
 
 export function login(req, res) {
   res.render("./auth/login");
