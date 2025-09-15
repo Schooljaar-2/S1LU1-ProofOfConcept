@@ -1,21 +1,42 @@
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="card p-4 shadow" style="width: 50%; background-color: #f1f1f1">
-        <h1 class="mb-4 text-center text-warning"><b>Login</b></h1>
-        {{!-- TODO: Make Post Work --}}
-        {{!-- TODO: Make place to show error handling. Like incorrect pass or etc,. --}}
-        <form method="POST" action="/login">
-            <div class="mb-3">
-                <label for="username" class="form-label"><b>Username:</b></label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label"><b>Password:</b></label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-warning w-100">Login</button>
-        </form>
-        <div class="mt-3 text-center">
-            <a href="/register" class="text-decoration-none text-warning"><u>Don't have an account? Register</u></a>
-        </div>
+<div
+  class="container d-flex justify-content-center align-items-center"
+  style="min-height: 80vh;"
+>
+  <div
+    class="card p-4 shadow"
+    style="width: 50%; background-color: #212529; color: #fff;"
+  >
+    <h1 class="mb-4 text-center text-warning"><b>Login</b></h1>
+    {{! TODO: Make Post Work }}
+    {{! TODO: Make place to show error handling. Like incorrect pass or etc,. }}
+    <form method="POST" action="/login">
+      <div class="mb-3">
+        <label for="username" class="form-label" style="color: #fff;"><b
+          >Username:</b></label>
+        <input
+          type="text"
+          class="form-control"
+          id="username"
+          name="username"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label" style="color: #fff;"><b
+          >Password:</b></label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          name="password"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-warning w-100">Login</button>
+    </form>
+    <div class="mt-3 text-center">
+      <a href="/register" class="text-decoration-none text-warning"><u>Don't
+          have an account? Register</u></a>
     </div>
+  </div>
 </div>
