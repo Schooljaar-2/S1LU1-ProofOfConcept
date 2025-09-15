@@ -78,7 +78,7 @@ export function movies(req, res, next) {
   
   if (isNaN(pagination) || pagination <= 0) pagination = 10;
   
-  console.log(pagination)
+  // console.log(pagination)
 
   // Select order option by index, default to index 1 if out of bounds
   let orderIndex = parseInt(orderBy, 10);
