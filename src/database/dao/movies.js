@@ -101,7 +101,7 @@ export const getFilteredMovies = (
   title,
   rating,
   category,
-  offset,
+  limit,
   orderBy,
   callback
 ) => {
@@ -123,7 +123,7 @@ export const getFilteredMovies = (
     AND (c.name = ? OR ? IS null or ? = '')
   group by f.film_id
   order by ${!orderBy || orderBy === "" ? "f.title asc" : orderBy}
-  limit 10 OFFSET ?
+  limit ?
   `;
   query(
     sql,
@@ -137,7 +137,44 @@ export const getFilteredMovies = (
       category,
       category,
       category,
-      offset,
+      limit,
+    ],
+    callback
+  );
+};
+
+export const getFilteredMoviesCount = (
+  title,
+  rating,
+  category,
+  callback
+) => {
+const sql = `
+  SELECT COUNT(*) AS total_count
+  FROM (
+    SELECT f.film_id
+    FROM film f
+      JOIN film_image fi ON f.film_id = fi.film_id 
+      JOIN film_category fc ON f.film_id = fc.film_id 
+      JOIN category c ON fc.category_id = c.category_id 
+    WHERE (f.title LIKE CONCAT('%', ?, '%') OR ? IS NULL OR ? = '')
+      AND (f.rating = ? OR ? IS NULL OR ? = '')
+      AND (c.name = ? OR ? IS NULL OR ? = '')
+    GROUP BY f.film_id
+  ) AS sub;
+  `;
+  query(
+    sql,
+    [
+      title,
+      title,
+      title,
+      rating,
+      rating,
+      rating,
+      category,
+      category,
+      category,
     ],
     callback
   );

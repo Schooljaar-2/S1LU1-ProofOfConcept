@@ -4,7 +4,7 @@ import {
   getAllMovieCategories,
   getAllMovieRatings,
   getFilteredMovies,
-  getTotalAmountOfMovies,
+  getFilteredMoviesCount,
 } from "../database/dao/movies.js";
 
 export function moviePage(req, res, next) {
@@ -74,10 +74,13 @@ export function movies(req, res, next) {
   const rating = req.query.rating || "";
   const category = req.query.category || "";
   const orderBy = req.query.sort || "";
-  const offset = req.query.pagination || 0;
-  const parsedOffset = parseInt(offset, 10);
-  const safeOffset = isNaN(parsedOffset) ? 0 : parsedOffset;
-  console.log(safeOffset);
+  var pagination = parseInt(req.query.pagination, 10);
+
+  if(pagination <= 0) pagination = 10;
+
+
+
+  console.log(pagination)
 
   // Select order option by index, default to index 1 if out of bounds
   let orderIndex = parseInt(orderBy, 10);
@@ -100,32 +103,43 @@ export function movies(req, res, next) {
         error2.status = 500;
         return next(error2);
       }
-      getFilteredMovies(
-        title,
-        rating,
-        category,
-        safeOffset,
-        selectedOrderBy,
-        (error4, movies) => {
-          if (error4) {
-            error4.status = 500;
-            return next(error4);
-          }
-          // console.log(movies);
-          res.render("./customer/movies.hbs", {
-            categories,
-            ratings,
-            movies,
-            filters: {
-              title,
-              rating,
-              category,
-              sort: orderBy,
-              pagination: safeOffset,
-            },
-          });
+      getFilteredMoviesCount(title,rating,category,(error3, count) => {
+        if (error3) {
+          error3.status = 500;
+          return next(error3);
         }
-      );
+        const amount = count[0].total_count;
+        // console.log(amount);
+        if (pagination > amount) pagination = amount;
+
+        getFilteredMovies(
+          title,
+          rating,
+          category,
+          pagination,
+          selectedOrderBy,
+          (error4, movies) => {
+            if (error4) {
+              error4.status = 500;
+              return next(error4);
+            }
+
+            res.render("./customer/movies.hbs", {
+              categories,
+              ratings,
+              movies,
+              totalCount: amount,
+              filters: {
+                title,
+                rating,
+                category,
+                sort: orderBy,
+                pagination,
+              },
+            });
+          }
+        );
+      });
     });
   });
 }

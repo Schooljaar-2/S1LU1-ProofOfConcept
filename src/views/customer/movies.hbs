@@ -1,7 +1,6 @@
 <div class="container pt-2 pb-5">
     <!-- Removed page title for tighter layout -->
     <form class="bg-dark p-3 rounded shadow mb-3 w-100" style="margin-left: 0;">
-    <input type="hidden" name="pagination" value="{{filters.pagination}}">
         <div class="row g-3 align-items-end w-100">
             <div class="col-12 col-md-3">
                 <label for="searchTitle" class="form-label text-light">Title</label>
@@ -38,6 +37,8 @@
                         <option value="6" {{#ifCond filters.sort "6"}}selected{{/ifCond}}>Movie Length (Ascending)</option>
                         <option value="7" {{#ifCond filters.sort "7"}}selected{{/ifCond}}>Movie Length (Descending)</option>
                     </select>
+                        <!-- Hidden input for pagination, controlled by Prev/Next buttons -->
+                        <input type="hidden" id="pageAction" name="pagination" value="{{filters.pagination}}">
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-warning fw-bold">Apply</button>
@@ -87,12 +88,37 @@
         </tbody>
         </table>
 
-        <!-- Pagination Buttons -->
-                <div class="d-flex justify-content-center gap-2 mt-3" style="margin-bottom: 20px;">
-                        <button type="button" id="prevBtn" class="btn btn-secondary btn-sm {{#if disablePrev}}disabled{{/if}}">Prev</button>
-                        <span class="align-self-center mx-2 text-light">-- Navigate --</span>
-                        <button type="button" id="nextBtn" class="btn btn-secondary btn-sm {{#if disableNext}}disabled{{/if}}">Next</button>
-                </div>
+        <!-- Pagination Info -->
+        <div class="d-flex justify-content-center gap-2 mt-3" style="margin-bottom: 20px;">
+            <span class="align-self-center mx-2 text-light">
+                <input type="number" min="1" class="form-control d-inline-block" id="paginationInput" style="width: 60px; display: inline-block; text-align: center;" placeholder="10" value="{{filters.pagination}}">
+        <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            var input = document.getElementById('paginationInput');
+            var hidden = document.getElementById('pageAction');
+            if (input && hidden) {
+                hidden.value = input.value;
+            }
+        });
+        document.querySelector('.btn-secondary').addEventListener('click', function(e) {
+            e.preventDefault();
+            var form = document.querySelector('form');
+            // Explicitly clear all relevant fields
+            form.querySelector('[name="title"]').value = '';
+            form.querySelector('[name="category"]').value = '';
+            form.querySelector('[name="rating"]').value = '';
+            form.querySelector('[name="sort"]').value = '';
+            var input = document.getElementById('paginationInput');
+            var hidden = document.getElementById('pageAction');
+            if (input) input.value = '10';
+            if (hidden) hidden.value = '10';
+            form.submit();
+        });
+        </script>
+                out of {{totalCount}} movies
+            </span>
+        </div>
+            </div>
         </div>
 
 </div>
