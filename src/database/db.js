@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const isDeployment = process.env.DEV_ENVIRONMENT === "deployment";
+const isDeployment = process.env.DEV_ENVIRONMENT === "online";
 
 const pool = mysql.createPool({
   host: isDeployment ? process.env.DB_ONLINE_HOST : process.env.DB_HOST,
