@@ -1,8 +1,9 @@
 import { handleRegister, handleLogin } from "../services/auth.service.js";
-import { getTop10Films } from "../database/dao/movies.js";
 
 export function login(req, res) {
-  res.render("./auth/login", { success: null, err: null });
+  const success = req.query.success ? "Register successful" : null;
+  console.log(success)
+  res.render("./auth/login", { success, err: null });
 }
 
 export function register(req, res) {
@@ -23,29 +24,9 @@ export function postLogin(req, res) {
       });
       return;
     }
-    // On successful login, fetch top 10 films and render homepage with carousel
-    getTop10Films((error, response) => {
-      if (error) {
-        // Optionally, handle this error differently
-        res.render("./index", {
-          hotMoviesGrouped: [],
-          err: "Could not load movies.",
-        });
-        return;
-      }
-      // Use the same chunking logic as indexController
-      const hotMoviesGrouped = chunkArray(response, 3);
-      res.render("index", { hotMoviesGrouped });
-    });
+    // On successful login, redirect to homepage
+    res.redirect("/");
   });
-  // Utility function to chunk arrays (copied from indexController)
-  function chunkArray(arr, size) {
-    const result = [];
-    for (let i = 0; i < arr.length; i += size) {
-      result.push(arr.slice(i, i + size));
-    }
-    return result;
-  }
 }
 
 export function postRegister(req, res) {
@@ -62,7 +43,7 @@ export function postRegister(req, res) {
       });
       return;
     }
-    // Render login page with success message
-    res.render("./auth/login", { success: result.message });
+  // Redirect to login page with success query param
+  res.redirect("/login?success=1");
   });
 }
