@@ -75,11 +75,9 @@ export function movies(req, res, next) {
   const category = req.query.category || "";
   const orderBy = req.query.sort || "";
   var pagination = parseInt(req.query.pagination, 10);
-
-  if(pagination <= 0) pagination = 10;
-
-
-
+  
+  if (isNaN(pagination) || pagination <= 0) pagination = 10;
+  
   console.log(pagination)
 
   // Select order option by index, default to index 1 if out of bounds
