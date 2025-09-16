@@ -1,1 +1,36 @@
-<h1>You are: {{username}}</h1>
+<div class="container py-5"></div>
+<div class="row justify-content-center align-items-start">
+    <!-- Profile Card (Left) -->
+    <div class="col-md-4">
+        <div class="card shadow-lg border-0 bg-dark text-light mb-4">
+            <div class="card-body d-flex flex-column align-items-center">
+                <img src="./images/AnonymousUser.png" class="rounded-circle mb-3"
+                    style="width: 130px; height: 130px; object-fit: cover; border: 3px solid #ffc107;">
+                <h4 class="mb-1">Wouter Baas</h4>
+                <h6 class="text-warning">@{{username}}</h6>
+                <hr class="w-75 my-3" />
+                <div class="w-100">
+                    <h6 class="mb-2"><i class="bi bi-geo-alt-fill text-warning"></i> Address</h6>
+                    <ul class="list-unstyled mb-0 ps-2">
+                        <li><b>Country:</b> {{country}}</li>
+                        <li><b>City:</b> {{city}}</li>
+                        <li><b>Postal Code:</b> {{postalCode}}</li>
+                        <li><b>Street:</b> {{street}} {{streetNumber}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rentals Dashboard (Right) -->
+    <div class="col-md-7">
+        <div class="card shadow-lg border-0 bg-dark text-light p-4" style="min-height: 350px;">
+            <h2 class="mb-2 text-center" style="color: #ffc107;">Rentals</h2>
+            <hr class="w-50 mx-auto mb-4" style="border-top: 3px solid #ffc107; opacity: 1;" />
+            <div class="alert alert-info text-center" role="alert">
+                This section will show your active rentals and rental history soon.
+            </div>
+        </div>
+    </div>
+</div>
+</div>

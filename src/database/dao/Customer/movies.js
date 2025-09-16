@@ -1,4 +1,4 @@
-import query from "../db.js";
+import query from "../../db.js";
 
 export const getTop10Films = (callback) => {
   const sql = `
@@ -143,13 +143,8 @@ export const getFilteredMovies = (
   );
 };
 
-export const getFilteredMoviesCount = (
-  title,
-  rating,
-  category,
-  callback
-) => {
-const sql = `
+export const getFilteredMoviesCount = (title, rating, category, callback) => {
+  const sql = `
   SELECT COUNT(*) AS total_count
   FROM (
     SELECT f.film_id
@@ -165,17 +160,7 @@ const sql = `
   `;
   query(
     sql,
-    [
-      title,
-      title,
-      title,
-      rating,
-      rating,
-      rating,
-      category,
-      category,
-      category,
-    ],
+    [title, title, title, rating, rating, rating, category, category, category],
     callback
   );
 };

@@ -5,7 +5,7 @@ import {
   getAllMovieRatings,
   getFilteredMovies,
   getFilteredMoviesCount,
-} from "../database/dao/movies.js";
+} from "../database/dao/Customer/movies.js";
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -143,14 +143,14 @@ export function movies(req, res, next) {
 }
 
 export function loggedInCustomer(req, res, next) {
-  if (!req.session.logged_in) {
-    res.redirect("/");
-    return;
-  }
-  if (req.session.role !== "CUSTOMER" || !req.session.role) {
-    res.redirect("/");
-    return;
-  }
+  // if (!req.session.logged_in) {
+  //   res.redirect("/");
+  //   return;
+  // }
+  // if (req.session.role !== "CUSTOMER" || !req.session.role) {
+  //   res.redirect("/");
+  //   return;
+  // }
   const username = req.session.username;
   res.render("./customer/customer.hbs", { username });
 }

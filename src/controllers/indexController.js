@@ -1,4 +1,4 @@
-import { getTop10Films } from "../database/dao/movies.js";
+import { getTop10Films } from "../database/dao/Customer/movies.js";
 
 // Kleine utility functie om arrays in chunks te splitsen
 function chunkArray(arr, size) {
