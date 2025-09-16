@@ -162,12 +162,13 @@ export function loggedInCustomer(req, res, next) {
       error.status = 404;
       return next(error);
     }
-    // console.log(customerInfo);
+    console.log(customerInfo);
+    console.log("ahahaha");
     if (!customerInfo || customerInfo.length === 0) {
       res.redirect("/customer/createProfile");
       return;
     }
-    console.log(customerInfo);
+    // console.log(customerInfo);
     // Pass only the first customerInfo object to the template
     res.render("./customer/customer.hbs", { customerInfo: customerInfo[0] });
   });
