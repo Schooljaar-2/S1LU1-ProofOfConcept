@@ -40,7 +40,7 @@
           {{#if loggedInUser}}
           {{#if (eq loggedInUser.role "CUSTOMER")}}
           <li class="nav-item">
-            <a class="nav-link username-btn px-3" href="/profile">{{loggedInUser.username}}</a>
+            <a class="nav-link username-btn px-3" href="/customer">{{loggedInUser.username}}</a>
           </li>
           {{else}}
           <!-- Add other roles here if needed -->
@@ -76,17 +76,18 @@
 
   <style>
     .username-btn {
-      background-color: #ffc107 !important;
-      /* Amber */
-      color: #fff !important;
+      background: none !important;
+      color: #ffc107 !important;
+      /* Amber text */
       border-radius: 0.25rem;
-      transition: background 0.2s, color 0.2s;
+      transition: color 0.2s;
     }
 
     .username-btn:hover,
     .username-btn:focus {
-      background-color: #dc3545 !important;
-      color: #fff !important;
+      color: #fff200 !important;
+      /* Slightly lighter yellow on hover */
+      background: none !important;
     }
   </style>
 </body>

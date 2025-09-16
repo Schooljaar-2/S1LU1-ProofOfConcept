@@ -75,9 +75,9 @@ export function movies(req, res, next) {
   const category = req.query.category || "";
   const orderBy = req.query.sort || "";
   var pagination = parseInt(req.query.pagination, 10);
-  
+
   if (isNaN(pagination) || pagination <= 0) pagination = 10;
-  
+
   // console.log(pagination)
 
   // Select order option by index, default to index 1 if out of bounds
@@ -101,7 +101,7 @@ export function movies(req, res, next) {
         error2.status = 500;
         return next(error2);
       }
-      getFilteredMoviesCount(title,rating,category,(error3, count) => {
+      getFilteredMoviesCount(title, rating, category, (error3, count) => {
         if (error3) {
           error3.status = 500;
           return next(error3);
@@ -140,4 +140,17 @@ export function movies(req, res, next) {
       });
     });
   });
+}
+
+export function loggedInCustomer(req, res, next) {
+  if (!req.session.logged_in) {
+    res.redirect("/");
+    return;
+  }
+  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+    res.redirect("/");
+    return;
+  }
+  const username = req.session.username;
+  res.render("./customer/customer.hbs", { username });
 }
