@@ -15,7 +15,6 @@ export const index = (req, res, next) => {
 
     // Deel films op in groepjes van 3 voor de carousel
     const hotMoviesGrouped = chunkArray(response, 3);
-    // console.log(req.session);
     res.render("index", { hotMoviesGrouped });
   });
 };
