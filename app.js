@@ -19,10 +19,12 @@ app.use(express.static(path.join(process.cwd(), "src/public")));
 
 app.use(
   session({
-    secret: "geheime_sleutel",
+    secret: "wouterGeheimeSleutel",
     resave: false,
     saveUninitialized: false,
-    // Add cookie
+    cookie: {
+      maxAge: 60000 * 60, //User being remembered for 1 hour
+    },
   })
 );
 

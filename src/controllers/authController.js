@@ -2,7 +2,7 @@ import { handleRegister, handleLogin } from "../services/auth.service.js";
 
 export function login(req, res) {
   const success = req.query.success ? "Register successful" : null;
-  console.log(success)
+  console.log(success);
   res.render("./auth/login", { success, err: null });
 }
 
@@ -24,7 +24,10 @@ export function postLogin(req, res) {
       });
       return;
     }
-    // On successful login, redirect to homepage
+    // On successful login, redirect to homepage and update session object
+    req.session.logged_in = true;
+    req.session.role = result.user[0].role;
+    req.session.user_id = result.user[0].user_id;
     res.redirect("/");
   });
 }
@@ -43,7 +46,7 @@ export function postRegister(req, res) {
       });
       return;
     }
-  // Redirect to login page with success query param
-  res.redirect("/login?success=1");
+    // Redirect to login page with success query param
+    res.redirect("/login?success=1");
   });
 }

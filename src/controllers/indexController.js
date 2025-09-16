@@ -10,13 +10,11 @@ function chunkArray(arr, size) {
 }
 
 export const index = (req, res, next) => {
-  // Check for ?success=1 in query to show a message
   getTop10Films((error, response) => {
     if (error) return next(error);
 
     // Deel films op in groepjes van 3 voor de carousel
     const hotMoviesGrouped = chunkArray(response, 3);
-
     res.render("index", { hotMoviesGrouped });
   });
 };
