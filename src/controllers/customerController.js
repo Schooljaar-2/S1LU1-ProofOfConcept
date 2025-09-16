@@ -5,7 +5,9 @@ import {
   getAllMovieRatings,
   getFilteredMovies,
   getFilteredMoviesCount,
-} from "../database/dao/movies.js";
+} from "../database/dao/Customer/movies.js";
+import profileDao from "../database/dao/Customer/profile.js";
+import createNewCustomerProfile from "../services/addNewCustomer.service.js";
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -75,9 +77,9 @@ export function movies(req, res, next) {
   const category = req.query.category || "";
   const orderBy = req.query.sort || "";
   var pagination = parseInt(req.query.pagination, 10);
-  
+
   if (isNaN(pagination) || pagination <= 0) pagination = 10;
-  
+
   // console.log(pagination)
 
   // Select order option by index, default to index 1 if out of bounds
@@ -101,7 +103,7 @@ export function movies(req, res, next) {
         error2.status = 500;
         return next(error2);
       }
-      getFilteredMoviesCount(title,rating,category,(error3, count) => {
+      getFilteredMoviesCount(title, rating, category, (error3, count) => {
         if (error3) {
           error3.status = 500;
           return next(error3);
@@ -139,5 +141,92 @@ export function movies(req, res, next) {
         );
       });
     });
+  });
+}
+
+export function loggedInCustomer(req, res, next) {
+  if (!req.session.logged_in) {
+    res.redirect("/");
+    return;
+  }
+  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+    res.redirect("/");
+    return;
+  }
+
+  const userId = req.session.user_id;
+
+  profileDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
+    if (err) {
+      const error = new Error("User ID not found");
+      error.status = 404;
+      return next(error);
+    }
+    // console.log(customerInfo);
+    if (!customerInfo || customerInfo.length === 0) {
+      res.redirect("/customer/createProfile");
+      return;
+    }
+    console.log(customerInfo);
+    // Pass only the first customerInfo object to the template
+    res.render("./customer/customer.hbs", { customerInfo: customerInfo[0] });
+  });
+}
+
+export function customerCreateProfile(req, res, next) {
+  if (!req.session.logged_in) {
+    res.redirect("/");
+    return;
+  }
+  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+    res.redirect("/");
+    return;
+  }
+
+  //If user info exists go back
+  const userId = req.session.user_id;
+  profileDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
+    if (err) {
+      const error = new Error("User ID not found");
+      error.status = 404;
+      return next(error);
+    }
+    if (customerInfo && customerInfo.length !== 0) {
+      res.redirect("/customer");
+      return;
+    }
+
+    profileDao.findAllStores((err, stores) => {
+      if (err) {
+          const error = {
+              status: 500,
+              message: "Internal Server Error (city check)",
+              details: err
+          };
+          return callback(error, null);
+      }
+      res.render("./customer/createProfile.hbs", { stores });
+    })
+  });
+}
+
+export function createProfileSendForm(req, res, next) {
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const phone = req.body.phone;
+  const district = req.body.district;
+  const street = req.body.street;
+  const houseNumber = req.body.houseNumber;
+  const postalCode = req.body.postalCode;
+  const city = req.body.city;
+  const country = req.body.country;
+  const storeId = req.body.store;
+
+  createNewCustomerProfile(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, req.session.user_id, storeId, (err, result) => {
+    if (err) {
+      err.status = 500;
+      return next(err);
+    }
+    res.redirect("/customer");
   });
 }

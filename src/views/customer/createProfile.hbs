@@ -1,0 +1,69 @@
+<div class="container py-5"></div>
+  <div class="row justify-content-center" style="max-width: 80vw; margin-left: auto; margin-right: auto;">
+    <div class="col-md-8">
+      <div class="card shadow-lg border-0 bg-dark text-light">
+        <div class="card-body">
+          <h3 class="mb-4 text-center" style="color: #ffc107;">Complete Your Profile</h3>
+          <form method="POST" action="">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="firstName" class="form-label text-light"><b>First Name</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="firstName" name="firstName" required maxlength="50" autocomplete="given-name" placeholder="e.g. John">
+              </div>
+              <div class="col-md-6">
+                <label for="lastName" class="form-label text-light"><b>Last Name</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="lastName" name="lastName" required maxlength="50" autocomplete="family-name" placeholder="e.g. Doe">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="phone" class="form-label text-light"><b>Phone Number</b></label>
+                <input type="tel" class="form-control bg-secondary text-light" id="phone" name="phone" required pattern="[0-9\-\+\s]{8,20}" maxlength="20" autocomplete="tel" placeholder="e.g. +31 6 12345678">
+              </div>
+              <div class="col-md-6">
+                <label for="store" class="form-label text-light"><b>Store</b></label>
+                <select class="form-select bg-secondary text-light" id="store" name="store" required>
+                  <option value="" disabled selected>Select a store</option>
+                  {{#each stores}}
+                    <option value="{{this.store_id}}">{{this.store_name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <label for="street" class="form-label text-light"><b>Street</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="street" name="street" required maxlength="100" autocomplete="address-line1" placeholder="e.g. Main Street">
+              </div>
+              <div class="col-md-4">
+                <label for="houseNumber" class="form-label text-light"><b>House Number</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="houseNumber" name="houseNumber" required maxlength="10" autocomplete="address-line2" placeholder="e.g. 42A">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="district" class="form-label text-light"><b>District</b></label>
+              <input type="text" class="form-control bg-secondary text-light" id="district" name="district" required maxlength="50" placeholder="e.g. Centrum">
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="postalCode" class="form-label text-light"><b>Postal Code</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="postalCode" name="postalCode" required maxlength="20" autocomplete="postal-code" placeholder="e.g. 1234 AB">
+              </div>
+              <div class="col-md-4">
+                <label for="city" class="form-label text-light"><b>City</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="city" name="city" required maxlength="50" autocomplete="address-level2" placeholder="e.g. Amsterdam">
+              </div>
+              <div class="col-md-4">
+                <label for="country" class="form-label text-light"><b>Country</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="country" name="country" required maxlength="50" autocomplete="country" placeholder="e.g. Netherlands">
+              </div>
+            </div>
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-warning btn-lg">Finish Profile</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
