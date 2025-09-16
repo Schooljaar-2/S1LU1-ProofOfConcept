@@ -29,7 +29,7 @@ export function postLogin(req, res) {
     req.session.logged_in = true;
     req.session.role = result.user[0].role;
     req.session.user_id = result.user[0].user_id;
-    req.sesssion.username = result.user[0].username;
+    req.session.username = result.user[0].username;
     res.redirect("/");
   });
 }

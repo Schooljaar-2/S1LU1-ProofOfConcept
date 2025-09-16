@@ -37,11 +37,29 @@ const handlebars = create({
     ifCond: function (v1, v2, options) {
       return v1 === v2 ? options.fn(this) : options.inverse(this);
     },
+    eq: function (a, b) {
+      return a === b;
+    },
   },
 });
+
 app.engine("hbs", handlebars.engine);
 app.set("view engine", "hbs");
 app.set("views", path.join(process.cwd(), "src/views"));
+
+// Middleware to make loggedInUser available in all views
+app.use((req, res, next) => {
+  if (req.session.logged_in) {
+    res.locals.loggedInUser = {
+      role: req.session.role,
+      username: req.session.username,
+      userId: req.session.user_id,
+    };
+  } else {
+    res.locals.loggedInUser = null;
+  }
+  next();
+});
 
 // Routes
 app.use("/", indexRouter);
