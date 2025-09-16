@@ -162,13 +162,14 @@ export function loggedInCustomer(req, res, next) {
       error.status = 404;
       return next(error);
     }
-    console.log(customerInfo);
-    if (!customerInfo ||customerInfo.length === 0){
+    // console.log(customerInfo);
+    if (!customerInfo || customerInfo.length === 0) {
       res.redirect("/customer/createProfile");
       return;
     }
     console.log(customerInfo);
-    res.render("./customer/customer.hbs", { customerInfo });
+    // Pass only the first customerInfo object to the template
+    res.render("./customer/customer.hbs", { customerInfo: customerInfo[0] });
   });
 }
 
@@ -194,7 +195,18 @@ export function customerCreateProfile(req, res, next) {
       res.redirect("/customer");
       return;
     }
-    res.render("./customer/createProfile.hbs");
+
+    profileDao.findAllStores((err, stores) => {
+      if (err) {
+          const error = {
+              status: 500,
+              message: "Internal Server Error (city check)",
+              details: err
+          };
+          return callback(error, null);
+      }
+      res.render("./customer/createProfile.hbs", { stores });
+    })
   });
 }
 
@@ -208,8 +220,9 @@ export function createProfileSendForm(req, res, next) {
   const postalCode = req.body.postalCode;
   const city = req.body.city;
   const country = req.body.country;
+  const storeId = req.body.store;
 
-  createNewCustomerProfile(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, req.session.user_id, (err, result) => {
+  createNewCustomerProfile(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, req.session.user_id, storeId, (err, result) => {
     if (err) {
       err.status = 500;
       return next(err);

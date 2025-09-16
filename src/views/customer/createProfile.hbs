@@ -15,9 +15,20 @@
                 <input type="text" class="form-control bg-secondary text-light" id="lastName" name="lastName" required maxlength="50" autocomplete="family-name" placeholder="e.g. Doe">
               </div>
             </div>
-            <div class="mb-3">
-              <label for="phone" class="form-label text-light"><b>Phone Number</b></label>
-              <input type="tel" class="form-control bg-secondary text-light" id="phone" name="phone" required pattern="[0-9\-\+\s]{8,20}" maxlength="20" autocomplete="tel" placeholder="e.g. +31 6 12345678">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="phone" class="form-label text-light"><b>Phone Number</b></label>
+                <input type="tel" class="form-control bg-secondary text-light" id="phone" name="phone" required pattern="[0-9\-\+\s]{8,20}" maxlength="20" autocomplete="tel" placeholder="e.g. +31 6 12345678">
+              </div>
+              <div class="col-md-6">
+                <label for="store" class="form-label text-light"><b>Store</b></label>
+                <select class="form-select bg-secondary text-light" id="store" name="store" required>
+                  <option value="" disabled selected>Select a store</option>
+                  {{#each stores}}
+                    <option value="{{this.store_id}}">{{this.store_name}}</option>
+                  {{/each}}
+                </select>
+              </div>
             </div>
             <div class="row mb-3">
               <div class="col-md-8">

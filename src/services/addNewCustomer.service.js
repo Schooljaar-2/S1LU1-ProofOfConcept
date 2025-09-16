@@ -1,7 +1,7 @@
 import profileDao from "../database/dao/Customer/profile.js";
 
 
-const createNewCustomerProfile = (firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, callback) => {
+const createNewCustomerProfile = (firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, callback) => {
     // 1: Check if the country exists
     profileDao.checkIfCountryExists(country, (err, countryChecked) => {
         if (err) {
@@ -40,7 +40,7 @@ const createNewCustomerProfile = (firstName, lastName, phone, district, street, 
                         }
                         // Save the address id
                         const addressId = insertedAddress.insertId;
-                        profileDao.insertUserPersonalInformation(1, firstName, lastName, addressId, user_id, (err, insertedInfo) => {
+                        profileDao.insertUserPersonalInformation(storeId, firstName, lastName, addressId, user_id, (err, insertedInfo) => {
                             if (err) {
                                 const error = {
                                     status: 500,

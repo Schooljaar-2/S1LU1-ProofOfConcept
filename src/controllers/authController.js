@@ -53,3 +53,14 @@ export function postRegister(req, res) {
     res.redirect("/login?success=1");
   });
 }
+
+export function logout(req, res) {
+  req.session.destroy((err) => {
+    if (err) {
+      // Optionally handle error, but still redirect
+      return res.redirect("/");
+    }
+    res.clearCookie('connect.sid'); // Optional: clear session cookie
+    res.redirect("/");
+  });
+}

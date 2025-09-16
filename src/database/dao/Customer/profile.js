@@ -14,15 +14,24 @@ const profileDao = {
             c1.city, 
             c2.country,
             u.username,
-            u.email
+            u.email,
+            s.store_name 
         from user u
         join customer c on u.user_id = c.user_id
         join address a on c.address_id = a.address_id 
         join city c1 on a.city_id = c1.city_id 
         join country c2 on c1.country_id = c2.country_id 
+        join store s on c.store_id = s.store_id
         where u.user_id = ?
         `;
     query(sql, [userId], callback);
+  },
+  findAllStores: function(callback){
+    const sql = `
+      select *
+      from store
+    `;
+    query(sql, [], callback);
   },
   checkIfCountryExists: function(country, callback){
     const sql = `
