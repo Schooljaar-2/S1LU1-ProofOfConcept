@@ -12,8 +12,8 @@ const authDao = {
     query(sql, [eMail], callback);
   },
 
-  insertNewUserIntoDatabase: function (credentials, callback) {
-    const username = "";
+  insertNewCustomerIntoDatabase: function (credentials, callback) {
+    const username = credentials.username;
     const email = credentials.email;
     const password = credentials.password;
     const role = "CUSTOMER";
@@ -25,9 +25,9 @@ const authDao = {
     query(sql, [username, email, password, role], callback);
   },
 
-  getUserIdAndRoleFromEmail: function (email, callback) {
+  getUserIdAndRoleAndUsernameFromEmail: function (email, callback) {
     const sql = `
-            select u.user_id, u.role 
+            select u.user_id, u.role, u.username
             from user u 
             where u.email = ?
         `;

@@ -36,7 +36,7 @@ export const handleLogin = (credentials, callback) => {
             });
           }
 
-          authDao.getUserIdAndRoleFromEmail(
+          authDao.getUserIdAndRoleAndUsernameFromEmail(
             credentials.email,
             (err, userInfo) => {
               if (err) {
@@ -114,9 +114,10 @@ export const handleRegister = async (credentials, callback) => {
         const hashedCredentials = {
           email: credentials.email,
           password: hashedPassword,
+          username: credentials.username,
         };
         // Insert new user into database
-        authDao.insertNewUserIntoDatabase(
+        authDao.insertNewCustomerIntoDatabase(
           hashedCredentials,
           (insertErr, result) => {
             if (insertErr) {

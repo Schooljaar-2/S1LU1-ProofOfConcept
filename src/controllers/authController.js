@@ -25,9 +25,11 @@ export function postLogin(req, res) {
       return;
     }
     // On successful login, redirect to homepage and update session object
+    console.log(result);
     req.session.logged_in = true;
     req.session.role = result.user[0].role;
     req.session.user_id = result.user[0].user_id;
+    req.sesssion.username = result.user[0].username;
     res.redirect("/");
   });
 }
@@ -36,6 +38,7 @@ export function postRegister(req, res) {
   const credentials = {
     email: req.body.email,
     password: req.body.password,
+    username: req.body.username,
   };
 
   handleRegister(credentials, (err, result) => {

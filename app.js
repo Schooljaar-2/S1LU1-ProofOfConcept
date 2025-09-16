@@ -28,14 +28,6 @@ app.use(
   })
 );
 
-// Add middleware gebruikers info beschikbaar maken in views.
-// Hieronder code van docent
-// app.use((req, res, next) => {
-//   res.locals.isAuthenticated = !!req.session.user
-//   res.locals.username = req.session.user ? req.session.user.username : null
-//   next()
-// });
-
 // View config
 const handlebars = create({
   extname: "hbs",
