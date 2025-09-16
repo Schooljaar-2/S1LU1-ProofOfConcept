@@ -6,6 +6,7 @@ import {
   getFilteredMovies,
   getFilteredMoviesCount,
 } from "../database/dao/Customer/movies.js";
+import profileDao from "../database/dao/Customer/profile.js";
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -143,14 +144,34 @@ export function movies(req, res, next) {
 }
 
 export function loggedInCustomer(req, res, next) {
-  // if (!req.session.logged_in) {
-  //   res.redirect("/");
-  //   return;
-  // }
-  // if (req.session.role !== "CUSTOMER" || !req.session.role) {
-  //   res.redirect("/");
-  //   return;
-  // }
-  const username = req.session.username;
-  res.render("./customer/customer.hbs", { username });
+  if (!req.session.logged_in) {
+    res.redirect("/");
+    return;
+  }
+  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+    res.redirect("/");
+    return;
+  }
+
+  const userId = req.session.user_id;
+
+  profileDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
+      if (err) {
+        const error = new Error("User ID not found");
+        error.status = 404;
+        return next(error);
+      }
+      console.log(customerInfo);
+      if (!customerInfo || (Array.isArray(customerInfo) && customerInfo.length === 0) || (Array.isArray(customerInfo) && customerInfo.length !== 10)) {
+        res.redirect("/customer/createProfile");
+        return;
+      }
+      console.log(customerInfo);
+      res.render("./customer/customer.hbs", { customerInfo });
+    }
+  );
+}
+
+export function customerCreateProfile(req, res, next) {
+  res.render("./customer/createProfile.hbs");
 }
