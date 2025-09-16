@@ -24,6 +24,51 @@ const profileDao = {
         `;
     query(sql, [userId], callback);
   },
+  checkIfCountryExists: function(country, callback){
+    const sql = `
+      select * 
+      from country c
+      where c.country = ?
+    `;
+    query(sql, [country], callback);
+  },
+  addNewCountry: function(country, callback){
+    const sql = `
+      insert into country (country)
+      values (?)
+    `;
+    query(sql, [country], callback);
+  },
+  checkIfCityExists: function(city, countryId, callback){
+    const sql = `
+      select *
+      from city c 
+      where c.city = ?
+      and c.country_id = ?
+    `;
+    query(sql, [city, countryId], callback);
+  },
+  addNewCity: function(city, countryId, callback){
+    const sql = `
+    insert into city (city, country_id)
+    values (?, ?)
+    `;
+    query(sql, [city, countryId], callback);
+  },
+  insertUserAddress: function(address, district, cityId, postalCode, phone, callback){
+    const sql = `
+      insert into address (address, district, city_id, postal_code, phone, location)
+      values (?, ?, ?, ?, ?, POINT(0,0))
+      `;
+    query(sql, [address, district, cityId, postalCode, phone], callback);
+  },
+  insertUserPersonalInformation: function(storeId, firstName, lastName, addressId, userId, callback){
+    const sql = `
+      insert into customer (store_id, first_name, last_name, address_id, active, user_id)
+      values (?, ?, ?, ?, 1, ?)
+    `;
+    query(sql, [storeId, firstName, lastName, addressId, userId], callback);
+  }
 };
 
 export default profileDao;
