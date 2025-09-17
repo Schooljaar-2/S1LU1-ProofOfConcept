@@ -8,7 +8,7 @@ import {
 } from "../database/dao/Customer/movies.js";
 import customerDao from "../database/dao/Customer/customer.js";
 import createNewCustomerProfile from "../services/customer/addNewCustomer.service.js";
-import getAllUserRentalInformation from "../services/customer/getCustomerRentalInformation.service.js"
+import {getAllUserRentalInformation, markOverdueActiveRentals} from "../services/customer/getCustomerRentalInformation.service.js"
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -175,6 +175,7 @@ export function loggedInCustomer(req, res, next) {
         error.status = 404;
         return next(error);
       }
+      markOverdueActiveRentals(rentalInformation);
       console.log(rentalInformation);
       res.render("./customer/customer.hbs", { customerInfo: customerInfo[0], rentalInformation });
     });

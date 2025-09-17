@@ -1,6 +1,6 @@
 import customerDao from "../../database/dao/Customer/customer.js";
 
-const getAllUserRentalInformation = (userId, callback) => {
+export const getAllUserRentalInformation = (userId, callback) => {
     customerDao.getCustomerRentalHistory(userId, (err, rentalHistory) => {
         if (err) {
             const error = {
@@ -25,4 +25,13 @@ const getAllUserRentalInformation = (userId, callback) => {
     });
 }
 
-export default getAllUserRentalInformation;
+export const markOverdueActiveRentals = (rentalInformation) => {
+  const today = new Date();
+  rentalInformation.activeRentals.forEach(rental => {
+    const rentalDate = new Date(rental.rental_date);
+    const dueDate = new Date(rentalDate);
+    dueDate.setDate(rentalDate.getDate() + rental.rental_duration);
+    rental.overdue = today > dueDate;
+  });
+  return rentalInformation;
+}
