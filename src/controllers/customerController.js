@@ -6,7 +6,7 @@ import {
   getFilteredMovies,
   getFilteredMoviesCount,
 } from "../database/dao/Customer/movies.js";
-import profileDao from "../database/dao/Customer/profile.js";
+import profileDao from "../database/dao/Customer/customer.js";
 import createNewCustomerProfile from "../services/addNewCustomer.service.js";
 
 export function moviePage(req, res, next) {
@@ -162,8 +162,7 @@ export function loggedInCustomer(req, res, next) {
       error.status = 404;
       return next(error);
     }
-    console.log(customerInfo);
-    console.log("ahahaha");
+
     if (!customerInfo || customerInfo.length === 0) {
       res.redirect("/customer/createProfile");
       return;

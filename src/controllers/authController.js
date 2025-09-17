@@ -2,7 +2,7 @@ import { handleRegister, handleLogin } from "../services/auth.service.js";
 
 export function login(req, res) {
   const success = req.query.success ? "Register successful" : null;
-  console.log(success);
+  // console.log(success);
   res.render("./auth/login", { success, err: null });
 }
 
@@ -57,10 +57,9 @@ export function postRegister(req, res) {
 export function logout(req, res) {
   req.session.destroy((err) => {
     if (err) {
-      // Optionally handle error, but still redirect
       return res.redirect("/");
     }
-    res.clearCookie('connect.sid'); // Optional: clear session cookie
+    res.clearCookie('connect.sid'); 
     res.redirect("/");
   });
 }

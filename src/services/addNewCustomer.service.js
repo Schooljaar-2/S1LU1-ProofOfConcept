@@ -1,4 +1,4 @@
-import profileDao from "../database/dao/Customer/profile.js";
+import profileDao from "../database/dao/Customer/customer.js";
 
 
 const createNewCustomerProfile = (firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, callback) => {

@@ -14,7 +14,6 @@ export const index = (req, res, next) => {
     if (error) return next(error);
 
     const hotMoviesGrouped = chunkArray(response, 3);
-    console.log(hotMoviesGrouped);
     res.render("index", { hotMoviesGrouped });
   });
 };
