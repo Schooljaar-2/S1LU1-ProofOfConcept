@@ -9,6 +9,7 @@ import {
 import customerDao from "../database/dao/Customer/customer.js";
 import createNewCustomerProfile from "../services/customer/addNewCustomer.service.js";
 import {getAllUserRentalInformation, markOverdueActiveRentals} from "../services/customer/getCustomerRentalInformation.service.js"
+import updateCustomerProfileService from "../services/customer/updateCustomer.service.js"
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -289,5 +290,26 @@ export function updateCustomerProfile(req, res, next){
       }
       res.render("./customer/updateProfile.hbs", { stores, customerInfo: info });
     });
+  });
+}
+
+export function updateCustomerProfileSendForm(req, res, next){
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const phone = req.body.phone;
+  const district = req.body.district;
+  const street = req.body.street;
+  const houseNumber = req.body.houseNumber;
+  const postalCode = req.body.postalCode;
+  const city = req.body.city;
+  const country = req.body.country;
+  const storeId = req.body.store;
+
+  updateCustomerProfileService(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, req.session.user_id, storeId, (err, result) => {
+    if (err) {
+      err.status = 500;
+      return next(err);
+    }
+    res.redirect("/customer");
   });
 }

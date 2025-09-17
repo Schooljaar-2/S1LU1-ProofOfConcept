@@ -93,4 +93,4 @@ const updateCustomerProfileService = (firstName, lastName, phone, district, stre
 	});
 }
 
-export default updateCustomerProfile;
+export default updateCustomerProfileService;

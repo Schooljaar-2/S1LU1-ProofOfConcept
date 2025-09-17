@@ -6,6 +6,7 @@ import {
   customerCreateProfile,
   createProfileSendForm,
   updateCustomerProfile,
+  updateCustomerProfileSendForm,
 } from "../controllers/customerController.js";
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.get("/customer/createProfile", customerCreateProfile);
 router.get("/customer/updateProfile", updateCustomerProfile);
 
 router.post("/customer/createProfile", createProfileSendForm);
+router.post("/customer/updateProfile", updateCustomerProfileSendForm);
 
 export default router;
