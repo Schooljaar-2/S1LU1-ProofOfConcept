@@ -263,16 +263,31 @@ export function updateCustomerProfile(req, res, next){
       return;
     }
 
-  customerDao.findAllStores((err, stores) => {
-      if (err) {
-          const error = {
-              status: 500,
-              message: "Internal Server Error (city check)",
-              details: err
-          };
-          return callback(error, null);
+    // Split address into street and houseNumber, remove address key
+    let info = { ...customerInfo[0] };
+    if (info.address) {
+      // Split on last space for house number (handles street names with spaces)
+      const addressParts = info.address.trim().split(" ");
+      if (addressParts.length > 1) {
+        info.houseNumber = addressParts.pop();
+        info.street = addressParts.join(" ");
+      } else {
+        info.houseNumber = "";
+        info.street = info.address;
       }
-      res.render("./customer/updateProfile.hbs", { stores, customerInfo: customerInfo[0] });
-    })
+      delete info.address;
+    }
+
+    customerDao.findAllStores((err, stores) => {
+      if (err) {
+        const error = {
+          status: 500,
+          message: "Internal Server Error (city check)",
+          details: err
+        };
+        return next(error);
+      }
+      res.render("./customer/updateProfile.hbs", { stores, customerInfo: info });
+    });
   });
 }
