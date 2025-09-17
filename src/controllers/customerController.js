@@ -259,7 +259,8 @@ export function updateCustomerProfile(req, res, next){
       error.status = 404;
       return next(error);
     }
-    if (!customerInfo && customerInfo.length === 0) {
+    // console.log(customerInfo);
+    if (!customerInfo || customerInfo.length === 0) {
       res.redirect("/customer");
       return;
     }
