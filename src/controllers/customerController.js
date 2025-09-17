@@ -6,8 +6,8 @@ import {
   getFilteredMovies,
   getFilteredMoviesCount,
 } from "../database/dao/Customer/movies.js";
-import profileDao from "../database/dao/Customer/customer.js";
-import createNewCustomerProfile from "../services/addNewCustomer.service.js";
+import customerDao from "../database/dao/Customer/customer.js";
+import createNewCustomerProfile from "../services/customer/addNewCustomer.service.js";
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -156,7 +156,7 @@ export function loggedInCustomer(req, res, next) {
 
   const userId = req.session.user_id;
 
-  profileDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
+  customerDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
     if (err) {
       const error = new Error("User ID not found");
       error.status = 404;
@@ -184,7 +184,7 @@ export function customerCreateProfile(req, res, next) {
 
   //If user info exists go back
   const userId = req.session.user_id;
-  profileDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
+  customerDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
     if (err) {
       const error = new Error("User ID not found");
       error.status = 404;
@@ -195,7 +195,7 @@ export function customerCreateProfile(req, res, next) {
       return;
     }
 
-    profileDao.findAllStores((err, stores) => {
+  customerDao.findAllStores((err, stores) => {
       if (err) {
           const error = {
               status: 500,

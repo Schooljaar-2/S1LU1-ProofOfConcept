@@ -1,9 +1,9 @@
-import profileDao from "../database/dao/Customer/customer.js";
+import customerDao from "../../database/dao/Customer/customer.js";
 
 
 const createNewCustomerProfile = (firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, callback) => {
     // 1: Check if the country exists
-    profileDao.checkIfCountryExists(country, (err, countryChecked) => {
+    customerDao.checkIfCountryExists(country, (err, countryChecked) => {
         if (err) {
             // Handle database error for country check
             const error = {
@@ -16,7 +16,7 @@ const createNewCustomerProfile = (firstName, lastName, phone, district, street, 
 
         const handleCity = (countryId) => {
             // 2: Check if the city exists for the given countryId
-            profileDao.checkIfCityExists(city, countryId, (err, cityChecked) => {
+            customerDao.checkIfCityExists(city, countryId, (err, cityChecked) => {
                 if (err) {
                     const error = {
                         status: 500,
@@ -29,7 +29,7 @@ const createNewCustomerProfile = (firstName, lastName, phone, district, street, 
                 // Helper to continue after cityId is known
                 const afterCityId = (cityId) => {
                     const address = `${street} ${houseNumber}`;
-                    profileDao.insertUserAddress(address, district, cityId, postalCode, phone, (err, insertedAddress) => {
+                    customerDao.insertUserAddress(address, district, cityId, postalCode, phone, (err, insertedAddress) => {
                         if (err) {
                             const error = {
                                 status: 500,
@@ -40,7 +40,7 @@ const createNewCustomerProfile = (firstName, lastName, phone, district, street, 
                         }
                         // Save the address id
                         const addressId = insertedAddress.insertId;
-                        profileDao.insertUserPersonalInformation(storeId, firstName, lastName, addressId, user_id, (err, insertedInfo) => {
+                        customerDao.insertUserPersonalInformation(storeId, firstName, lastName, addressId, user_id, (err, insertedInfo) => {
                             if (err) {
                                 const error = {
                                     status: 500,
@@ -57,7 +57,7 @@ const createNewCustomerProfile = (firstName, lastName, phone, district, street, 
 
                 if (Array.isArray(cityChecked) && cityChecked.length === 0) {
                     // City does not exist
-                    profileDao.addNewCity(city, countryId, (err, newCity) => {
+                    customerDao.addNewCity(city, countryId, (err, newCity) => {
                         if (err) {
                             const error = {
                                 status: 500,
@@ -78,7 +78,7 @@ const createNewCustomerProfile = (firstName, lastName, phone, district, street, 
 
         // Step 1a: If country does not exist, add it, then handle city
         if (Array.isArray(countryChecked) && countryChecked.length === 0) {
-            profileDao.addNewCountry(country, (err, newCountry) => {
+            customerDao.addNewCountry(country, (err, newCountry) => {
                 if (err) {
                     const error = {
                         status: 500,
