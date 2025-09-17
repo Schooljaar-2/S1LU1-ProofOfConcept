@@ -19,7 +19,7 @@ app.use(express.static(path.join(process.cwd(), "src/public")));
 
 app.use(
   session({
-    secret: "wouterGeheimeSleutel",
+    secret: process.env.COOKIE_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
