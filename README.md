@@ -76,6 +76,6 @@ src/
 
 - Alle klant- en verhuurfunctionaliteit is alleen toegankelijk voor ingelogde gebruikers met de rol "CUSTOMER".
 - Staff-functionaliteit wordt ontwikkeld en zal alleen toegankelijk zijn voor gebruikers met de rol "STAFF".
-- Landing page en /movie/# is bereikbaar voor alle gebruikers (dus ook niet ingelogde)
+- Landing page en `/movie/#` is bereikbaar voor alle gebruikers (dus ook niet ingelogde)
 - De code volgt DRY-principes waar mogelijk; zie de DAO- en service-laag voor hergebruikte logica.
 - Styling en views zijn te vinden in `src/views` en `src/public/stylesheets/style.css`.
