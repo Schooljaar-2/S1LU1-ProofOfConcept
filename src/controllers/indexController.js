@@ -17,3 +17,7 @@ export const index = (req, res, next) => {
     res.render("index", { hotMoviesGrouped });
   });
 };
+
+export const about = (req, res) => {
+  res.render("about");
+}
