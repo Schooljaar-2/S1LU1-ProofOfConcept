@@ -147,11 +147,11 @@ export function movies(req, res, next) {
 
 export function loggedInCustomer(req, res, next) {
   if (!req.session.logged_in) {
-    res.redirect("/");
+    res.redirect("/login");
     return;
   }
   if (req.session.role !== "CUSTOMER" || !req.session.role) {
-    res.redirect("/");
+    res.redirect("/login");
     return;
   }
 
@@ -183,11 +183,11 @@ export function loggedInCustomer(req, res, next) {
 
 export function customerCreateProfile(req, res, next) {
   if (!req.session.logged_in) {
-    res.redirect("/");
+    res.redirect("/login");
     return;
   }
   if (req.session.role !== "CUSTOMER" || !req.session.role) {
-    res.redirect("/");
+    res.redirect("/login");
     return;
   }
 

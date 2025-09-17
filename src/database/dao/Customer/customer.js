@@ -3,7 +3,7 @@ import query from "../../db.js";
 const customerDao = {
   getAllCustomerPersonalInformationByUserId: function (userId, callback) {
     const sql = `
-        select c.first_name, 
+        SELECT c.first_name, 
             c.last_name, 
             c.active,
             c.customer_id,
@@ -16,13 +16,13 @@ const customerDao = {
             u.username,
             u.email,
             s.store_name 
-        from user u
-        join customer c on u.user_id = c.user_id
-        join address a on c.address_id = a.address_id 
-        join city c1 on a.city_id = c1.city_id 
-        join country c2 on c1.country_id = c2.country_id 
-        join store s on c.store_id = s.store_id
-        where u.user_id = ?
+        FROM user u
+        JOIN customer c ON u.user_id = c.user_id
+        JOIN address a ON c.address_id = a.address_id 
+        JOIN city c1 ON a.city_id = c1.city_id 
+        JOIN country c2 on c1.country_id = c2.country_id 
+        JOIN store s ON c.store_id = s.store_id
+        WHERE u.user_id = ?
         `;
     query(sql, [userId], callback);
   },
