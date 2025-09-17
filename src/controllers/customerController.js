@@ -167,8 +167,7 @@ export function loggedInCustomer(req, res, next) {
       res.redirect("/customer/createProfile");
       return;
     }
-    // console.log(customerInfo);
-    // Pass only the first customerInfo object to the template
+    // Code for getting active rentals as wel as 
     res.render("./customer/customer.hbs", { customerInfo: customerInfo[0] });
   });
 }
