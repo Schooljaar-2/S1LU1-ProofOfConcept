@@ -19,7 +19,7 @@ app.use(express.static(path.join(process.cwd(), "src/public")));
 
 app.use(
   session({
-    secret: "wouterGeheimeSleutel",
+    secret: process.env.COOKIE_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -39,6 +39,14 @@ const handlebars = create({
     },
     eq: function (a, b) {
       return a === b;
+    },
+    formatDate: function(date) {
+      if (!date) return '';
+      const d = new Date(date);
+      if (isNaN(d)) return date;
+      // Format: YYYY-MM-DD HH:mm
+      const pad = n => n.toString().padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
     },
   },
 });

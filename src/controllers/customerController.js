@@ -6,8 +6,10 @@ import {
   getFilteredMovies,
   getFilteredMoviesCount,
 } from "../database/dao/Customer/movies.js";
-import profileDao from "../database/dao/Customer/profile.js";
-import createNewCustomerProfile from "../services/addNewCustomer.service.js";
+import customerDao from "../database/dao/Customer/customer.js";
+import createNewCustomerProfile from "../services/customer/addNewCustomer.service.js";
+import {getAllUserRentalInformation, markOverdueActiveRentals} from "../services/customer/getCustomerRentalInformation.service.js"
+import updateCustomerProfileService from "../services/customer/updateCustomer.service.js"
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -146,47 +148,54 @@ export function movies(req, res, next) {
 
 export function loggedInCustomer(req, res, next) {
   if (!req.session.logged_in) {
-    res.redirect("/");
+    res.redirect("/login");
     return;
   }
   if (req.session.role !== "CUSTOMER" || !req.session.role) {
-    res.redirect("/");
+    res.redirect("/login");
     return;
   }
 
   const userId = req.session.user_id;
 
-  profileDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
+  customerDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
     if (err) {
       const error = new Error("User ID not found");
       error.status = 404;
       return next(error);
     }
-    console.log(customerInfo);
-    console.log("ahahaha");
+
     if (!customerInfo || customerInfo.length === 0) {
       res.redirect("/customer/createProfile");
       return;
     }
-    // console.log(customerInfo);
-    // Pass only the first customerInfo object to the template
-    res.render("./customer/customer.hbs", { customerInfo: customerInfo[0] });
+    // Code for getting active rentals as wel as the rental history
+    getAllUserRentalInformation(userId, (err, rentalInformation) => {
+      if (err) {
+        const error = new Error("User ID not found");
+        error.status = 404;
+        return next(error);
+      }
+      markOverdueActiveRentals(rentalInformation);
+      // console.log(customerInfo[0]);
+      res.render("./customer/customer.hbs", { customerInfo: customerInfo[0], rentalInformation });
+    });
   });
 }
 
 export function customerCreateProfile(req, res, next) {
   if (!req.session.logged_in) {
-    res.redirect("/");
+    res.redirect("/login");
     return;
   }
   if (req.session.role !== "CUSTOMER" || !req.session.role) {
-    res.redirect("/");
+    res.redirect("/login");
     return;
   }
 
   //If user info exists go back
   const userId = req.session.user_id;
-  profileDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
+  customerDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
     if (err) {
       const error = new Error("User ID not found");
       error.status = 404;
@@ -197,7 +206,7 @@ export function customerCreateProfile(req, res, next) {
       return;
     }
 
-    profileDao.findAllStores((err, stores) => {
+  customerDao.findAllStores((err, stores) => {
       if (err) {
           const error = {
               status: 500,
@@ -224,6 +233,80 @@ export function createProfileSendForm(req, res, next) {
   const storeId = req.body.store;
 
   createNewCustomerProfile(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, req.session.user_id, storeId, (err, result) => {
+    if (err) {
+      err.status = 500;
+      return next(err);
+    }
+    res.redirect("/customer");
+  });
+}
+
+export function updateCustomerProfile(req, res, next){
+    if (!req.session.logged_in) {
+    res.redirect("/login");
+    return;
+  }
+  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+    res.redirect("/login");
+    return;
+  }
+
+  //If user info exists go back
+  const userId = req.session.user_id;
+  customerDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
+    if (err) {
+      const error = new Error("User ID not found");
+      error.status = 404;
+      return next(error);
+    }
+    // console.log(customerInfo);
+    if (!customerInfo || customerInfo.length === 0) {
+      res.redirect("/customer");
+      return;
+    }
+
+    // Split address into street and houseNumber, remove address key
+    let info = { ...customerInfo[0] };
+    if (info.address) {
+      // Split on last space for house number (handles street names with spaces)
+      const addressParts = info.address.trim().split(" ");
+      if (addressParts.length > 1) {
+        info.houseNumber = addressParts.pop();
+        info.street = addressParts.join(" ");
+      } else {
+        info.houseNumber = "";
+        info.street = info.address;
+      }
+      delete info.address;
+    }
+
+    customerDao.findAllStores((err, stores) => {
+      if (err) {
+        const error = {
+          status: 500,
+          message: "Internal Server Error (city check)",
+          details: err
+        };
+        return next(error);
+      }
+      res.render("./customer/updateProfile.hbs", { stores, customerInfo: info });
+    });
+  });
+}
+
+export function updateCustomerProfileSendForm(req, res, next){
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const phone = req.body.phone;
+  const district = req.body.district;
+  const street = req.body.street;
+  const houseNumber = req.body.houseNumber;
+  const postalCode = req.body.postalCode;
+  const city = req.body.city;
+  const country = req.body.country;
+  const storeId = req.body.store;
+
+  updateCustomerProfileService(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, req.session.user_id, storeId, (err, result) => {
     if (err) {
       err.status = 500;
       return next(err);

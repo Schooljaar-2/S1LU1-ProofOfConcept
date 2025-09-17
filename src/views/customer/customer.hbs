@@ -33,7 +33,10 @@
                     </ul>
                 </div>
                 <div class="w-100 mt-3 d-flex justify-content-center">
-                    <a href="/logout" class="btn btn-danger btn-lg">Logout</a>
+                    <div class="d-flex justify-content-between w-100">
+                        <a href="/customer/updateProfile" class="btn btn-warning btn-lg">Edit</a>
+                        <a href="/logout" class="btn btn-danger btn-lg">Logout</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -41,11 +44,92 @@
 
     <!-- Rentals Dashboard (Right) -->
     <div class="col-md-7">
-        <div class="card shadow-lg border-0 bg-dark text-light p-4" style="min-height: 350px;">
+        <div class="card shadow-lg border-0 bg-dark text-light p-4" style="margin-bottom: 100px;">
             <h2 class="mb-2 text-center" style="color: #ffc107;">Rentals</h2>
             <hr class="w-50 mx-auto mb-4" style="border-top: 3px solid #ffc107; opacity: 1;" />
-            <div class="alert alert-info text-center" role="alert">
-                This section will show your active rentals and rental history soon.
+            <!-- Active Rentals Section -->
+            <h4 class="mt-3" style="color: #ffc107;">Active Rentals</h4>
+            <div style="height: 20vh; overflow-y: auto; background: #232129; border-radius: 8px; padding: 0 1rem 1rem 1rem; margin-bottom: 1.5rem;">
+                {{#if rentalInformation.activeRentals.length}}
+                    <table class="table table-dark table-striped table-bordered align-middle mb-0" style="padding: 1rem;">
+                        <thead style="position: sticky; top: 0; background: #343a40; z-index: 2;">
+                            <tr>
+                                <th scope="col">Title</th>
+                                <th scope="col">Rented On</th>
+                                <th scope="col">Rental Duration</th>
+                                <th scope="col">Store</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Replacement Cost</th>
+                                <th scope="col">Movie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each rentalInformation.activeRentals}}
+                                <tr>
+                                    <td><b>{{title}}</b></td>
+                                    <td>{{formatDate rental_date}}</td>
+                                    <td>{{rental_duration}} days</td>
+                                    <td>{{store_name}}</td>
+                                    <td>€{{amount}}</td>
+                                    <td>
+                                        <span class="fw-bold {{#if overdue}}text-danger{{else}}text-success{{/if}}">
+                                            {{#if overdue}}Overdue{{else}}On time{{/if}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span style="color: {{#if overdue}}#dc3545{{else}}#fff{{/if}}; font-weight: bold;">
+                                            €{{replacement_cost}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/movies/{{film_id}}" class="btn btn-sm btn-warning">Go to movie</a>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                {{else}}
+                    <div class="alert alert-info text-center mb-0" role="alert" style="background: #DC3545; color: #ffffff; border: 1px solid #4d4d4d;">
+                        No active rentals
+                    </div>
+                {{/if}}
+            </div>
+            <!-- Rental History Section -->
+            <h4 class="mt-4" style="color: #ffc107;">Rental History</h4>
+            <div style="height: 30vh; overflow-y: auto; background: #232129; border-radius: 8px; padding: 0 1rem 1rem 1rem;">
+                {{#if rentalInformation.rentalHistory.length}}
+                    <table class="table table-dark table-striped table-bordered align-middle mb-0" style="padding: 1rem;">
+                        <thead style="position: sticky; top: 0; background: #343a40; z-index: 2;">
+                            <tr>
+                                <th scope="col">Title</th>
+                                <th scope="col">Rented On</th>
+                                <th scope="col">Returned On</th>
+                                <th scope="col">Store</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Movie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each rentalInformation.rentalHistory}}
+                                <tr>
+                                    <td><b>{{title}}</b></td>
+                                    <td>{{formatDate rental_date}}</td>
+                                    <td>{{formatDate return_date}}</td>
+                                    <td>{{store_name}}</td>
+                                    <td>€{{amount}}</td>
+                                    <td>
+                                        <a href="/movies/{{film_id}}" class="btn btn-sm btn-warning">Go to movie</a>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                {{else}}
+                    <div class="alert alert-info text-center mb-0" role="alert" style="background: #DC3545; color: #ffffff; border: 1px solid #4d4d4d;">
+                        No rentals made
+                    </div>
+                {{/if}}
             </div>
         </div>
     </div>
