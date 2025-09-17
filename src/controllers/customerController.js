@@ -8,6 +8,7 @@ import {
 } from "../database/dao/Customer/movies.js";
 import customerDao from "../database/dao/Customer/customer.js";
 import createNewCustomerProfile from "../services/customer/addNewCustomer.service.js";
+import getAllUserRentalInformation from "../services/customer/getCustomerRentalInformation.service.js"
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -167,8 +168,16 @@ export function loggedInCustomer(req, res, next) {
       res.redirect("/customer/createProfile");
       return;
     }
-    // Code for getting active rentals as wel as 
-    res.render("./customer/customer.hbs", { customerInfo: customerInfo[0] });
+    // Code for getting active rentals as wel as the rental history
+    getAllUserRentalInformation(userId, (err, rentalInformation) => {
+      if (err) {
+        const error = new Error("User ID not found");
+        error.status = 404;
+        return next(error);
+      }
+      console.log(rentalInformation);
+      res.render("./customer/customer.hbs", { customerInfo: customerInfo[0], rentalInformation });
+    });
   });
 }
 

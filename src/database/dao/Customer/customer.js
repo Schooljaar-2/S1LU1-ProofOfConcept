@@ -97,6 +97,27 @@ const customerDao = {
     and r.return_date is not null
     `;
     query(sql, [userId], callback);
+  },
+  getCustomerActiveRentals: function(userId, callback){
+    const sql = `
+      select r.rental_date,
+        f.rental_duration,
+        f.replacement_cost,
+        f.title,
+        f.film_id,
+        s.store_name,
+        p.amount 
+      from rental r 
+      join inventory i on r.inventory_id = i.inventory_id 
+      join film f on i.film_id = f.film_id 
+      join store s on i.store_id = s.store_id
+      join payment p on r.rental_id = p.rental_id 
+      join customer c on r.customer_id = c.customer_id 
+      join user u on c.user_id = u.user_id 
+      where c.user_id = ?
+      and r.return_date is null
+    `;
+    query(sql, [userId], callback);
   }
 };
 
