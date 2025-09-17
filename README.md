@@ -60,28 +60,8 @@ src/
 
 ## Database
 
-- MySQL, met tabellen voor users, customers, address, city, country, store, rental, film, payment, inventory.
-- DAO-laag (`src/database/dao/Customer/customer.js`) voor alle CRUD-operaties.
-- (Toekomstig) Staff/voorraad-DAO's in `src/database/dao/Staff/`
-
-## Installatie & starten
-
-1. Installeer dependencies:
-	 ```
-	 npm install
-	 ```
-2. Maak een `.env` bestand aan met minimaal:
-	 ```
-	 COOKIE_SECRET=een_geheime_waarde
-	 ```
-3. Start de server:
-	 ```
-	 npm run dev
-	 ```
-	 Of voor productie:
-	 ```
-	 npm start
-	 ```
+- MySQL, Sakila database (relationele database)
+- DAO-laag (`src/database/dao/`) voor alle CRUD-operaties.
 
 ## Belangrijkste dependencies
 
@@ -96,5 +76,6 @@ src/
 
 - Alle klant- en verhuurfunctionaliteit is alleen toegankelijk voor ingelogde gebruikers met de rol "CUSTOMER".
 - Staff-functionaliteit wordt ontwikkeld en zal alleen toegankelijk zijn voor gebruikers met de rol "STAFF".
+- Landing page en /movie/# is bereikbaar voor alle gebruikers (dus ook niet ingelogde)
 - De code volgt DRY-principes waar mogelijk; zie de DAO- en service-laag voor hergebruikte logica.
 - Styling en views zijn te vinden in `src/views` en `src/public/stylesheets/style.css`.
