@@ -176,7 +176,7 @@ export function loggedInCustomer(req, res, next) {
         return next(error);
       }
       markOverdueActiveRentals(rentalInformation);
-      // console.log(rentalInformation);
+      // console.log(customerInfo[0]);
       res.render("./customer/customer.hbs", { customerInfo: customerInfo[0], rentalInformation });
     });
   });
@@ -237,5 +237,42 @@ export function createProfileSendForm(req, res, next) {
       return next(err);
     }
     res.redirect("/customer");
+  });
+}
+
+export function updateCustomerProfile(req, res, next){
+    if (!req.session.logged_in) {
+    res.redirect("/login");
+    return;
+  }
+  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+    res.redirect("/login");
+    return;
+  }
+
+  //If user info exists go back
+  const userId = req.session.user_id;
+  customerDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
+    if (err) {
+      const error = new Error("User ID not found");
+      error.status = 404;
+      return next(error);
+    }
+    if (!customerInfo && customerInfo.length === 0) {
+      res.redirect("/customer");
+      return;
+    }
+
+  customerDao.findAllStores((err, stores) => {
+      if (err) {
+          const error = {
+              status: 500,
+              message: "Internal Server Error (city check)",
+              details: err
+          };
+          return callback(error, null);
+      }
+      res.render("./customer/updateProfile.hbs", { stores, customerInfo: customerInfo[0] });
+    })
   });
 }

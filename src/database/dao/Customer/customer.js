@@ -118,6 +118,30 @@ const customerDao = {
       and r.return_date is null
     `;
     query(sql, [userId], callback);
+  },
+  updateUserAddress: function(userId, address, district, cityId, postalCode, phone, callback){
+    const sql = `
+      UPDATE address a 
+      join customer c on a.address_id = c.address_id 
+      SET a.address = ?,
+          a.district = ?,
+          a.city_id = ?,
+          a.postal_code = ?,
+          a.phone = ?,
+          a.last_update = NOW()
+      WHERE c.user_id = ?
+    `;
+    query(sql, [address, district, cityId, postalCode, phone, userId], callback);
+  },
+  updateUserPersonalInformation: function(userId, storeId, firstName, lastName, callback){
+    const sql = `
+      UPDATE customer 
+      SET store_id = ?,
+        first_name = ?,
+        last_name = ?	
+      where user_id = ?
+    `;
+    query(sql, [storeId, firstName, lastName, userId], callback);
   }
 };
 

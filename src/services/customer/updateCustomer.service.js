@@ -1,4 +1,6 @@
-const updateCustomerProfile = (firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, callback) => {
+import customerDao from "../../database/dao/Customer/customer.js";
+
+const updateCustomerProfileService = (firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, callback) => {
 	// 1: Check if the country exists
 	customerDao.checkIfCountryExists(country, (err, countryChecked) => {
 		if (err) {
@@ -92,5 +94,3 @@ const updateCustomerProfile = (firstName, lastName, phone, district, street, hou
 }
 
 export default updateCustomerProfile;
-import customerDao from "../../database/dao/Customer/customer.js";
-

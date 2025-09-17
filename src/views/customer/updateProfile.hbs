@@ -1,0 +1,75 @@
+<div class="container py-5"></div>
+  <div class="row justify-content-center" style="max-width: 80vw; margin-left: auto; margin-right: auto;">
+    <div class="col-md-8" style="margin-bottom: 100px;">
+      <div class="card shadow-lg border-0 bg-dark text-light position-relative">
+  <a href="/customer" class="btn btn-secondary position-absolute top-0 end-0 m-3" style="z-index:2;">Go back to profile</a>
+        <div class="card-body">
+          <div class="d-flex justify-content-center align-items-center mb-4">
+            <h3 class="mb-0 text-center" style="color: #ffc107;">Update Your Profile</h3>
+          </div>
+          <p class="text-center text-light mb-4" style="font-size:1.15rem;">
+            You're almost there! To make full use of CineRent, please fill in your information below.
+          </p>
+          <form method="POST" action="">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="firstName" class="form-label text-light"><b>First Name</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="firstName" name="firstName" required maxlength="50" autocomplete="given-name" placeholder="e.g. John" value="{{customerInfo.first_name}}">
+              </div>
+              <div class="col-md-6">
+                <label for="lastName" class="form-label text-light"><b>Last Name</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="lastName" name="lastName" required maxlength="50" autocomplete="family-name" placeholder="e.g. Doe" value="{{customerInfo.last_name}}">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="phone" class="form-label text-light"><b>Phone Number</b></label>
+                <input type="tel" class="form-control bg-secondary text-light" id="phone" name="phone" required pattern="[0-9\-\+\s]{8,20}" maxlength="20" autocomplete="tel" placeholder="e.g. +31 6 12345678" value="{{customerInfo.phone}}">
+              </div>
+              <div class="col-md-6">
+                <label for="store" class="form-label text-light"><b>Store</b></label>
+                <select class="form-select bg-secondary text-light" id="store" name="store" required>
+                  <option value="" disabled>Select a store</option>
+                  {{#each stores}}
+                    <option value="{{this.store_id}}" {{#if (eq this.store_name ../customerInfo.store_name)}}selected{{/if}}>{{this.store_name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <label for="street" class="form-label text-light"><b>Street</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="street" name="street" required maxlength="100" autocomplete="address-line1" placeholder="e.g. Main Street" value="{{customerInfo.address}}">
+              </div>
+              <div class="col-md-4">
+                <label for="houseNumber" class="form-label text-light"><b>House Number</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="houseNumber" name="houseNumber" required maxlength="10" autocomplete="address-line2" placeholder="e.g. 42A" value="{{customerInfo.houseNumber}}">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="district" class="form-label text-light"><b>District</b></label>
+              <input type="text" class="form-control bg-secondary text-light" id="district" name="district" required maxlength="50" placeholder="e.g. Centrum" value="{{customerInfo.district}}">
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="postalCode" class="form-label text-light"><b>Postal Code</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="postalCode" name="postalCode" required maxlength="20" autocomplete="postal-code" placeholder="e.g. 1234 AB" value="{{customerInfo.postal_code}}">
+              </div>
+              <div class="col-md-4">
+                <label for="city" class="form-label text-light"><b>City</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="city" name="city" required maxlength="50" autocomplete="address-level2" placeholder="e.g. Amsterdam" value="{{customerInfo.city}}">
+              </div>
+              <div class="col-md-4">
+                <label for="country" class="form-label text-light"><b>Country</b></label>
+                <input type="text" class="form-control bg-secondary text-light" id="country" name="country" required maxlength="50" autocomplete="country" placeholder="e.g. Netherlands" value="{{customerInfo.country}}">
+              </div>
+            </div>
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-warning btn-lg">Finish Profile</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
