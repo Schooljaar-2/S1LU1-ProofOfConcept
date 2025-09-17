@@ -176,7 +176,7 @@ export function loggedInCustomer(req, res, next) {
         return next(error);
       }
       markOverdueActiveRentals(rentalInformation);
-      console.log(rentalInformation);
+      // console.log(rentalInformation);
       res.render("./customer/customer.hbs", { customerInfo: customerInfo[0], rentalInformation });
     });
   });
