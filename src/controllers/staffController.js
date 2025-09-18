@@ -10,3 +10,5 @@ export function dashboard(req, res, next){
 
     res.render("./staff/dashboard.hbs");
 }
+
+// export function 

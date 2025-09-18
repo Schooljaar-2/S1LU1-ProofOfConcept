@@ -88,36 +88,81 @@
         </tbody>
         </table>
 
-        <!-- Pagination Info -->
-        <div class="d-flex justify-content-center gap-2 mt-3" style="margin-bottom: 20px;">
-            <span class="align-self-center mx-2 text-light">
-                <input type="number" min="1" class="form-control d-inline-block" id="paginationInput" style="width: 60px; display: inline-block; text-align: center;" placeholder="10" value="{{filters.pagination}}">
-        <script>
-        document.querySelector('form').addEventListener('submit', function(e) {
-            var input = document.getElementById('paginationInput');
-            var hidden = document.getElementById('pageAction');
-            if (input && hidden) {
-                hidden.value = input.value;
-            }
-        });
-        document.querySelector('.btn-secondary').addEventListener('click', function(e) {
-            e.preventDefault();
-            var form = document.querySelector('form');
-            // Explicitly clear all relevant fields
-            form.querySelector('[name="title"]').value = '';
-            form.querySelector('[name="category"]').value = '';
-            form.querySelector('[name="rating"]').value = '';
-            form.querySelector('[name="sort"]').value = '';
-            var input = document.getElementById('paginationInput');
-            var hidden = document.getElementById('pageAction');
-            if (input) input.value = '10';
-            if (hidden) hidden.value = '10';
-            form.submit();
-        });
-        </script>
-                out of {{totalCount}} movies
-            </span>
-        </div>
+                <!-- Pagination Buttons -->
+                        <div class="d-flex justify-content-center align-items-center gap-2 mt-3" style="margin-bottom: 20px;">
+                              <button type="button" class="btn btn-outline-warning fw-bold" id="prev10Btn">Prev-10</button>
+                              <button type="button" class="btn btn-outline-warning fw-bold" id="prev5Btn">Prev-5</button>
+                              <button type="button" class="btn btn-outline-warning fw-bold" id="prevBtn">Prev</button>
+                              <span class="mx-1 text-warning">--=--</span>
+                              <button type="button" class="btn btn-outline-warning fw-bold" id="nextBtn">Next</button>
+                              <button type="button" class="btn btn-outline-warning fw-bold" id="next5Btn">Next+5</button>
+                              <button type="button" class="btn btn-outline-warning fw-bold" id="next10Btn">Next+10</button>
+                            </div>
+                            <div class="d-flex justify-content-center mt-2 mb-4">
+                                <span class="text-light fs-5" id="movieRangeText"></span>
+                </div>
+                <script>
+                (function() {
+                    var form = document.querySelector('form');
+                    var hidden = document.getElementById('pageAction');
+                    var total = parseInt('{{totalCount}}', 10);
+                    var current = parseInt(hidden.value || '10', 10);
+                    function setAndSubmit(newVal) {
+                        if (newVal < 0) newVal = 0;
+                        if (newVal > total) newVal = total;
+                        hidden.value = newVal;
+                        form.submit();
+                    }
+
+                    // On form submit (Apply), reset pagination to 0
+                    form.addEventListener('submit', function(e) {
+                        hidden.value = 0;
+                    });
+                    document.getElementById('prev10Btn').onclick = function() {
+                        setAndSubmit(current - 10);
+                    };
+                    document.getElementById('prev5Btn').onclick = function() {
+                        setAndSubmit(current - 5);
+                    };
+                    document.getElementById('prevBtn').onclick = function() {
+                        setAndSubmit(current - 1);
+                    };
+                    document.getElementById('nextBtn').onclick = function() {
+                        setAndSubmit(current + 1);
+                    };
+                    document.getElementById('next5Btn').onclick = function() {
+                        setAndSubmit(current + 5);
+                    };
+                    document.getElementById('next10Btn').onclick = function() {
+                        setAndSubmit(current + 10);
+                    };
+
+                    // Calculate and display the range text
+                    function updateRangeText() {
+                        var perPage = 10;
+                        var pageCount = current + 1; // treat pagination as 1-based for display
+                        var start = (pageCount * perPage) - perPage + 1;
+                        var end = pageCount * perPage;
+                        if (start < 1) start = 1;
+                        if (end > total) end = total;
+                        if (start > end) start = end;
+                        document.getElementById('movieRangeText').textContent = `Showing movies ${start} - ${end} out of ${total}`;
+                    }
+                    updateRangeText();
+                })();
+                document.querySelector('.btn-secondary').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var form = document.querySelector('form');
+                    // Explicitly clear all relevant fields
+                    form.querySelector('[name="title"]').value = '';
+                    form.querySelector('[name="category"]').value = '';
+                    form.querySelector('[name="rating"]').value = '';
+                    form.querySelector('[name="sort"]').value = '';
+                var hidden = document.getElementById('pageAction');
+                if (hidden) hidden.value = '0';
+                    form.submit();
+                });
+                </script>
             </div>
         </div>
 

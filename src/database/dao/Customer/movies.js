@@ -105,6 +105,7 @@ export const getFilteredMovies = (
   orderBy,
   callback
 ) => {
+  limit *= 10;
   const sql = `
   select 
     ANY_VALUE(f.title) AS title,
@@ -123,7 +124,7 @@ export const getFilteredMovies = (
     AND (c.name = ? OR ? IS null or ? = '')
   group by f.film_id
   order by ${!orderBy || orderBy === "" ? "f.title asc" : orderBy}
-  limit ?
+  limit 10 offset ?
   `;
   query(
     sql,

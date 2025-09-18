@@ -79,9 +79,9 @@ export function movies(req, res, next) {
   const rating = req.query.rating || "";
   const category = req.query.category || "";
   const orderBy = req.query.sort || "";
-  var pagination = parseInt(req.query.pagination, 10);
+  var pagination = parseInt(req.query.pagination, 0);
 
-  if (isNaN(pagination) || pagination <= 0) pagination = 10;
+  if (isNaN(pagination) || pagination < 0) pagination = 0;
 
   // console.log(pagination)
 
@@ -113,7 +113,8 @@ export function movies(req, res, next) {
         }
         const amount = count[0].total_count;
         // console.log(amount);
-        if (pagination > amount) pagination = amount;
+        const maxPage = Math.floor(amount / 10);
+        if (pagination > maxPage) pagination = maxPage;
 
         getFilteredMovies(
           title,
