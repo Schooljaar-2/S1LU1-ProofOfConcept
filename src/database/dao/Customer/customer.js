@@ -73,8 +73,8 @@ const customerDao = {
   },
   insertUserPersonalInformation: function(storeId, firstName, lastName, addressId, userId, callback){
     const sql = `
-      insert into customer (store_id, first_name, last_name, address_id, active, user_id)
-      values (?, ?, ?, ?, 1, ?)
+      insert into customer (store_id, first_name, last_name, address_id, active, user_id, create_date)
+      values (?, ?, ?, ?, 1, ?, NOW())
     `;
     query(sql, [storeId, firstName, lastName, addressId, userId], callback);
   },
