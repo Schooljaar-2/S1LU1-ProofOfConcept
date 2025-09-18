@@ -8,6 +8,7 @@ import session from "express-session";
 import indexRouter from "./src/routes/index.js";
 import authRouter from "./src/routes/auth.js";
 import customerRouter from "./src/routes/customer.js";
+import staffRouter from "./src/routes/staff.js"
 
 const app = express();
 
@@ -73,6 +74,7 @@ app.use((req, res, next) => {
 app.use("/", indexRouter);
 app.use("/", authRouter);
 app.use("/", customerRouter);
+app.use("/", staffRouter);
 
 // Error handling
 app.use((req, res, next) => {

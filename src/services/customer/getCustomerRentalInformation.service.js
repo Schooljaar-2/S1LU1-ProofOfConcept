@@ -1,4 +1,4 @@
-import customerDao from "../../database/dao/Customer/customer.js";
+import customerDao from "../../database/dao/customer/customer.js";
 
 export const getAllUserRentalInformation = (userId, callback) => {
     customerDao.getCustomerRentalHistory(userId, (err, rentalHistory) => {

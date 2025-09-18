@@ -5,8 +5,8 @@ import {
   getAllMovieRatings,
   getFilteredMovies,
   getFilteredMoviesCount,
-} from "../database/dao/Customer/movies.js";
-import customerDao from "../database/dao/Customer/customer.js";
+} from "../database/dao/customer/movies.js";
+import customerDao from "../database/dao/customer/customer.js";
 import createNewCustomerProfile from "../services/customer/addNewCustomer.service.js";
 import {getAllUserRentalInformation, markOverdueActiveRentals} from "../services/customer/getCustomerRentalInformation.service.js"
 import updateCustomerProfileService from "../services/customer/updateCustomer.service.js"

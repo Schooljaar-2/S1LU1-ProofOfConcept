@@ -1,12 +1,19 @@
 import { handleRegister, handleLogin } from "../services/auth.service.js";
 
 export function login(req, res) {
+  if(req.session.logged_in){
+    res.redirect("/");
+    return;
+  }
   const success = req.query.success ? "Register successful" : null;
-  // console.log(success);
   res.render("./auth/login", { success, err: null });
 }
 
 export function register(req, res) {
+    if(req.session.logged_in){
+      res.redirect("/");
+      return;
+    }
   res.render("./auth/register", { err: null });
 }
 
