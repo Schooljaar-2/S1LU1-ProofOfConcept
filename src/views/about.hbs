@@ -1,0 +1,121 @@
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-lg-10">
+			<div class="card shadow-lg border-0 bg-dark text-light" style="margin-bottom: 100px;">
+				<div class="card-body p-4 p-md-5">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<h2 class="mb-0" style="color:#ffc107;">About CineRent</h2>
+						<span class="badge bg-secondary">Customer scope</span>
+					</div>
+					<p class="text-light-50 mb-4">Deze pagina beschrijft de huidige user-stories en acceptatiecriteria voor de klantrol (Customer). Staff-functionaliteit wordt later toegevoegd.</p>
+
+					<hr class="border-secondary" />
+
+					<h4 class="mt-4 mb-3" style="color:#ffc107;">User Stories — Customer</h4>
+
+                    <!-- US1 -->
+                    <div class="mb-4">
+                        <h5 class="mb-2">US1: Als klant wil ik veilig kunnen registreren en inloggen</h5>
+                        <p class="text-secondary mb-2">Zodat mijn account goed beveiligd is en alleen ik toegang heb tot mijn gegevens.</p>
+                        <div class="bg-secondary bg-opacity-25 rounded p-3">
+                            <b>Acceptatiecriteria:</b>
+                            <ul class="mb-0">
+								<li>Login via <code>/login</code> met e-mail en wachtwoord (services: <code>auth.service.js</code>).</li>
+                                <li>Wachtwoord validatie bij registratie: minimaal 8 tekens, 1 hoofdletter, 1 kleine letter, 1 cijfer en 1 speciaal teken (<code>auth.service.js</code>).</li>
+                                <li>Wachtwoorden worden gehasht met <code>bcrypt</code> voordat ze opgeslagen worden.</li>
+                                <li>Bij succesvol inloggen worden sessievariabelen gezet (<code>logged_in</code>, <code>role</code>, <code>user_id</code>, <code>username</code>).</li>
+                                <li>Beveiligde routes controleren in de controller op <code>req.session.logged_in</code> en juiste <code>role</code> (bijv. "CUSTOMER").</li>
+                                <li>Onjuiste inlog toont nette foutmelding aan de gebruiker waarin geen gevoelige gegevens staan.</li>
+                                <li>Logout via <code>/logout</code> wist de sessie en redirect naar <code>/</code>.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+					<!-- US2 -->
+					<div class="mb-4">
+						<h5 class="mb-2">US2: Als klant wil ik mijn profiel kunnen aanmaken</h5>
+						<p class="text-secondary mb-2">Zodat mijn adres- en contactgegevens zijn opgeslagen en ik films kan huren.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Route <code>/customer/createProfile</code> toont een formulier met velden: naam, telefoon, adres (straat + huisnummer, district, postcode, stad, land) en winkel.</li>
+								<li>Verzenden via <code>POST /customer/createProfile</code> slaat gegevens op via service <code>addNewCustomer.service.js</code>.</li>
+								<li>Service controleert/maakt land en stad aan (<code>checkIfCountryExists</code>, <code>addNewCountry</code>, <code>checkIfCityExists</code>, <code>addNewCity</code>), voegt adres toe en koppelt klant (DAO).</li>
+								<li>Na succesvol aanmaken redirect naar <code>/customer</code>.</li>
+                                <li><code>/customer</code> is onbereikbaar totdat klant informatie is ingevuld. Redirect anders altijd naar <code>/customer/createProfile</code>.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- US3 -->
+					<div class="mb-4">
+						<h5 class="mb-2">US3: Als klant wil ik mijn profiel kunnen bewerken</h5>
+						<p class="text-secondary mb-2">Zodat ik wijzigingen in adres, naam, telefoon en winkel kan doorvoeren.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Route <code>/customer/updateProfile</code> toont een vooraf ingevuld formulier met huidige gegevens.</li>
+								<li>Form fields zijn geprefilled met <code>customerInfo</code> (o.a. straat + huisnummer afgeleid uit <code>address</code>) - De oude klant informatie.</li>
+								<li>Verzenden via <code>POST /customer/updateProfile</code> werkt gegevens bij via <code>updateCustomer.service.js</code>.</li>
+								<li>Service hergebruikt land/stad check & aanmaak en update adres en persoonlijke info (DAO: <code>updateUserAddress</code>, <code>updateUserPersonalInformation</code>).</li>
+								<li>Na succes redirect naar <code>/customer</code>.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- US4 -->
+					<div class="mb-4">
+						<h5 class="mb-2">US4: Als klant wil ik mijn dashboard zien</h5>
+						<p class="text-secondary mb-2">Zodat ik mijn gegevens, actieve huur en historie overzichtelijk kan bekijken.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Route <code>/customer</code> toont profielkaart met naam, gebruikersnaam, e-mail, telefoon en adres.</li>
+								<li>Actieve huur en verhuurhistorie worden opgehaald via service <code>getCustomerRentalInformation.service.js</code>.</li>
+								<li>Er wordt berekend of verhuurde films niet te hun huurtijd overschreiden. Zo ja, wordt dit weergegeven aan gebruiker m.b.v. waarschuwende text.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- US5 -->
+					<div class="mb-4">
+						<h5 class="mb-2">US5: Als klant wil ik films kunnen ontdekken</h5>
+						<p class="text-secondary mb-2">Zodat ik films kan vinden op basis van filters en details kan bekijken.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Route <code>/movies</code> toont een lijst met filters (titel, rating, categorie) en sorteeropties.</li>
+								<li>Er is paginering dat werkt via queryparameters. Deze worden gebruikt in de DAO: <code>/dao/movies</code></li>
+								<li>Route <code>/movies/:movieID</code> toont detailpagina met beschikbaarheid per winkel en top-10 op home. Hier kun je ook op komen via gefilterde films vanuit <code>/movies</code>.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- US6 -->
+					<div class="mb-4">
+						<h5 class="mb-2">US6: Als klant wil ik consistente foutafhandeling ervaren</h5>
+						<p class="text-secondary mb-2">Zodat ik begrijpelijke meldingen krijg wanneer er iets misgaat.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Controller gebruikt <code>next(error)</code> met correcte statuscodes (404, 500) waar toepasselijk.</li>
+								<li>Validatie en DB-fouten in services/DAO geven nette foutobjecten terug die de controller kan afvangen.</li>
+								<li>Lege-staten in views tonen duidelijke meldingen (bijv. "No active rentals").</li>
+							</ul>
+						</div>
+					</div>
+
+					<hr class="border-secondary" />
+
+					<div class="d-flex justify-content-between align-items-center">
+						<div>
+							<h5 class="mb-1" style="color:#ffc107;">Toekomst — Staff scope</h5>
+							<p class="mb-0 text-secondary">Film uitlenen/innemen, klanten- en voorraadbeheer, rapportages en staff-dashboard.</p>
+						</div>
+						<a href="/" class="btn btn-warning">Terug naar Home</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
