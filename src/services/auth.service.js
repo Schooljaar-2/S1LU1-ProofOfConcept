@@ -136,3 +136,13 @@ export const handleRegister = async (credentials, callback) => {
     callback(error);
   }
 };
+
+export const checkAuthorisation = (request, role) => {
+  if (!request.session.logged_in) {
+    return false;
+  }
+  if (request.session.role !== role || !request.session.role) {
+    return false;
+  }
+  return true;
+}

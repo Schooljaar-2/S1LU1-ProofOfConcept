@@ -10,6 +10,7 @@ import customerDao from "../database/dao/Customer/customer.js";
 import createNewCustomerProfile from "../services/customer/addNewCustomer.service.js";
 import {getAllUserRentalInformation, markOverdueActiveRentals} from "../services/customer/getCustomerRentalInformation.service.js"
 import updateCustomerProfileService from "../services/customer/updateCustomer.service.js"
+import {checkAuthorisation} from "../services/auth.service.js"
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -147,11 +148,7 @@ export function movies(req, res, next) {
 }
 
 export function loggedInCustomer(req, res, next) {
-  if (!req.session.logged_in) {
-    res.redirect("/login");
-    return;
-  }
-  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+  if (!checkAuthorisation(req, "CUSTOMER")) {
     res.redirect("/login");
     return;
   }
@@ -184,11 +181,7 @@ export function loggedInCustomer(req, res, next) {
 }
 
 export function customerCreateProfile(req, res, next) {
-  if (!req.session.logged_in) {
-    res.redirect("/login");
-    return;
-  }
-  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+  if (!checkAuthorisation(req, "CUSTOMER")) {
     res.redirect("/login");
     return;
   }
@@ -221,6 +214,10 @@ export function customerCreateProfile(req, res, next) {
 }
 
 export function createProfileSendForm(req, res, next) {
+  if (!checkAuthorisation(req, "CUSTOMER")) {
+    res.redirect("/login");
+    return;
+  }
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const phone = req.body.phone;
@@ -242,11 +239,7 @@ export function createProfileSendForm(req, res, next) {
 }
 
 export function updateCustomerProfile(req, res, next){
-    if (!req.session.logged_in) {
-    res.redirect("/login");
-    return;
-  }
-  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+  if (!checkAuthorisation(req, "CUSTOMER")) {
     res.redirect("/login");
     return;
   }
@@ -295,6 +288,10 @@ export function updateCustomerProfile(req, res, next){
 }
 
 export function updateCustomerProfileSendForm(req, res, next){
+  if (!checkAuthorisation(req, "CUSTOMER")) {
+    res.redirect("/login");
+    return;
+  }
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const phone = req.body.phone;
