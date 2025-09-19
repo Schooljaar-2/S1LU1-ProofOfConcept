@@ -183,7 +183,7 @@ export function loggedInCustomer(req, res, next) {
       }
       markOverdueActiveRentals(rentalInformation);
       // console.log(customerInfo[0]);
-      res.render("./customer/customer.hbs", { customerInfo: customerInfo[0], rentalInformation });
+      res.render("./customer/customer.hbs", { customerInfo: customerInfo[0], rentalInformation, userId });
     });
   });
 }
@@ -247,13 +247,24 @@ export function createProfileSendForm(req, res, next) {
 }
 
 export function updateCustomerProfile(req, res, next){
-  if (!checkAuthorisation(req, "CUSTOMER")) {
-    res.redirect("/login");
-    return;
+  if (!(checkAuthorisation(req, "CUSTOMER") || checkAuthorisation(req, "STAFF"))) {
+      res.redirect("/login");
+      return;
   }
+  
+  const urlUserId = parseInt(req.params.userId, 10);
+  var userId = req.session.user_id;
+  console.log(userId)
+  console.log(urlUserId)
 
   //If user info exists go back
-  const userId = req.session.user_id;
+  if(req.session.role === "CUSTOMER" && userId !== urlUserId){
+      res.redirect("/customer");
+      return;
+  }
+  if(req.session.role === "STAFF") userId = urlUserId;
+ 
+  
   customerDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
     if (err) {
       const error = new Error("User ID not found");
