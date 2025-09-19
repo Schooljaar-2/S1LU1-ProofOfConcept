@@ -1,4 +1,4 @@
-import manageMoviesDao from "../../database/dao/staff/manageMovies.js"
+import manageMoviesDao from "../../database/dao/staff/dao.ManageMovies.js"
 
 export const createNewMovieService = (
     title,

@@ -1,7 +1,25 @@
-import manageMoviesDao from "../database/dao/staff/manageMovies.js"
+import manageMoviesDao from "../database/dao/staff/dao.ManageMovies.js"
+import staffPersonalDao from "../database/dao/staff/dao.staffPersonalInfo.js"
 
 import {checkAuthorisation} from "../services/auth.service.js"
 import {createNewMovieService} from "../services/staff/createNewMovie.service.js"
+
+export function staffPage(req, res, next){
+    if (!checkAuthorisation(req, "STAFF")) {
+        res.redirect("/login");
+        return;
+    }
+    const userId = req.session.user_id;
+
+    staffPersonalDao.getStaffPersonalInfo(userId, (err, info) => {
+        if (err) {
+            err.status = 500;
+            return next(err);
+        }
+        console.log(info);
+        res.render("./staff/staffPersonalInfo.hbs", { info: info[0] });
+    });
+}
 
 export function dashboard(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
