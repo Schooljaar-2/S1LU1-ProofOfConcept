@@ -30,6 +30,7 @@ app.use(
 );
 
 // View config
+
 const handlebars = create({
   extname: "hbs",
   layoutsDir: path.join("src/views/layouts"),
@@ -39,7 +40,20 @@ const handlebars = create({
       return v1 === v2 ? options.fn(this) : options.inverse(this);
     },
     eq: function (a, b) {
-      return a === b;
+      return a == b;
+    },
+    arrayify: function(val) {
+      if (Array.isArray(val)) return val;
+      if (val === undefined || val === null) return [];
+      return [val];
+    },
+    isSelected: function(values, test) {
+      if (Array.isArray(values)) return values.includes(test) || values.includes(String(test));
+      return values == test;
+    },
+    lookupActor: function(actors, id) {
+      const found = Array.isArray(actors) ? actors.find(a => String(a.actor_id) === String(id)) : null;
+      return found ? `${found.first_name} ${found.last_name}` : id;
     },
     formatDate: function(date) {
       if (!date) return '';

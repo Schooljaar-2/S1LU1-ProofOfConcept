@@ -3,7 +3,7 @@ import {
   dashboard,
   manageOrCreateMovies,
   createNewMovie,
-  handleCreateNewMovie,
+  handlePostCreateNewMovie,
 } from "../controllers/staffController.js";
 const router = express.Router();
 
@@ -13,6 +13,6 @@ router.get("/dashboard", dashboard);
 router.get("/dashboard/manageOrCreateMovies", manageOrCreateMovies);
 router.get("/dashboard/manageOrCreateMovies/create", createNewMovie);
 
-router.post("/dashboard/manageOrCreateMovies/create", handleCreateNewMovie);
+router.post("/dashboard/manageOrCreateMovies/create", handlePostCreateNewMovie);
 
 export default router;
