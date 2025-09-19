@@ -9,6 +9,7 @@ import {
 
 import {checkAuthorisation} from "../services/auth.service.js"
 import {createNewMovieService} from "../services/staff/createNewMovie.service.js"
+import {editMovieService} from "../services/staff/editMovie.service.js"
 
 export function staffPage(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
@@ -22,7 +23,7 @@ export function staffPage(req, res, next){
             err.status = 500;
             return next(err);
         }
-        console.log(info);
+        // console.log(info);
         res.render("./staff/staffPersonalInfo.hbs", { info: info[0] });
     });
 }
@@ -86,7 +87,7 @@ export function handlePostCreateNewMovie(req, res, next){
                     actorsErr.status = 500;
                     return next(actorsErr);
                 }
-                console.log(err);
+                // console.log(err);
                 res.render("./staff/manageMovies/createNewMovie.hbs", {actors, oldValues: req.body, err: err.message || err});
             });
             return;
@@ -166,7 +167,7 @@ export function manageMovies(req, res, next){
                   error4.status = 500;
                   return next(error4);
                 }
-                console.log(movies);
+                // console.log(movies);
                 res.render("./staff/manageMovies/manageMoviesSearch.hbs", {
                   categories,
                   ratings,
@@ -188,6 +189,11 @@ export function manageMovies(req, res, next){
 }
 
 export function editMovies(req, res, next){
+    if (!checkAuthorisation(req, "STAFF")) {
+        res.redirect("/login");
+        return;
+    }
+
   const movieID = req.params.movieID;
 
   manageMoviesDao.getAllMovieInformationByMovieId(movieID, (err, movieInformation) => {
@@ -209,8 +215,113 @@ export function editMovies(req, res, next){
       if (oldValues.actors && typeof oldValues.actors === 'string') {
         oldValues.actors = oldValues.actors.split(',').map(name => name.trim().toUpperCase()).map(name => actorNameToId[name]).filter(Boolean);
       }
-      res.render("./staff/manageMovies/updateMovie.hbs", {oldValues, actors});
+      // Normalize special_features to array for checkbox binding
+      if (oldValues.special_features && typeof oldValues.special_features === 'string') {
+        oldValues.special_features = oldValues.special_features.split(',').map(f => f.trim());
+      }
+      // Normalize category to array of IDs for multi-select dropdown
+      const categoryNameToId = {
+        'ACTION': 1, 'ANIMATION': 2, 'CHILDREN': 3, 'CLASSICS': 4, 'COMEDY': 5,
+        'DOCUMENTARY': 6, 'DRAMA': 7, 'FAMILY': 8, 'FOREIGN': 9, 'GAMES': 10,
+        'HORROR': 11, 'MUSIC': 12, 'NEW': 13, 'SCI-FI': 14, 'SPORTS': 15, 'TRAVEL': 16
+      };
+      if (oldValues.category && typeof oldValues.category === 'string') {
+        oldValues.category = oldValues.category.split(',')
+          .map(cat => cat.trim().toUpperCase())
+          .map(cat => categoryNameToId[cat])
+          .filter(Boolean);
+      }
+      console.log(oldValues);
+      res.render("./staff/manageMovies/updateMovie.hbs", {oldValues, actors, movieID});
     });
+  });
+}
+
+export function handlePostEditMovie(req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+  // Import all vars from req.body
+  const movie_id = req.body.movie_id;
+  const title = req.body.title;
+  const description = req.body.description;
+  const film_image_url = req.body.film_image_url;
+  let category = req.body.category;
+  const actors = req.body.actors;
+  const release_year = req.body.release_year;
+  const language_id = req.body.language_id;
+  const original_language_id = req.body.original_language_id;
+  const rental_duration = req.body.rental_duration;
+  const rental_rate = req.body.rental_rate;
+  const length = req.body.length;
+  const replacement_cost = req.body.replacement_cost;
+  const rating = req.body.rating;
+  const special_features = req.body.special_features;
+
+  // Normalize category to array of IDs if needed
+  getAllMovieCategories((catErr, categories) => {
+    if (catErr) {
+      catErr.status = 500;
+      return next(catErr);
+    }
+    const categoryNameToId = {};
+    categories.forEach(c => {
+      categoryNameToId[c.name.toUpperCase()] = c.category_id;
+    });
+    // If category is a string of names, convert to array of IDs
+    if (typeof category === 'string' && category.includes(',')) {
+      category = category.split(',').map(name => name.trim().toUpperCase()).map(name => categoryNameToId[name]).filter(Boolean);
+    }
+    // If category is a single name, convert to ID
+    else if (typeof category === 'string' && isNaN(category)) {
+      const id = categoryNameToId[category.trim().toUpperCase()];
+      category = id ? [id] : [];
+    }
+    // If category is a single ID string, make it an array
+    else if (typeof category === 'string') {
+      category = [category];
+    }
+    // If already array, check if names or IDs
+    else if (Array.isArray(category)) {
+      category = category.map(val => {
+        if (!isNaN(val)) return val;
+        return categoryNameToId[val.trim().toUpperCase()] || null;
+      }).filter(Boolean);
+    }
+
+    console.log(category);
+    editMovieService(
+      movie_id,
+      title,
+      description,
+      release_year,
+      language_id,
+      original_language_id,
+      rental_duration,
+      rental_rate,
+      length,
+      replacement_cost,
+      rating,
+      special_features,
+      film_image_url,
+      category,
+      actors,
+      (err, response) => {
+        if(err){
+          manageMoviesDao.getAllActors((actorsErr, actors) => {
+            if (actorsErr) {
+              actorsErr.status = 500;
+              return next(actorsErr);
+            }
+            console.log(err);
+            res.render("./staff/manageMovies/updateMovie.hbs", {actors, oldValues: req.body, err: err.message || err});
+          });
+          return;
+        }
+        res.redirect(`/movies/${movie_id}`);
+      }
+    );
   });
 }
 

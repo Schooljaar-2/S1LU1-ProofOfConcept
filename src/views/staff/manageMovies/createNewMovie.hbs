@@ -24,7 +24,7 @@
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="category" class="form-label text-light">Categories</label>
-				<select id="category" name="category" class="form-control" multiple>
+				<select id="category" name="category" class="form-control">
 					<option value="1" {{#if oldValues}}{{#if (isSelected oldValues.category '1')}}selected{{/if}}{{/if}}>Action</option>
 					<option value="2" {{#if oldValues}}{{#if (isSelected oldValues.category '2')}}selected{{/if}}{{/if}}>Animation</option>
 					<option value="3" {{#if oldValues}}{{#if (isSelected oldValues.category '3')}}selected{{/if}}{{/if}}>Children</option>
@@ -42,16 +42,7 @@
 					<option value="15" {{#if oldValues}}{{#if (isSelected oldValues.category '15')}}selected{{/if}}{{/if}}>Sports</option>
 					<option value="16" {{#if oldValues}}{{#if (isSelected oldValues.category '16')}}selected{{/if}}{{/if}}>Travel</option>
 				</select>
-				<small class="text-secondary">Type to filter, click to select. Selected categories appear as tags.</small>
-				<div id="selected-categories" class="mt-2">
-					{{#if oldValues}}
-						{{#each (arrayify oldValues.category)}}
-							<button type="button" class="btn btn-sm btn-outline-warning me-2 mb-2" data-value="{{this}}">{{categoryName this}}</button>
-							<input type="hidden" name="category" value="{{this}}" data-value="{{this}}">
-						{{/each}}
-					{{/if}}
-				</div>
-				<div id="hidden-categories"></div>
+				<small class="text-secondary">Select one category.</small>
 			</div>
 			<div class="col-md-6">
 				<label for="actors" class="form-label text-light">Actors</label>

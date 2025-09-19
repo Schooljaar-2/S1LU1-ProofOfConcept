@@ -6,9 +6,10 @@
 		{{err}}
 	</div>
 	{{/if}}
-	<h1 class="display-6 fw-bold text-center mb-2" style="color: #ff3333; letter-spacing: 1px;">Create New Movie</h1>
+	<h1 class="display-6 fw-bold text-center mb-2" style="color: #ff3333; letter-spacing: 1px;">Update Movie</h1>
 	<div class="dashboard-title-underline mb-4"></div>
-		<form id="create-movie-form" action="/dashboard/manageOrCreateMovies/create" method="POST" class="bg-dark p-4 rounded shadow mx-auto" style="max-width: 900px; margin-bottom: 100px;" novalidate>
+	<form id="create-movie-form" action="/dashboard/manageOrCreateMovies/manage/edit" method="POST" class="bg-dark p-4 rounded shadow mx-auto" style="max-width: 900px; margin-bottom: 100px;" novalidate>
+		<input type="hidden" name="movie_id" value="{{movieID}}">
 		<div class="mb-3">
 			<label for="title" class="form-label text-light">Title</label>
 			<input type="text" class="form-control" id="title" name="title" required placeholder="Movie Title" value="{{#if oldValues}}{{oldValues.title}}{{/if}}">
@@ -151,7 +152,7 @@
 			</div>
 		</div>
 		<div class="mt-4">
-			<button type="submit" class="btn btn-warning fw-bold w-100 py-3" style="font-size: 1.3rem;">Create Movie</button>
+			<button type="submit" class="btn btn-warning fw-bold w-100 py-3" style="font-size: 1.3rem;">Update Movie</button>
 		</div>
 	</form>
 </div>

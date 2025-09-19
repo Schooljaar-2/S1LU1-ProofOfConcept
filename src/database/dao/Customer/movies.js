@@ -48,19 +48,19 @@ LIMIT 6;
 export const getMovieByID = (id, callback) => {
   const sql = `
   SELECT 
-      f.title, 
-      f.description,
-      f.release_year,
-      f.length,
-      f.rating, 
-      f.special_features, 
-      f.rental_rate,
-      f.replacement_cost,
-      f.rental_duration,
-      l.name AS language, 
-      c.name AS category, 
-      fi.image_url,
-      GROUP_CONCAT(CONCAT(a.first_name, ' ', a.last_name) SEPARATOR ', ') AS actors
+      ANY_VALUE(f.title) AS title, 
+      ANY_VALUE(f.description) AS description,
+      ANY_VALUE(f.release_year) AS release_year,
+      ANY_VALUE(f.length) AS length,
+      ANY_VALUE(f.rating) AS rating, 
+      ANY_VALUE(f.special_features) AS special_features, 
+      ANY_VALUE(f.rental_rate) AS rental_rate,
+      ANY_VALUE(f.replacement_cost) AS replacement_cost,
+      ANY_VALUE(f.rental_duration) AS rental_duration,
+      ANY_VALUE(l.name) AS language, 
+      GROUP_CONCAT(DISTINCT c.name ORDER BY c.name SEPARATOR ', ') AS categories, 
+      ANY_VALUE(fi.image_url) AS image_url,
+      GROUP_CONCAT(DISTINCT CONCAT(a.first_name, ' ', a.last_name) ORDER BY a.last_name, a.first_name SEPARATOR ', ') AS actors
   FROM film f
   JOIN language l ON f.language_id = l.language_id 
   JOIN film_image fi ON f.film_id = fi.film_id 
@@ -69,10 +69,7 @@ export const getMovieByID = (id, callback) => {
   JOIN film_actor fa ON f.film_id = fa.film_id
   JOIN actor a ON fa.actor_id = a.actor_id
   WHERE f.film_id = ?
-  GROUP BY 
-      f.film_id, f.title, f.description, f.release_year, f.length, 
-      f.rating, f.special_features, f.rental_rate, f.replacement_cost, 
-      l.name, c.name, fi.image_url, f.rental_duration;
+  GROUP BY f.film_id;
   `;
   query(sql, [id], callback);
 };

@@ -52,7 +52,14 @@ export function moviePage(req, res, next) {
         if (movieData.actors) {
           movieData.actors = toPascalCase(movieData.actors);
         }
-
+        // Use aggregated categories field from DAO
+        if (movieData.categories && typeof movieData.categories === 'string') {
+          movieData.categories = movieData.categories.split(',').map(c => c.trim());
+        } else if (!movieData.categories) {
+          movieData.categories = [];
+        }
+        
+        console.log(movieData);
         res.render("./customer/moviePage.hbs", {
           movie: movieData,
           availability,

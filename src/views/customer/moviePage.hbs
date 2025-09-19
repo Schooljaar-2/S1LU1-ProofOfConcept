@@ -42,7 +42,9 @@
         <span
           class="badge bg-dark text-light me-2"
         >{{movie.release_year}}</span>
-        <span class="badge bg-primary text-light me-2">{{movie.category}}</span>
+        {{#each movie.categories}}
+          <span class="badge bg-primary text-light me-2">{{this}}</span>
+        {{/each}}
         <span class="badge bg-success text-light me-2">Rated
           {{movie.rating}}</span>
         <span class="badge bg-info text-dark">{{movie.length}} min</span>
@@ -80,7 +82,9 @@
                 style="font-size: 1.3rem; vertical-align: middle;"
               ></i>
               <strong class="ms-2 text-warning">Category:</strong>
-              {{movie.category}}
+              {{#each movie.categories}}
+                <span class="badge bg-warning text-black me-1">{{this}}</span>
+              {{/each}}
             </td>
           </tr>
           <tr>
