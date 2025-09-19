@@ -1,0 +1,85 @@
+<div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 70vh;">
+	<h1 class="display-5 fw-bold text-center mb-2" style="color: #ff3333; letter-spacing: 1px;">Movie Management</h1>
+	<div class="dashboard-title-underline mb-5"></div>
+	<div class="row w-100 justify-content-center g-4 align-items-stretch">
+		<div class="col-12 col-md-6 col-lg-5 d-flex">
+			<a href="/dashboard/manageOrCreateMovies/create" class="dashboard-btn d-flex flex-column align-items-center justify-content-center flex-fill">
+				<i class="bi bi-plus-square-fill dashboard-icon"></i>
+				<span>Create New Movie</span>
+				<small class="dashboard-desc">Add a new movie to the catalog.</small>
+			</a>
+		</div>
+		<div class="col-12 col-md-6 col-lg-5 d-flex">
+			<a href="/dashboard/manageOrCreateMovies/manage" class="dashboard-btn d-flex flex-column align-items-center justify-content-center flex-fill">
+				<i class="bi bi-pencil-square dashboard-icon"></i>
+				<span>Manage/Edit Movies & Inventory</span>
+				<small class="dashboard-desc">Edit movie details or manage inventory.</small>
+			</a>
+		</div>
+	</div>
+</div>
+
+<style>
+	.dashboard-btn {
+		background: #222;
+		color: #fff;
+		font-size: 2rem;
+		font-weight: 600;
+		border-radius: 1rem;
+		box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+		width: 100%;
+		min-width: 220px;
+		min-height: 220px;
+		max-width: 340px;
+		max-height: 340px;
+		padding: 2rem 1.5rem 1.5rem 1.5rem;
+		margin: 1rem auto;
+		text-align: center;
+		text-decoration: none;
+		transition: background 0.2s, color 0.2s, transform 0.2s;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+	.dashboard-btn:hover, .dashboard-btn:focus {
+		background: #ff3333;
+		color: #fff;
+		transform: translateY(-4px) scale(1.03);
+		text-decoration: none;
+	}
+	.dashboard-icon {
+		font-size: 3.5rem;
+		margin-bottom: 1rem;
+		color: #ff3333;
+		transition: color 0.2s;
+	}
+
+	.dashboard-btn:hover .dashboard-icon,
+	.dashboard-btn:focus .dashboard-icon {
+		color: #fff;
+	}
+	.dashboard-desc {
+		display: block;
+		font-size: 1.1rem;
+		font-weight: 400;
+		color: #ccc;
+		margin-top: 0.75rem;
+	}
+    	.dashboard-title-underline {
+		width: 100%;
+		max-width: 420px;
+		height: 5px;
+		margin: 0 auto 1.5rem auto;
+		background: linear-gradient(90deg, #ff3333 0%, #ffc107 100%);
+		border-radius: 3px;
+	}
+	.row.align-items-stretch > [class^="col-"] {
+		display: flex;
+		align-items: stretch;
+	}
+	.dashboard-btn.flex-fill {
+		flex: 1 1 auto;
+		height: 100%;
+	}
+</style>
