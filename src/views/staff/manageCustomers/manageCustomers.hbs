@@ -1,39 +1,80 @@
 <div class="container pt-2 pb-5">
 	<!-- Filter/Search Bar (copied from manageMoviesSearch) -->
 	<form class="bg-dark p-3 rounded shadow mb-3 w-100" style="margin-left: 0;">
-		<div class="row g-3 align-items-end w-100">
-			<div class="col-12 col-md-3">
-				<label for="searchName" class="form-label text-light">Name</label>
-				<input type="text" class="form-control" id="searchName" name="name" placeholder="Search by name" value="{{filters.name}}">
+		<div class="d-flex align-items-end gap-2 w-100">
+			<div class="flex-grow-1">
+				<label for="search" class="form-label text-light">Search</label>
+				<input type="text" class="form-control" id="search" name="search" placeholder="Search for customers by first name, last name, or email...">
 			</div>
-			<div class="col-12 col-md-3">
-				<label for="searchEmail" class="form-label text-light">Email</label>
-				<input type="text" class="form-control" id="searchEmail" name="email" placeholder="Search by email" value="{{filters.email}}">
-			</div>
-			<div class="col-12 col-md-2">
-				<label for="searchStatus" class="form-label text-light">Status</label>
-				<select class="form-select" id="searchStatus" name="status">
-					<option value="">All Statuses</option>
-					<option value="active" {{#ifCond filters.status "active"}}selected{{/ifCond}}>Active</option>
-					<option value="inactive" {{#ifCond filters.status "inactive"}}selected{{/ifCond}}>Inactive</option>
+			<div style="min-width: 160px;">
+				<label for="active" class="form-label text-light">Active</label>
+				<select class="form-select" id="active" name="active">
+					<option value="">All active states</option>
+					<option value="1">Active</option>
+					<option value="0">Inactive</option>
 				</select>
 			</div>
-			<div class="col-12 col-md-4 d-flex align-items-end gap-2 justify-content-end">
-				<div class="flex-grow-1">
-					<label for="searchSort" class="form-label text-light">Sort By</label>
-					<select class="form-select" id="searchSort" name="sort">
-						<option value="0" {{#ifCond filters.sort "0"}}selected{{/ifCond}}>Name (A-Z)</option>
-						<option value="1" {{#ifCond filters.sort "1"}}selected{{/ifCond}}>Name (Z-A)</option>
-						<option value="2" {{#ifCond filters.sort "2"}}selected{{/ifCond}}>Email (A-Z)</option>
-						<option value="3" {{#ifCond filters.sort "3"}}selected{{/ifCond}}>Email (Z-A)</option>
-					</select>
-					<input type="hidden" id="pageAction" name="pagination" value="{{filters.pagination}}">
-				</div>
-				<div class="d-flex gap-2">
-					<button type="submit" class="btn btn-danger fw-bold">Apply</button>
-					<button type="reset" class="btn btn-outline-danger fw-bold">Clear</button>
-				</div>
-			</div>
+			<button type="submit" class="btn btn-danger fw-bold">Apply</button>
+			<button type="reset" class="btn btn-outline-danger fw-bold">Clear</button>
 		</div>
 	</form>
+	<!-- Customers Table: Placeholder data -->
+	<div class="w-100">
+	<table class="table table-dark table-hover align-middle mt-2" style="background-color: #181818; color: #fff;">
+	<thead class="table-dark">
+		<tr>
+			<th scope="col" class="text-white">Customer ID</th>
+			<th scope="col" class="text-white">First Name</th>
+			<th scope="col" class="text-white">Last Name</th>
+			<th scope="col" class="text-white">Email</th>
+			<th scope="col" class="text-white">Active</th>
+			<th scope="col" class="text-white">Store</th>
+			<th scope="col" class="text-white"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="text-white">1</td>
+			<td class="text-white">John</td>
+			<td class="text-white">Doe</td>
+			<td class="text-white">john.doe@email.com</td>
+			<td class="text-white">Active</td>
+			<td class="text-white">Store 1</td>
+			<td class="text-end"></td>
+		</tr>
+		<tr>
+			<td class="text-white">2</td>
+			<td class="text-white">Jane</td>
+			<td class="text-white">Smith</td>
+			<td class="text-white">jane.smith@email.com</td>
+			<td class="text-white">Inactive</td>
+			<td class="text-white">Store 2</td>
+			<td class="text-end"></td>
+		</tr>
+		<tr>
+			<td class="text-white">3</td>
+			<td class="text-white">Alice</td>
+			<td class="text-white">Johnson</td>
+			<td class="text-white">alice.j@email.com</td>
+			<td class="text-white">Active</td>
+			<td class="text-white">Store 3</td>
+			<td class="text-end"></td>
+		</tr>
+	</tbody>
+	</table>
+    </div>
+
+<!-- Pagination Buttons (copied from movies.hbs, actions null) -->
+<div class="d-flex justify-content-center align-items-center gap-2 mt-3" style="margin-bottom: 20px;">
+	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Prev-10</button>
+	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Prev-5</button>
+	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Prev</button>
+	<span class="mx-1 text-danger">--=--</span>
+	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Next</button>
+	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Next+5</button>
+	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Next+10</button>
 </div>
+<div class="d-flex justify-content-center mt-2 mb-4">
+	<span class="text-light fs-5">Showing customers 1 - 3 out of 3</span>
+</div>
+
