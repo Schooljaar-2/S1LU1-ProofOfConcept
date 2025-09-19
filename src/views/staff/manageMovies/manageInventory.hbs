@@ -39,10 +39,11 @@
 				<table class="table table-bordered align-middle table-inventory">
 					<thead>
 						<tr>
-							<th>Inventory ID</th>
+							<th>Inventory ID**</th>
 							<th>Status</th>
 							<th>Customer ID</th>
 							<th>Overdue</th>
+							<th>Retired</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
@@ -51,19 +52,36 @@
 							<tr>
 								<td class="d-flex justify-content-between align-items-center">
 									<span class="fw-bold">{{inventory_id}}</span>
-									<form action="/dashboard/manageOrCreateMovies/manage/inventory/delete" method="POST" class="m-0" onsubmit="return confirm('Delete inventory {{inventory_id}}? This cannot be undone.');">
-										<input type="hidden" name="inventoryId" value="{{inventory_id}}" />
-										<button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
-									</form>
+									{{#if (eq retired 1)}}
+										<form action="/dashboard/manageOrCreateMovies/manage/inventory/retire" method="POST" class="m-0" onsubmit="return confirm('Unretire inventory {{inventory_id}}?');">
+											<input type="hidden" name="inventoryId" value="{{inventory_id}}" />
+											<input type="hidden" name="movieId" value="{{../movieInfo.film_id}}" />
+											<input type="hidden" name="storeId" value="{{../selectedStore}}" />
+											<input type="hidden" name="retire" value="0" />
+											<button type="submit" class="btn btn-danger btn-sm">Unretire</button>
+										</form>
+									{{else}}
+										<form action="/dashboard/manageOrCreateMovies/manage/inventory/retire" method="POST" class="m-0" onsubmit="return confirm('Retire inventory {{inventory_id}}?');">
+											<input type="hidden" name="inventoryId" value="{{inventory_id}}" />
+											<input type="hidden" name="movieId" value="{{../movieInfo.film_id}}" />
+											<input type="hidden" name="storeId" value="{{../selectedStore}}" />
+											<input type="hidden" name="retire" value="1" />
+											<button type="submit" class="btn btn-danger btn-sm">Retire</button>
+										</form>
+									{{/if}}
 								</td>
 								<td>
-									<span class="status-text">
-										{{#if (eq status 'Available')}}
-											Available
-										{{else}}
-											Rented
-										{{/if}}
-									</span>
+									{{#if (eq retired 1)}}
+										<span class="status-text">Unavailable</span>
+									{{else}}
+										<span class="status-text">
+											{{#if (eq status 'Available')}}
+												Available
+											{{else}}
+												Rented
+											{{/if}}
+										</span>
+									{{/if}}
 								</td>
 								<td>{{customer_id}}</td>
 								<td>
@@ -73,11 +91,22 @@
 										<span class="overdue-no">No</span>
 									{{/if}}
 								</td>
-								<td class="actions">
-									{{#if (eq status 'Rented')}}
-										<button class="btn btn-outline-warning btn-sm take-in-rental-btn" data-inventory-id="{{inventory_id}}">Take in rental</button>
+								<td>
+									{{#if (eq retired 1)}}
+										true
 									{{else}}
-										<button class="btn btn-warning btn-sm rent-to-customer-btn" data-inventory-id="{{inventory_id}}">Rent to customer</button>
+										false
+									{{/if}}
+								</td>
+								<td class="actions">
+									{{#if (eq retired 1)}}
+									
+									{{else}}
+										{{#if (eq status 'Rented')}}
+											<button class="btn btn-outline-warning btn-sm take-in-rental-btn" data-inventory-id="{{inventory_id}}">Take in rental</button>
+										{{else}}
+											<button class="btn btn-warning btn-sm rent-to-customer-btn" data-inventory-id="{{inventory_id}}">Rent to customer</button>
+										{{/if}}
 									{{/if}}
 								</td>
 							</tr>
@@ -85,6 +114,9 @@
 					</tbody>
 				</table>
 			</div>
+						<div class="small text-secondary mt-2">
+							**Marking an inventory copy as retired will make the movie unavavailable to rent. This could be due to it being broken, lost, etc...
+						</div>
 						<button class="btn btn-warning fw-bold mt-2 add-inventory-btn">
 							Add new Copy to Inventory at store:
 							{{#each stores}}

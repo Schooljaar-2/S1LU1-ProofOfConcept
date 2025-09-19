@@ -11,6 +11,7 @@ import {checkAuthorisation} from "../services/auth.service.js"
 import {createNewMovieService} from "../services/staff/createNewMovie.service.js"
 import getInventoryInformationPerStore from "../services/staff/inventoryPerStore.service.js";
 import {editMovieService} from "../services/staff/editMovie.service.js"
+import {toggleRetireByInventoryId} from "../services/staff/retireInventoryById.service.js"
 
 export function staffPage(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
@@ -342,13 +343,32 @@ export function manageInventories(req, res, next) {
       return next(err);
     }
     const { stores, inventoryStore, movieInfo } = result;
-    console.log(movieInfo[0]);
     res.render("./staff/manageMovies/manageInventory.hbs", {
       stores,
       selectedStore: storeId,
       inventoryInformation: inventoryStore || [],
       movieInfo: movieInfo[0]
     });
+  });
+}
+
+export function handlePostRetireInventoryId(req, res, next) {
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+
+  const inventoryId = req.body.inventoryId;
+  const retire = parseInt(req.body.retire, 10);
+  const movieId = req.body.movieId;
+  const storeId = req.body.storeId;
+
+  toggleRetireByInventoryId(inventoryId, retire, (err, retireSuccess) => {
+    if (err) {
+      err.status = err.status || 500;
+      return next(err);
+    }
+    res.redirect(`/dashboard/manageOrCreateMovies/manage/inventory/${movieId}?storeId=${storeId}`);
   });
 }
 

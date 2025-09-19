@@ -9,7 +9,8 @@ import {
   editMovies,
   manageInventories,
   handlePostEditMovie,
-  manageCustomers
+  manageCustomers,
+  handlePostRetireInventoryId
 } from "../controllers/staffController.js";
 const router = express.Router();
 
@@ -17,7 +18,7 @@ const router = express.Router();
 router.get("/dashboard", dashboard);
 router.get("/staff", staffPage);
 
-// Manage movies
+// Manage movies and inventory
 router.get("/dashboard/manageOrCreateMovies", manageOrCreateMovies);
 router.get("/dashboard/manageOrCreateMovies/create", createNewMovie);
 router.get("/dashboard/manageOrCreateMovies/manage", manageMovies);
@@ -26,6 +27,7 @@ router.get("/dashboard/manageOrCreateMovies/manage/inventory/:movieID", manageIn
 
 router.post("/dashboard/manageOrCreateMovies/create", handlePostCreateNewMovie);
 router.post("/dashboard/manageOrCreateMovies/manage/edit", handlePostEditMovie);
+router.post("/dashboard/manageOrCreateMovies/manage/inventory/retire", handlePostRetireInventoryId)
 
 // Manage customers
 router.get("/dashboard/manageCustomers", manageCustomers);

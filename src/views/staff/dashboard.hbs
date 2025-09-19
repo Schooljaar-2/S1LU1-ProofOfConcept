@@ -2,20 +2,15 @@
 		<h1 class="display-4 fw-bold text-center mb-2" style="color: #ff3333; letter-spacing: 1px;">Staff Dashboard</h1>
 		<div class="dashboard-title-underline mb-5"></div>
 		<div class="dashboard-grid">
-			<a href="/dashboard/manageRentals" class="dashboard-btn d-flex flex-column align-items-center justify-content-center">
-				<i class="bi bi-plus-square-fill dashboard-icon"></i>
-				<span>Create new rental</span>
-				<small class="dashboard-desc">Start a new rental for a customer and assign movies.</small>
-			</a>
 			<a href="/dashboard/manageStores" class="dashboard-btn d-flex flex-column align-items-center justify-content-center">
 				<i class="bi bi-shop-window dashboard-icon"></i>
 				<span>View store dashboard</span>
-				<small class="dashboard-desc">See store inventory, rental stats, and staff activity.</small>
+				<small class="dashboard-desc">See store employees, rental stats, and money made.</small>
 			</a>
 			<a href="/dashboard/manageOrCreateMovies" class="dashboard-btn d-flex flex-column align-items-center justify-content-center">
 				<i class="bi bi-film dashboard-icon"></i>
 				<span>Manage movies</span>
-				<small class="dashboard-desc">Add, edit, or remove movies from the catalog.</small>
+				<small class="dashboard-desc">Add, edit, delete, rent or take in movies from the catalog.</small>
 			</a>
 			<a href="/dashboard/manageCustomers" class="dashboard-btn d-flex flex-column align-items-center justify-content-center">
 				<i class="bi bi-people-fill dashboard-icon"></i>
@@ -24,19 +19,18 @@
 			</a>
 		</div>
 		<style>
-			/* 2x2 grid for dashboard buttons on desktop */
+			/* 3-in-a-row on desktop, single column on mobile */
 			.dashboard-grid {
 				display: grid;
 				grid-template-columns: 1fr;
 				gap: 2rem;
 				width: 100%;
-				max-width: 720px;
+				max-width: 1100px;
 				margin: 0 auto;
 			}
 			@media (min-width: 768px) {
 				.dashboard-grid {
-					grid-template-columns: 1fr 1fr;
-					grid-template-rows: 1fr 1fr;
+					grid-template-columns: repeat(3, 1fr);
 					gap: 2rem;
 				}
 			}

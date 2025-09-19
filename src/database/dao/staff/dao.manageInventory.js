@@ -6,6 +6,7 @@ const inventoryDao = {
             SELECT 
                 i.inventory_id,
                 s.store_name,
+                i.retired,
                 CASE 
                     WHEN r.rental_id IS NULL OR r.return_date IS NOT NULL 
                         THEN 'Available'
@@ -30,7 +31,7 @@ const inventoryDao = {
                     WHERE r2.inventory_id = i.inventory_id
                 )
             WHERE i.film_id = ?
-              AND i.store_id = ?
+            AND i.store_id = ?
             ORDER BY i.inventory_id;
         `;
         query(sql, [movieId, storeId], callback);
@@ -49,6 +50,20 @@ const inventoryDao = {
             where f.film_id = ?
         `;
         query(sql, [movieId], callback);
+    },
+    deleteInventoryById: function(inventoryId, callback){
+        const sql = `
+        
+        `;
+        query(sql, [inventoryId], callback);
+    },
+    updateRetireByInventoryId: function(inventoryId, retire, callback){
+        const sql = `
+            UPDATE inventory
+            SET retired = ?
+            WHERE inventory_id = ?;
+        `;
+        query(sql, [retire, inventoryId], callback);
     }
 };
 
