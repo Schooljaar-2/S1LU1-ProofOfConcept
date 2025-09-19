@@ -2,7 +2,7 @@
 <div class="container py-4">
 	<h1 class="display-6 fw-bold text-center mb-2" style="color: #ff3333; letter-spacing: 1px;">Create New Movie</h1>
 	<div class="dashboard-title-underline mb-4"></div>
-		<form action="/movies/create" method="POST" class="bg-dark p-4 rounded shadow mx-auto" style="max-width: 900px; margin-bottom: 100px;">
+		<form id="create-movie-form" action="/dashboard/manageOrCreateMovies/create" method="POST" class="bg-dark p-4 rounded shadow mx-auto" style="max-width: 900px; margin-bottom: 100px;" novalidate>
 		<div class="mb-3">
 			<label for="title" class="form-label text-light">Title</label>
 			<input type="text" class="form-control" id="title" name="title" required placeholder="Movie Title">
@@ -18,7 +18,7 @@
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="category" class="form-label text-light">Categories</label>
-				<select id="category" name="category" class="form-control" multiple required>
+				<select id="category" name="category" class="form-control" multiple>
 					<option value="Action">Action</option>
 					<option value="Animation">Animation</option>
 					<option value="Children">Children</option>
@@ -42,10 +42,10 @@
 			</div>
 			<div class="col-md-6">
 				<label for="actors" class="form-label text-light">Actors</label>
-				<select class="form-select staff-multiselect" id="actors" name="actors" multiple required>
-					<option value="jamie">Jamie</option>
-					<option value="joseph">Joseph</option>
-					<option value="bram">Bram</option>
+				<select class="form-select staff-multiselect" id="actors" name="actors" multiple>
+					{{#each actors}}
+						<option value="{{this.actor_id}}">{{this.first_name}} {{this.last_name}}</option>
+					{{/each}}
 				</select>
 				<small class="text-secondary">Hold Ctrl (Windows) or Cmd (Mac) to select multiple. You may also select just one.</small>
 				<div id="selected-actors" class="mt-2"></div>
@@ -112,7 +112,7 @@
 				<label class="form-label text-light">Special Features</label>
 				<div class="d-flex gap-3 flex-wrap">
 					<div class="form-check">
-						<input class="form-check-input" type="checkbox" name="special_features" id="feature-trailers" value="Trailers" required>
+						<input class="form-check-input" type="checkbox" name="special_features" id="feature-trailers" value="Trailers">
 						<label class="form-check-label text-light" for="feature-trailers">Trailers</label>
 					</div>
 					<div class="form-check">
@@ -128,7 +128,6 @@
 						<label class="form-check-label text-light" for="feature-behind">Behind the Scenes</label>
 					</div>
 				</div>
-				<small class="text-secondary">At least one special feature is required.</small>
 			</div>
 		</div>
 		<div class="mt-4">
@@ -138,6 +137,25 @@
 </div>
        
 <script>
+// Custom validation for at least one category and one actor
+document.getElementById('create-movie-form').addEventListener('submit', function(e) {
+	const catBtns = document.getElementById('selected-categories').children.length;
+	const actorBtns = document.getElementById('selected-actors').children.length;
+	let valid = true;
+	let msg = '';
+	if (catBtns < 1) {
+		valid = false;
+		msg += 'Please select at least one category.\n';
+	}
+	if (actorBtns < 1) {
+		valid = false;
+		msg += 'Please select at least one actor.';
+	}
+	if (!valid) {
+		e.preventDefault();
+		alert(msg);
+	}
+});
 // Decoupled button pool for categories and actors, with hidden inputs for form submission
 function addButtonAndInput(containerId, hiddenId, inputName, value, text) {
 	const container = document.getElementById(containerId);
@@ -180,12 +198,21 @@ document.addEventListener('DOMContentLoaded', function () {
 	// Actors
 	const actorSelect = document.getElementById('actors');
 	if (actorSelect) {
+		let lastInputType = null;
+		actorSelect.addEventListener('mousedown', function () { lastInputType = 'mouse'; });
+		actorSelect.addEventListener('touchstart', function () { lastInputType = 'touch'; });
+		actorSelect.addEventListener('keydown', function () { lastInputType = 'keyboard'; });
 		actorSelect.addEventListener('change', function (e) {
+			if (lastInputType === 'keyboard') {
+				lastInputType = null;
+				return;
+			}
 			const selected = Array.from(actorSelect.selectedOptions);
 			selected.forEach(opt => {
 				addButtonAndInput('selected-actors', 'hidden-actors', 'actors', opt.value, opt.text);
 				opt.selected = false;
 			});
+			lastInputType = null;
 		});
 	}
 });
