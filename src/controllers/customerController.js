@@ -254,8 +254,6 @@ export function updateCustomerProfile(req, res, next){
   
   const urlUserId = parseInt(req.params.userId, 10);
   var userId = req.session.user_id;
-  console.log(userId)
-  console.log(urlUserId)
 
   //If user info exists go back
   if(req.session.role === "CUSTOMER" && userId !== urlUserId){
@@ -301,16 +299,22 @@ export function updateCustomerProfile(req, res, next){
         };
         return next(error);
       }
+      info.user_id = userId;
+      console.log(customerInfo);
       res.render("./customer/updateProfile.hbs", { stores, customerInfo: info });
     });
   });
 }
 
 export function updateCustomerProfileSendForm(req, res, next){
-  if (!checkAuthorisation(req, "CUSTOMER")) {
-    res.redirect("/login");
-    return;
+  console.log("ROUTE HIT");
+
+  if (!(checkAuthorisation(req, "CUSTOMER") || checkAuthorisation(req, "STAFF"))) {
+      res.redirect("/login");
+      return;
   }
+
+
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const phone = req.body.phone;
@@ -321,8 +325,24 @@ export function updateCustomerProfileSendForm(req, res, next){
   const city = req.body.city;
   const country = req.body.country;
   const storeId = req.body.store;
+  let user_id;
+  if (req.session.role === "STAFF") {
+    user_id = parseInt(req.params.userId, 10);
+    if (isNaN(user_id)) {
+      const error = new Error("Invalid user ID");
+      error.status = 400;
+      return next(error);
+    }
+  } else {
+    user_id = req.session.user_id;
+    if(user_id !== req.session.user_id){
+      // Should never happen, but guard anyway
+      return res.redirect("/customer");
+    }
+  }
 
-  updateCustomerProfileService(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, req.session.user_id, storeId, (err, result) => {
+  console.log("Updating user_id:", user_id);
+  updateCustomerProfileService(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, (err, result) => {
     if (err) {
       err.status = 500;
       return next(err);

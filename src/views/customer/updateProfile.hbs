@@ -10,7 +10,7 @@
           <p class="text-center text-light mb-4" style="font-size:1.15rem;">
             You're almost there! To make full use of CineRent, please fill in your information below.
           </p>
-          <form method="POST" action="">
+          <form method="POST" action="/customer/updateProfile{{#if customerInfo.user_id}}/{{customerInfo.user_id}}{{/if}}">
             <div class="row mb-3">
               <div class="col-md-6">
                 <label for="firstName" class="form-label text-light"><b>First Name</b></label>

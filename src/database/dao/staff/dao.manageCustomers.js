@@ -29,6 +29,7 @@ const manageCustomerDao = {
                OR u.email LIKE CONCAT('%', ?, '%')
                OR ? IS NULL OR ? = '')
           AND (? IS NULL OR c.active = ?)
+          AND c.user_id IS NOT NULL
         GROUP BY c.customer_id
         ORDER BY ANY_VALUE(c.last_name) ASC, ANY_VALUE(c.first_name) ASC
         LIMIT 10 OFFSET ?;

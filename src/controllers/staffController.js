@@ -413,3 +413,9 @@ export function manageCustomers(req, res, next){
     });
   });
 }
+
+export function handlePostCustomerEdit (req, res, next){
+  const userId = req.body.userId;
+
+  res.redirect(`/customer/updateProfile/${userId}`);
+}

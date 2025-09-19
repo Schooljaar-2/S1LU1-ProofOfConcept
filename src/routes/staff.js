@@ -10,7 +10,8 @@ import {
   manageInventories,
   handlePostEditMovie,
   manageCustomers,
-  handlePostRetireInventoryId
+  handlePostRetireInventoryId,
+  handlePostCustomerEdit
 } from "../controllers/staffController.js";
 const router = express.Router();
 
@@ -31,5 +32,7 @@ router.post("/dashboard/manageOrCreateMovies/manage/inventory/retire", handlePos
 
 // Manage customers
 router.get("/dashboard/manageCustomers", manageCustomers);
+
+router.post("/dashboard/manageCustomers/edit", handlePostCustomerEdit);
 
 export default router;
