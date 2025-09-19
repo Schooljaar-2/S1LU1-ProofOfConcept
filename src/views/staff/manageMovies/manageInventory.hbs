@@ -51,7 +51,10 @@
 							<tr>
 								<td class="d-flex justify-content-between align-items-center">
 									<span class="fw-bold">{{inventory_id}}</span>
-									<button class="btn btn-outline-danger btn-sm delete-inventory-btn" data-inventory-id="{{inventory_id}}">Delete</button>
+									<form action="/dashboard/manageOrCreateMovies/manage/inventory/delete" method="POST" class="m-0" onsubmit="return confirm('Delete inventory {{inventory_id}}? This cannot be undone.');">
+										<input type="hidden" name="inventoryId" value="{{inventory_id}}" />
+										<button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+									</form>
 								</td>
 								<td>
 									<span class="status-text">
