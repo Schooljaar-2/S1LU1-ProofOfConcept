@@ -9,6 +9,7 @@ import {
 
 import {checkAuthorisation} from "../services/auth.service.js"
 import {createNewMovieService} from "../services/staff/createNewMovie.service.js"
+import getInventoryInformationPerStore from "../services/staff/inventoryPerStore.service.js";
 import {editMovieService} from "../services/staff/editMovie.service.js"
 
 export function staffPage(req, res, next){
@@ -325,13 +326,30 @@ export function handlePostEditMovie(req, res, next){
   });
 }
 
-export function manageInventories(req, res, next){
-    if (!checkAuthorisation(req, "STAFF")) {
-        res.redirect("/login");
-        return;
-    }
+export function manageInventories(req, res, next) {
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
 
   const movieID = req.params.movieID;
+  const storeId = req.query.storeId;
+  console.log(storeId);
+
+  getInventoryInformationPerStore(storeId, movieID, (err, result) => {
+    if (err) {
+      err.status = err.status || 500;
+      return next(err);
+    }
+    const { stores, inventoryStore, movieInfo } = result;
+    console.log(movieInfo[0]);
+    res.render("./staff/manageMovies/manageInventory.hbs", {
+      stores,
+      selectedStore: storeId,
+      inventoryInformation: inventoryStore || [],
+      movieInfo: movieInfo[0]
+    });
+  });
 }
 
 export function manageCustomers(req, res, next){

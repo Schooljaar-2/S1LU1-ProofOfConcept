@@ -1,0 +1,95 @@
+
+
+<div class="container py-4">
+	<div class="bg-dark rounded shadow p-4">
+			<style>
+				.table-inventory { background-color: #2f3338; }
+				.table-inventory th, .table-inventory td { background-color: #2f3338; color: #fff; border-color: #3a3f44; }
+				.table-inventory thead th { background-color: #262a2e; }
+				.table-inventory .status-text { color: #ffffff !important; }
+				.table-inventory .overdue-yes { color: #dc3545; font-weight: 700; }
+				.table-inventory .overdue-no { color: #ffffff; }
+				.table-inventory .actions .btn-outline-warning { border-color: #ffc107; color: #ffc107; }
+				.table-inventory .actions .btn-outline-warning:hover { background-color: #ffc107; color: #212529; }
+			</style>
+
+			<h2 class="text-danger fw-bold mb-2">Manage Inventory</h2>
+			{{#if movieInfo}}
+				<div class="mb-4 text-light">
+					Managing for movie: <span class="fw-bold">{{movieInfo.title}} ({{movieInfo.release_year}})</span> with id: <span class="fw-bold">{{movieInfo.film_id}}</span>
+				</div>
+			{{/if}}
+
+		<!-- Store Selector Form -->
+			<form method="GET" class="d-flex align-items-end mb-4" id="storeForm">
+				<div class="me-2" style="min-width: 200px;">
+					<label for="storeSelect" class="form-label text-light">Select Store</label>
+					<select id="storeSelect" name="storeId" class="form-select">
+						{{#each stores}}
+							<option value="{{store_id}}" {{#if (eq ../selectedStore store_id)}}selected{{/if}}>{{store_name}}</option>
+						{{/each}}
+					</select>
+				</div>
+				<button type="submit" class="btn btn-warning fw-bold ms-2">Apply</button>
+			</form>
+
+		<!-- Inventory Table -->
+		{{#if inventoryInformation.length}}
+			<div class="table-responsive">
+				<table class="table table-bordered align-middle table-inventory">
+					<thead>
+						<tr>
+							<th>Inventory ID</th>
+							<th>Status</th>
+							<th>Customer ID</th>
+							<th>Overdue</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{#each inventoryInformation}}
+							<tr>
+								<td class="d-flex justify-content-between align-items-center">
+									<span class="fw-bold">{{inventory_id}}</span>
+									<button class="btn btn-outline-danger btn-sm delete-inventory-btn" data-inventory-id="{{inventory_id}}">Delete</button>
+								</td>
+								<td>
+									<span class="status-text">
+										{{#if (eq status 'Available')}}
+											Available
+										{{else}}
+											Rented
+										{{/if}}
+									</span>
+								</td>
+								<td>{{customer_id}}</td>
+								<td>
+									{{#if (eq overdue 'Yes')}}
+										<span class="overdue-yes">Yes</span>
+									{{else}}
+										<span class="overdue-no">No</span>
+									{{/if}}
+								</td>
+								<td class="actions">
+									{{#if (eq status 'Rented')}}
+										<button class="btn btn-outline-warning btn-sm take-in-rental-btn" data-inventory-id="{{inventory_id}}">Take in rental</button>
+									{{else}}
+										<button class="btn btn-warning btn-sm rent-to-customer-btn" data-inventory-id="{{inventory_id}}">Rent to customer</button>
+									{{/if}}
+								</td>
+							</tr>
+						{{/each}}
+					</tbody>
+				</table>
+			</div>
+						<button class="btn btn-warning fw-bold mt-2 add-inventory-btn">
+							Add new Copy to Inventory at store:
+							{{#each stores}}
+								{{#if (eq ../selectedStore store_id)}}{{store_name}}{{/if}}
+							{{/each}}
+						</button>
+		{{else}}
+			<div class="alert alert-info text-center">No inventory found for this store.</div>
+		{{/if}}
+	</div>
+</div>
