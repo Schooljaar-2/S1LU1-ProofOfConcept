@@ -1,5 +1,11 @@
 import manageMoviesDao from "../database/dao/staff/dao.ManageMovies.js"
 import staffPersonalDao from "../database/dao/staff/dao.staffPersonalInfo.js"
+import {
+  getAllMovieCategories,
+  getAllMovieRatings,
+  getFilteredMovies,
+  getFilteredMoviesCount,
+} from "../database/dao/customer/movies.js";
 
 import {checkAuthorisation} from "../services/auth.service.js"
 import {createNewMovieService} from "../services/staff/createNewMovie.service.js"
@@ -88,4 +94,105 @@ export function handlePostCreateNewMovie(req, res, next){
         const newInsertedMovieId = response.movieId;
         res.redirect(`/movies/${newInsertedMovieId}`);
     });
+}
+
+export function manageMovies(req, res, next){
+    if (!checkAuthorisation(req, "STAFF")) {
+        res.redirect("/login");
+        return;
+    }
+
+    const orderOptions = [
+        "f.title ASC",
+        "f.title DESC",
+        "f.release_year ASC",
+        "f.release_year DESC",
+        "f.rental_rate ASC",
+        "f.rental_rate DESC",
+        "f.length ASC",
+        "f.length DESC",
+      ];
+    
+      // Read all filter params from query, default to empty string
+      const title = req.query.title || "";
+      const rating = req.query.rating || "";
+      const category = req.query.category || "";
+      const orderBy = req.query.sort || "";
+      var pagination = parseInt(req.query.pagination, 0);
+    
+      if (isNaN(pagination) || pagination < 0) pagination = 0;
+    
+      // console.log(pagination)
+    
+      // Select order option by index, default to index 1 if out of bounds
+      let orderIndex = parseInt(orderBy, 10);
+      if (
+        isNaN(orderIndex) ||
+        orderIndex < 0 ||
+        orderIndex >= orderOptions.length
+      ) {
+        orderIndex = 0;
+      }
+      const selectedOrderBy = orderOptions[orderIndex];
+    
+      getAllMovieCategories((error, categories) => {
+        if (error) {
+          error.status = 500;
+          return next(error);
+        }
+        getAllMovieRatings((error2, ratings) => {
+          if (error2) {
+            error2.status = 500;
+            return next(error2);
+          }
+          getFilteredMoviesCount(title, rating, category, (error3, count) => {
+            if (error3) {
+              error3.status = 500;
+              return next(error3);
+            }
+            const amount = count[0].total_count;
+            // console.log(amount);
+            const maxPage = Math.floor(amount / 10);
+            if (pagination > maxPage) pagination = maxPage;
+    
+            getFilteredMovies(
+              title,
+              rating,
+              category,
+              pagination,
+              selectedOrderBy,
+              (error4, movies) => {
+                if (error4) {
+                  error4.status = 500;
+                  return next(error4);
+                }
+                console.log(movies);
+                res.render("./staff/manageMovies/manageMoviesSearch.hbs", {
+                  categories,
+                  ratings,
+                  movies,
+                  totalCount: amount,
+                  filters: {
+                    title,
+                    rating,
+                    category,
+                    sort: orderBy,
+                    pagination,
+                  },
+                });
+              }
+            );
+          });
+        });
+      });
+}
+
+export function editMovies(req, res, next){
+  const movieID = req.params.movieID;
+
+}
+
+export function manageInventories(req, res, next){
+  const movieID = req.params.movieID;
+
 }

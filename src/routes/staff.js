@@ -5,6 +5,9 @@ import {
   createNewMovie,
   handlePostCreateNewMovie,
   staffPage,
+  manageMovies,
+  editMovies,
+  manageInventories,
 } from "../controllers/staffController.js";
 const router = express.Router();
 
@@ -15,6 +18,9 @@ router.get("/staff", staffPage);
 // Manage movies
 router.get("/dashboard/manageOrCreateMovies", manageOrCreateMovies);
 router.get("/dashboard/manageOrCreateMovies/create", createNewMovie);
+router.get("/dashboard/manageOrCreateMovies/manage", manageMovies);
+router.get("/dashboard/manageOrCreateMovies/manage/edit/:movieID", editMovies);
+router.get("/dashboard/manageOrCreateMovies/manage/inventory/:movieID", manageInventories);
 
 router.post("/dashboard/manageOrCreateMovies/create", handlePostCreateNewMovie);
 
