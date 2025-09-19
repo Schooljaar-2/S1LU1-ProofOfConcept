@@ -46,27 +46,7 @@
 				<div id="selected-categories" class="mt-2">
 					{{#if oldValues}}
 						{{#each (arrayify oldValues.category)}}
-							<button type="button" class="btn btn-sm btn-outline-warning me-2 mb-2" data-value="{{this}}">
-								{{#switch this}}
-									{{#case '1'}}Action{{/case}}
-									{{#case '2'}}Animation{{/case}}
-									{{#case '3'}}Children{{/case}}
-									{{#case '4'}}Classics{{/case}}
-									{{#case '5'}}Comedy{{/case}}
-									{{#case '6'}}Documentary{{/case}}
-									{{#case '7'}}Drama{{/case}}
-									{{#case '8'}}Family{{/case}}
-									{{#case '9'}}Foreign{{/case}}
-									{{#case '10'}}Games{{/case}}
-									{{#case '11'}}Horror{{/case}}
-									{{#case '12'}}Music{{/case}}
-									{{#case '13'}}New{{/case}}
-									{{#case '14'}}Sci-Fi{{/case}}
-									{{#case '15'}}Sports{{/case}}
-									{{#case '16'}}Travel{{/case}}
-									{{#default}}{{this}}{{/default}}
-								{{/switch}}
-							</button>
+							<button type="button" class="btn btn-sm btn-outline-warning me-2 mb-2" data-value="{{this}}">{{categoryName this}}</button>
 							<input type="hidden" name="category" value="{{this}}" data-value="{{this}}">
 						{{/each}}
 					{{/if}}

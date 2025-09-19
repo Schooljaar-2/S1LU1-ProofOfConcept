@@ -49,6 +49,9 @@ const manageMoviesDao = {
         query(sql, params, callback);
     },
     coupleUrlToMovie: function(movieId, film_image_url, callback){
+        if (film_image_url === '' || film_image_url === undefined) {
+            film_image_url = null;
+        }
         const sql = `
             insert into film_image (film_id, image_url)
             values (?, ?)
