@@ -190,6 +190,28 @@ export function manageMovies(req, res, next){
 export function editMovies(req, res, next){
   const movieID = req.params.movieID;
 
+  manageMoviesDao.getAllMovieInformationByMovieId(movieID, (err, movieInformation) => {
+    if (err) {
+        err.status = 500;
+        return next(err);
+    }
+    manageMoviesDao.getAllActors((err, actors) => {
+      if (err) {
+          err.status = 500;
+          return next(err);
+      }
+      // Convert actor names to IDs for oldValues.actors
+      const actorNameToId = {};
+      actors.forEach(a => {
+        actorNameToId[`${a.first_name} ${a.last_name}`.toUpperCase()] = a.actor_id;
+      });
+      let oldValues = { ...movieInformation[0] };
+      if (oldValues.actors && typeof oldValues.actors === 'string') {
+        oldValues.actors = oldValues.actors.split(',').map(name => name.trim().toUpperCase()).map(name => actorNameToId[name]).filter(Boolean);
+      }
+      res.render("./staff/manageMovies/updateMovie.hbs", {oldValues, actors});
+    });
+  });
 }
 
 export function manageInventories(req, res, next){

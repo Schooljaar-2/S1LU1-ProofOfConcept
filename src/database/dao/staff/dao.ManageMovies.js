@@ -58,6 +58,47 @@ const manageMoviesDao = {
         `;
         query(sql, [movieId, film_image_url], callback);
     },
+    getAllMovieInformationByMovieId: function(movieId, callback){
+        const sql = `
+            SELECT 
+                f.title,
+                f.description,
+                f.release_year,
+                f.language_id,
+                f.original_language_id,
+                f.rental_duration,
+                f.rental_rate,
+                f.length,
+                f.replacement_cost,
+                f.rating,
+                f.special_features,
+                fi.image_url AS film_image_url,
+                GROUP_CONCAT(DISTINCT c.name SEPARATOR ', ') AS category,
+                GROUP_CONCAT(DISTINCT CONCAT(a.first_name, ' ', a.last_name) SEPARATOR ', ') AS actors
+            FROM film f
+            LEFT JOIN film_image fi ON f.film_id = fi.film_id
+            LEFT JOIN film_category fc ON f.film_id = fc.film_id
+            LEFT JOIN category c ON fc.category_id = c.category_id
+            LEFT JOIN film_actor fa ON f.film_id = fa.film_id
+            LEFT JOIN actor a ON fa.actor_id = a.actor_id
+            WHERE f.film_id = ?
+            GROUP BY 
+                f.film_id,
+                f.title,
+                f.description,
+                f.release_year,
+                f.language_id,
+                f.original_language_id,
+                f.rental_duration,
+                f.rental_rate,
+                f.length,
+                f.replacement_cost,
+                f.rating,
+                f.special_features,
+                fi.image_url;
+            `;
+            query(sql, [movieId], callback);
+    },
 };
 
 export default manageMoviesDao;
