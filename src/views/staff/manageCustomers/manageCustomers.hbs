@@ -1,19 +1,20 @@
 <div class="container pt-2 pb-5">
 	<!-- Filter/Search Bar (copied from manageMoviesSearch) -->
-	<form class="bg-dark p-3 rounded shadow mb-3 w-100" style="margin-left: 0;">
+	<form id="customerFilterForm" method="get" class="bg-dark p-3 rounded shadow mb-3 w-100" style="margin-left: 0;">
 		<div class="d-flex align-items-end gap-2 w-100">
 			<div class="flex-grow-1">
 				<label for="search" class="form-label text-light">Search</label>
-				<input type="text" class="form-control" id="search" name="search" placeholder="Search for customers by first name, last name, or email...">
+				<input type="text" class="form-control" id="search" name="search" placeholder="Search for customers by first name, last name, or email..." value="{{query.search}}">
 			</div>
 			<div style="min-width: 160px;">
 				<label for="active" class="form-label text-light">Active</label>
 				<select class="form-select" id="active" name="active">
-					<option value="">All active states</option>
-					<option value="1">Active</option>
-					<option value="0">Inactive</option>
+					<option value="" {{#if query.active}}{{else}}selected{{/if}}>All active states</option>
+					<option value="1" {{#if (eq query.active "1")}}selected{{/if}}>Active</option>
+					<option value="0" {{#if (eq query.active "0")}}selected{{/if}}>Inactive</option>
 				</select>
 			</div>
+			<input type="hidden" id="offset" name="offset" value="{{query.offset}}" />
 			<button type="submit" class="btn btn-danger fw-bold">Apply</button>
 			<button type="reset" class="btn btn-outline-danger fw-bold">Clear</button>
 		</div>
@@ -29,52 +30,84 @@
 			<th scope="col" class="text-white">Email</th>
 			<th scope="col" class="text-white">Active</th>
 			<th scope="col" class="text-white">Store</th>
-			<th scope="col" class="text-white"></th>
+			<th scope="col" class="text-white">Actions</th>
 		</tr>
 	</thead>
 	<tbody>
+		{{#each serviceResult.customers}}
 		<tr>
-			<td class="text-white">1</td>
-			<td class="text-white">John</td>
-			<td class="text-white">Doe</td>
-			<td class="text-white">john.doe@email.com</td>
-			<td class="text-white">Active</td>
-			<td class="text-white">Store 1</td>
-			<td class="text-end"></td>
+			<td class="text-white">{{this.customer_id}}</td>
+			<td class="text-white">{{this.first_name}}</td>
+			<td class="text-white">{{this.last_name}}</td>
+			<td class="text-white">{{this.email}}</td>
+			<td class="text-white">{{#if this.active}}Active{{else}}Inactive{{/if}}</td>
+			<td class="text-white">{{this.store_name}}</td>
+			<td class="text-end">
+				<div class="d-flex justify-content-end gap-2">
+					<form method="post" action="/dashboard/manageCustomers/active">
+						<input type="hidden" name="customerId" value="{{this.customer_id}}" />
+						{{#if this.active}}
+							<input type="hidden" name="active" value="0" />
+							<button type="submit" class="btn btn-outline-warning btn-sm">Set Inactive</button>
+						{{else}}
+							<input type="hidden" name="active" value="1" />
+							<button type="submit" class="btn btn-outline-warning btn-sm">Set Active</button>
+						{{/if}}
+					</form>
+					<form method="post" action="/dashboard/manageCustomers/edit">
+						<input type="hidden" name="userId" value="{{this.customer_id}}" />
+						<button type="submit" class="btn btn-warning btn-sm">Edit Customer</button>
+					</form>
+					<form method="post" action="/dashboard/manageCustomers/delete" onsubmit="return confirm('Are you sure you want to delete this customer?');">
+						<input type="hidden" name="userId" value="{{this.customer_id}}" />
+						<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+					</form>
+				</div>
+			</td>
 		</tr>
-		<tr>
-			<td class="text-white">2</td>
-			<td class="text-white">Jane</td>
-			<td class="text-white">Smith</td>
-			<td class="text-white">jane.smith@email.com</td>
-			<td class="text-white">Inactive</td>
-			<td class="text-white">Store 2</td>
-			<td class="text-end"></td>
-		</tr>
-		<tr>
-			<td class="text-white">3</td>
-			<td class="text-white">Alice</td>
-			<td class="text-white">Johnson</td>
-			<td class="text-white">alice.j@email.com</td>
-			<td class="text-white">Active</td>
-			<td class="text-white">Store 3</td>
-			<td class="text-end"></td>
-		</tr>
+		{{else}}
+		<tr><td colspan="7" class="text-center text-muted">No customers found.</td></tr>
+		{{/each}}
 	</tbody>
 	</table>
     </div>
 
 <!-- Pagination Buttons (copied from movies.hbs, actions null) -->
 <div class="d-flex justify-content-center align-items-center gap-2 mt-3" style="margin-bottom: 20px;">
-	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Prev-10</button>
-	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Prev-5</button>
-	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Prev</button>
-	<span class="mx-1 text-danger">--=--</span>
-	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Next</button>
-	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Next+5</button>
-	<button type="button" class="btn btn-outline-danger fw-bold" disabled>Next+10</button>
+    <button type="button" id="prev10" class="btn btn-outline-danger fw-bold">Prev-10</button>
+    <button type="button" id="prev5" class="btn btn-outline-danger fw-bold">Prev-5</button>
+    <button type="button" id="prev1" class="btn btn-outline-danger fw-bold">Prev</button>
+    <span class="mx-1 text-danger">--=--</span>
+    <button type="button" id="next1" class="btn btn-outline-danger fw-bold">Next</button>
+    <button type="button" id="next5" class="btn btn-outline-danger fw-bold">Next+5</button>
+    <button type="button" id="next10" class="btn btn-outline-danger fw-bold">Next+10</button>
 </div>
 <div class="d-flex justify-content-center mt-2 mb-4">
-	<span class="text-light fs-5">Showing customers 1 - 3 out of 3</span>
+	<span class="text-light fs-5">Showing customers {{rangeStart}} - {{rangeEnd}} out of {{totalCustomers}}</span>
+    
 </div>
+
+<script>
+	(function(){
+    const form = document.getElementById('customerFilterForm');
+    const offsetInput = document.getElementById('offset');
+    const currentOffset = parseInt(offsetInput.value || '0', 10);
+		const total = {{totalCustomers}};
+    const pageSize = 10;
+
+    function setOffsetAndSubmit(newOffset){
+      if(newOffset < 0) newOffset = 0;
+      if(total && newOffset >= total) newOffset = Math.max(total - pageSize, 0);
+      offsetInput.value = newOffset;
+      form.submit();
+    }
+
+    document.getElementById('next1').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset + 10); });
+    document.getElementById('next5').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset + 50); });
+    document.getElementById('next10').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset + 100); });
+    document.getElementById('prev1').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset - 10); });
+    document.getElementById('prev5').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset - 50); });
+    document.getElementById('prev10').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset - 100); });
+  })();
+</script>
 

@@ -12,6 +12,7 @@ import {createNewMovieService} from "../services/staff/createNewMovie.service.js
 import getInventoryInformationPerStore from "../services/staff/inventoryPerStore.service.js";
 import {editMovieService} from "../services/staff/editMovie.service.js"
 import {toggleRetireByInventoryId} from "../services/staff/retireInventoryById.service.js"
+import {findCustomerByFirstLastOrEmail} from "../services/staff/customerSearch.service.js"
 
 export function staffPage(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
@@ -377,6 +378,38 @@ export function manageCustomers(req, res, next){
     res.redirect("/login");
     return;
   }
+  
+  // Setting params for customer search service. 
+  const searchterm = req.query.search || "";
+  let isActive = parseInt(req.query.active, 10);
+  if (isNaN(isActive)) isActive = "";
+  // 'offset' in query is treated as row offset (0, 10, 20, ...)
+  let rowOffset = parseInt(req.query.offset, 10);
+  if (isNaN(rowOffset)) rowOffset = 0;
+  // Service expects page index and multiplies by 10 internally
+  const pageIndex = Math.floor(rowOffset / 10);
+  
+  findCustomerByFirstLastOrEmail(searchterm, isActive, pageIndex, (err, serviceResult) => {
+    if (err) {
+      err.status = err.status || 500;
+      return next(err);
+    }
+    const PAGE_SIZE = 10;
+    const totalCustomers = Array.isArray(serviceResult.customerCount) && serviceResult.customerCount[0]
+      ? Number(serviceResult.customerCount[0].total_customers || serviceResult.customerCount[0].totalCustomers || 0)
+      : 0;
+    const actualOffset = Number(serviceResult.offset || 0);
+    const rangeStart = totalCustomers > 0 ? actualOffset + 1 : 0;
+    const rangeEnd = Math.min(actualOffset + PAGE_SIZE, totalCustomers);
+    const activeStr = (isActive === "" || isActive === null || isActive === undefined) ? "" : String(isActive);
 
-  res.render("./staff/manageCustomers/manageCustomers.hbs");
+    res.render("./staff/manageCustomers/manageCustomers.hbs", {
+      serviceResult,
+      query: { search: searchterm, active: activeStr, offset: actualOffset },
+      totalCustomers,
+      pageSize: PAGE_SIZE,
+      rangeStart,
+      rangeEnd
+    });
+  });
 }
