@@ -326,6 +326,19 @@ export function handlePostEditMovie(req, res, next){
 }
 
 export function manageInventories(req, res, next){
-  const movieID = req.params.movieID;
+    if (!checkAuthorisation(req, "STAFF")) {
+        res.redirect("/login");
+        return;
+    }
 
+  const movieID = req.params.movieID;
+}
+
+export function manageCustomers(req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+
+  res.render("./staff/manageCustomers/manageCustomers.hbs");
 }
