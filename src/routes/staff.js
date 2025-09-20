@@ -15,6 +15,7 @@ import {
   handleToggleCustomerActivity,
   handleCustomerDelete,
   handleAddCopyToInventory,
+  handleTakeInRental,
 } from "../controllers/staffController.js";
 const router = express.Router();
 
@@ -33,6 +34,7 @@ router.post("/dashboard/manageOrCreateMovies/create", handlePostCreateNewMovie);
 router.post("/dashboard/manageOrCreateMovies/manage/edit", handlePostEditMovie);
 router.post("/dashboard/manageOrCreateMovies/manage/inventory/retire", handlePostRetireInventoryId);
 router.post("/dashboard/manageOrCreateMovies/manage/inventory/addCopy", handleAddCopyToInventory);
+router.post("/dashboard/manageOrCreateMovies/manage/inventory/takeInRental", handleTakeInRental);
 
 // Manage customers
 router.get("/dashboard/manageCustomers", manageCustomers);

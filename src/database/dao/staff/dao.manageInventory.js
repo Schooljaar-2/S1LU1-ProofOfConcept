@@ -12,6 +12,7 @@ const inventoryDao = {
                         THEN 'Available'
                     ELSE 'Rented'
                 END AS status,
+                r.rental_id,
                 r.customer_id,
                 CASE 
                     WHEN r.rental_id IS NOT NULL 
@@ -71,7 +72,16 @@ const inventoryDao = {
             VALUES (?, ?, NOW());
         `;
         query(sql, [filmId, storeId], callback);
-    }
+    },
+    returnRental: function(rentalId, callback) {
+        const sql = `
+            UPDATE rental
+            SET return_date = NOW(),
+                last_update = NOW()
+            WHERE rental_id = ?
+        `;
+        query(sql, [rentalId], callback);
+    },
 };
 
 export default inventoryDao;

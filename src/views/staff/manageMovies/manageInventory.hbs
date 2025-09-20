@@ -103,9 +103,19 @@
 									
 									{{else}}
 										{{#if (eq status 'Rented')}}
-											<button class="btn btn-outline-warning btn-sm take-in-rental-btn" data-inventory-id="{{inventory_id}}">Take in rental</button>
+											<form action="/dashboard/manageOrCreateMovies/manage/inventory/takeInRental" method="POST" class="m-0">
+												<input type="hidden" name="rentalId" value="{{rental_id}}" />
+												<input type="hidden" name="movieId" value="{{../movieInfo.film_id}}" />
+												<input type="hidden" name="storeId" value="{{../selectedStore}}" />
+												<button type="submit" class="btn btn-outline-warning btn-sm">Take in rental</button>
+											</form>
 										{{else}}
-											<button class="btn btn-warning btn-sm rent-to-customer-btn" data-inventory-id="{{inventory_id}}">Rent to customer</button>
+											<form action="/dashboard/manageOrCreateMovies/manage/inventory/rentCopy" method="POST" class="m-0">
+												<input type="hidden" name="inventoryId" value="{{inventory_id}}" />
+												<input type="hidden" name="movieId" value="{{../movieInfo.film_id}}" />
+												<input type="hidden" name="storeId" value="{{../selectedStore}}" />
+												<button type="submit" class="btn btn-warning btn-sm">Rent to customer</button>
+											</form>
 										{{/if}}
 									{{/if}}
 								</td>

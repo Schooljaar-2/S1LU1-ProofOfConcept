@@ -346,6 +346,7 @@ export function manageInventories(req, res, next) {
       err.status = err.status || 500;
       return next(err);
     }
+    console.log(result);
     const { stores, inventoryStore, movieInfo } = result;
     res.render("./staff/manageMovies/manageInventory.hbs", {
       stores,
@@ -477,8 +478,8 @@ export function handleAddCopyToInventory(req, res, next){
 
   const selectedStore = parseInt(req.body.storeId, 10);
   const selectedMovie = parseInt(req.body.movieId, 10);
-  console.log(selectedStore);
-  console.log(selectedMovie);
+  // console.log(selectedStore);
+  // console.log(selectedMovie);
 
   if(!selectedStore){
     const error = new Error("storeId is required");
@@ -494,6 +495,45 @@ export function handleAddCopyToInventory(req, res, next){
   inventoryDao.createNewInventoryCopy(selectedMovie, selectedStore, (err, response) => {
     if(err){
       const error = new Error("Error adding inventory copy");
+      error.status = 500;
+      error.message = err;
+      return next(error);
+    }
+    res.redirect(`/dashboard/manageOrCreateMovies/manage/inventory/${selectedMovie}?storeId=${selectedStore}`);
+  })
+}
+
+export function handleTakeInRental(req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+
+  const rentalId = parseInt(req.body.rentalId, 10);
+  const selectedStore = parseInt(req.body.storeId, 10);
+  const selectedMovie = parseInt(req.body.movieId, 10);
+
+  if(!rentalId){
+    const error = new Error("rentalId is required");
+    error.status = 400;
+    return next(error);
+  }
+
+  if(!selectedStore){
+    const error = new Error("storeId is required");
+    error.status = 400;
+    return next(error);
+  }
+
+  if(!selectedMovie){
+    const error = new Error("movieId is required");
+    error.status = 400;
+    return next(error);
+  }
+
+  inventoryDao.returnRental(rentalId, (err, response) => {
+    if(err){
+      const error = new Error("Error returning rental");
       error.status = 500;
       error.message = err;
       return next(error);
