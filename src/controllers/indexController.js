@@ -9,6 +9,7 @@ function chunkArray(arr, size) {
   return result;
 }
 
+// Render the index page with populair movies gathered from DAO and run through chunkarray function. 
 export const index = (req, res, next) => {
   getTop10Films((error, response) => {
     if (error) return next(error);
@@ -18,6 +19,7 @@ export const index = (req, res, next) => {
   });
 };
 
+// Render the about page. Page is non-dynamic, not much going on here. 
 export const about = (req, res) => {
   res.render("about");
 }

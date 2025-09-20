@@ -1,5 +1,6 @@
 import customerDao from "../../database/dao/customer/customer.js";
 
+// Same process as create customer service. 
 const updateCustomerProfileService = (firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, callback) => {
 	// 1: Check if the country exists
 	customerDao.checkIfCountryExists(country, (err, countryChecked) => {

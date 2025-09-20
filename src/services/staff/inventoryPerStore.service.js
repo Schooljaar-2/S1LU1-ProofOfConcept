@@ -1,5 +1,6 @@
 import inventoryDao from "../../database/dao/staff/dao.manageInventory.js";
 
+// Gets the inventory infromation on a movie (movieID) per store. E.g. store Breda for movie 112. 3 copies available 1 rented out
 function getInventoryInformationPerStore(storeId, movieId, callback) {
   inventoryDao.getAllStores((errorStores, stores) => {
     if(errorStores){

@@ -1,5 +1,6 @@
 import manageCustomerDao from "../../database/dao/staff/dao.manageCustomers.js"
 
+// Give back the count of the serach result as wel as all customer information. Count of result is needed for pagination. 
 export function findCustomerByFirstLastOrEmail(searchterm, active, offset, callback){
     // Normalize: if active is "" or undefined/null, set to null so DAO ignores filter
     let normalizedActive = null;

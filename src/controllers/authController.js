@@ -1,5 +1,6 @@
 import { handleRegister, handleLogin } from "../services/auth.service.js";
 
+// Redirect to the login page
 export function login(req, res) {
   if(req.session.logged_in){
     res.redirect("/");
@@ -9,6 +10,7 @@ export function login(req, res) {
   res.render("./auth/login", { success, err: null });
 }
 
+// Redirect to register page, locked out if already logged in
 export function register(req, res) {
     if(req.session.logged_in){
       res.redirect("/");
@@ -17,6 +19,7 @@ export function register(req, res) {
   res.render("./auth/register", { err: null });
 }
 
+// Get the credentials from body and pass them to handle login from auth.service.js
 export function postLogin(req, res, next) {
   const credentials = {
     email: req.body.email,
@@ -37,6 +40,7 @@ export function postLogin(req, res, next) {
   });
 }
 
+// Get the credentials from body and pass them to handle register function. 
 export function postRegister(req, res, next) {
   const credentials = {
     email: req.body.registerEmail,
@@ -54,6 +58,7 @@ export function postRegister(req, res, next) {
   });
 }
 
+// Clear out the session and redirect to homepage. 
 export function logout(req, res) {
   req.session.destroy((err, next) => {
     if (err) return next(err);

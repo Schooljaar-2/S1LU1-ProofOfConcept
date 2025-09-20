@@ -1,5 +1,6 @@
 import manageCustomerDao from "../../database/dao/staff/dao.manageCustomers.js"
 
+// Toggles the customer active value 
 export function toggleCustomerActivityService(customerId, callback){
     manageCustomerDao.selectCustomerById(customerId, (errrorCustomerSearch, customerById) => {
         if (errrorCustomerSearch) {
