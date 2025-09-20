@@ -11,7 +11,8 @@ import {
   handlePostEditMovie,
   manageCustomers,
   handlePostRetireInventoryId,
-  handlePostCustomerEdit
+  handlePostCustomerEdit,
+  handleToggleCustomerActivity
 } from "../controllers/staffController.js";
 const router = express.Router();
 
@@ -34,5 +35,6 @@ router.post("/dashboard/manageOrCreateMovies/manage/inventory/retire", handlePos
 router.get("/dashboard/manageCustomers", manageCustomers);
 
 router.post("/dashboard/manageCustomers/edit", handlePostCustomerEdit);
+router.post("/dashboard/manageCustomers/active", handleToggleCustomerActivity);
 
 export default router;

@@ -44,7 +44,6 @@ const manageCustomerDao = {
 
     query(sql, [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, active, active, offset], callback);
     },
-
     countCustomers: function(searchTerm, active, callback) {
     if (active !== 0 && active !== 1) active = null; // ignore filter if not 0 or 1
 
@@ -64,7 +63,25 @@ const manageCustomerDao = {
     `;
 
     query(sql, [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, active, active], callback);
-    }
+    },
+    selectCustomerById: function(customerId, callback){
+        const sql = `
+            select *
+            from customer c
+            join user u on c.user_id = u.user_id 
+            where customer_id = ?
+        `;
+        query(sql, [customerId], callback);
+    },
+    updateCustomerActivity: function(active, customerId, callback){
+        const sql = `
+            UPDATE customer
+            SET active = ?
+            WHERE customer_id = ?;
+        `;
+        query(sql, [active, customerId], callback);
+    },
+    
 };
 
 export default manageCustomerDao;

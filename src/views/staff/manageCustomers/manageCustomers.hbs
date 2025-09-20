@@ -16,7 +16,7 @@
 			</div>
 			<input type="hidden" id="offset" name="offset" value="{{query.offset}}" />
 			<button type="submit" class="btn btn-danger fw-bold">Apply</button>
-			<button type="reset" class="btn btn-outline-danger fw-bold">Clear</button>
+			<button type="button" id="clearFilters" class="btn btn-outline-danger fw-bold">Clear</button>
 		</div>
 	</form>
 	<!-- Customers Table: Placeholder data -->
@@ -41,7 +41,7 @@
 			<td class="text-white">{{this.first_name}}</td>
 			<td class="text-white">{{this.last_name}}</td>
 			<td class="text-white">{{this.email}}</td>
-			<td class="text-white">{{#if this.active}}Active{{else}}Inactive{{/if}}</td>
+			<td class="{{#if this.active}}text-white{{else}}text-danger fw-bold{{/if}}">{{#if this.active}}Active{{else}}Inactive{{/if}}</td>
 			<td class="text-white">{{this.store_name}}</td>
 			<td>
 				{{#if this.active_film_ids.length}}
@@ -101,8 +101,11 @@
 
 <script>
 	(function(){
-    const form = document.getElementById('customerFilterForm');
-    const offsetInput = document.getElementById('offset');
+	const form = document.getElementById('customerFilterForm');
+	const offsetInput = document.getElementById('offset');
+	const searchInput = document.getElementById('search');
+	const activeSelect = document.getElementById('active');
+	const clearBtn = document.getElementById('clearFilters');
     const currentOffset = parseInt(offsetInput.value || '0', 10);
 		const total = {{totalCustomers}};
     const pageSize = 10;
@@ -113,6 +116,14 @@
       offsetInput.value = newOffset;
       form.submit();
     }
+
+		// Clear filters: set fields to defaults and submit
+		clearBtn.addEventListener('click', function(){
+			searchInput.value = '';
+			activeSelect.value = '';
+			offsetInput.value = 0;
+			form.submit();
+		});
 
     document.getElementById('next1').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset + 10); });
     document.getElementById('next5').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset + 50); });

@@ -13,6 +13,7 @@ import getInventoryInformationPerStore from "../services/staff/inventoryPerStore
 import {editMovieService} from "../services/staff/editMovie.service.js"
 import {toggleRetireByInventoryId} from "../services/staff/retireInventoryById.service.js"
 import {findCustomerByFirstLastOrEmail} from "../services/staff/customerSearch.service.js"
+import {toggleCustomerActivityService} from "../services/staff/toggleCustomerActive.service.js"
 
 export function staffPage(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
@@ -418,4 +419,20 @@ export function handlePostCustomerEdit (req, res, next){
   const userId = req.body.userId;
 
   res.redirect(`/customer/updateProfile/${userId}`);
+}
+
+export function handleToggleCustomerActivity (req, res, next){
+  const customerId = req.body.customerId;
+  if(!customerId){
+    const error = new Error("Customer ID is required");
+    error.status = 400;
+    return next(error);
+  }
+  toggleCustomerActivityService(customerId, (err, response) => {
+    if(err){
+      err.status = err.status || 500;
+      return next(err);
+    }
+    res.redirect(`/dashboard/manageCustomers?search=${response.customerEmail}`);
+  });
 }
