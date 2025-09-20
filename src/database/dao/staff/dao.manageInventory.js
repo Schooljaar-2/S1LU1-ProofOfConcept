@@ -82,6 +82,21 @@ const inventoryDao = {
         `;
         query(sql, [rentalId], callback);
     },
+    getStaffIdByUserId: function(userId, callback){
+        const sql = `
+            select s.staff_id
+            from staff s
+            where s.user_id = ?
+        `;
+        query(sql, [userId], callback);
+    },
+    createRental: function(inventoryId, customerId, staffId, callback) {
+        const sql = `
+            INSERT INTO rental (rental_date, inventory_id, customer_id, staff_id, last_update)
+            VALUES (NOW(), ?, ?, ?, NOW())
+        `;
+        query(sql, [inventoryId, customerId, staffId], callback);
+    },
 };
 
 export default inventoryDao;

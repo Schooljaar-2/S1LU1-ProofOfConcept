@@ -1,0 +1,166 @@
+<div class="container-fluid pt-2 pb-5">
+	<!-- Filter/Search Bar (copied from manageMoviesSearch) -->
+	<form id="customerFilterForm" method="get" class="bg-dark p-3 rounded shadow mb-3" style="max-width: 1400px; width: 100%; margin: 0 auto;">
+		<div class="d-flex align-items-end gap-2 w-100">
+			<div class="flex-grow-1">
+				<label for="search" class="form-label text-light">Search</label>
+				<input type="text" class="form-control" id="search" name="search" placeholder="Search for customers by first name, last name, or email..." value="{{query.search}}">
+			</div>
+			<div style="min-width: 160px;">
+				<label for="active" class="form-label text-light">Active</label>
+				<select class="form-select" id="active" name="active">
+					<option value="" {{#if query.active}}{{else}}selected{{/if}}>All active states</option>
+					<option value="1" {{#if (eq query.active "1")}}selected{{/if}}>Active</option>
+					<option value="0" {{#if (eq query.active "0")}}selected{{/if}}>Inactive</option>
+				</select>
+			</div>
+			<input type="hidden" id="offset" name="offset" value="{{query.offset}}" />
+			<input type="hidden" id="inventoryId" name="inventoryId" value="{{inventoryId}}" />
+			<button type="submit" class="btn btn-danger fw-bold">Apply</button>
+			<button type="button" id="clearFilters" class="btn btn-outline-danger fw-bold">Clear</button>
+		</div>
+	</form>
+	<!-- Customers Table: Placeholder data -->
+	<div style="width: 100%; max-width: 1400px; margin: 0 auto;">
+	<table class="table table-dark table-hover align-middle mt-2" style="background-color: #181818; color: #fff; width: 100%; min-width: 1200px;">
+	<thead class="table-dark">
+		<tr>
+			<th scope="col" class="text-white">Customer ID</th>
+			<th scope="col" class="text-white">User ID</th>
+			<th scope="col" class="text-white">First Name</th>
+			<th scope="col" class="text-white">Last Name</th>
+			<th scope="col" class="text-white">Email</th>
+			<th scope="col" class="text-white">Active</th>
+			<th scope="col" class="text-white">Store</th>
+			<th scope="col" class="text-white">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each serviceResult.customers}}
+		<tr>
+			<td class="text-white">{{this.customer_id}}</td>
+			<td class="text-white">{{this.user_id}}</td>
+			<td class="text-white">{{this.first_name}}</td>
+			<td class="text-white">{{this.last_name}}</td>
+			<td class="text-white">{{this.email}}</td>
+			<td class="{{#if this.active}}text-white{{else}}text-danger fw-bold{{/if}}">{{#if this.active}}Active{{else}}Inactive{{/if}}</td>
+			<td class="text-white">{{this.store_name}}</td>
+
+			<td class="text-end">
+				<form method="post" action="/dashboard/manageOrCreateMovies/manage/inventory/rentCopy/makeRental">
+					<input type="hidden" name="customerId" value="{{this.customer_id}}" />
+					<input type="hidden" name="inventoryId" value="{{../inventoryId}}" />
+					<button type="submit" class="btn btn-outline-info btn-sm">Rent to</button>
+				</form>
+			</td>
+		</tr>
+		{{else}}
+		<tr><td colspan="8" class="text-center text-muted">No customers found.</td></tr>
+		{{/each}}
+	</tbody>
+	</table>
+    </div>
+
+<!-- Pagination Buttons (copied from movies.hbs, actions null) -->
+<div class="d-flex justify-content-center align-items-center gap-2 mt-3" style="margin-bottom: 20px;">
+    <button type="button" id="prev10" class="btn btn-outline-danger fw-bold">Prev-10</button>
+    <button type="button" id="prev5" class="btn btn-outline-danger fw-bold">Prev-5</button>
+    <button type="button" id="prev1" class="btn btn-outline-danger fw-bold">Prev</button>
+    <span class="mx-1 text-danger">--=--</span>
+    <button type="button" id="next1" class="btn btn-outline-danger fw-bold">Next</button>
+    <button type="button" id="next5" class="btn btn-outline-danger fw-bold">Next+5</button>
+    <button type="button" id="next10" class="btn btn-outline-danger fw-bold">Next+10</button>
+</div>
+<div class="d-flex justify-content-center mt-2 mb-4">
+	<span class="text-light fs-5">Showing customers {{rangeStart}} - {{rangeEnd}} out of {{totalCustomers}}</span>
+    
+</div>
+
+<script>
+	(function(){
+	const form = document.getElementById('customerFilterForm');
+	const offsetInput = document.getElementById('offset');
+	const searchInput = document.getElementById('search');
+	const activeSelect = document.getElementById('active');
+	const clearBtn = document.getElementById('clearFilters');
+    const currentOffset = parseInt(offsetInput.value || '0', 10);
+		const total = {{totalCustomers}};
+    const pageSize = 10;
+
+    function setOffsetAndSubmit(newOffset){
+      if(newOffset < 0) newOffset = 0;
+      if(total && newOffset >= total) newOffset = Math.max(total - pageSize, 0);
+      offsetInput.value = newOffset;
+      form.submit();
+    }
+
+		// Clear filters: set fields to defaults and submit
+		clearBtn.addEventListener('click', function(){
+			searchInput.value = '';
+			activeSelect.value = '';
+			offsetInput.value = 0;
+			form.submit();
+		});
+
+    document.getElementById('next1').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset + 10); });
+    document.getElementById('next5').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset + 50); });
+    document.getElementById('next10').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset + 100); });
+    document.getElementById('prev1').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset - 10); });
+    document.getElementById('prev5').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset - 50); });
+    document.getElementById('prev10').addEventListener('click', function(){ setOffsetAndSubmit(currentOffset - 100); });
+  })();
+</script>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-header border-secondary">
+				<h5 class="modal-title text-danger" id="deleteCustomerModalLabel">Delete Customer Account</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>This will delete the customer's account.</p>
+				<p>This action is irreversible and the customer won't be able to log in anymore.</p>
+			</div>
+			<div class="modal-footer border-secondary">
+				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, delete</button>
+			</div>
+		</div>
+	</div>
+  
+</div>
+
+<script>
+	(function(){
+		const modalEl = document.getElementById('deleteCustomerModal');
+		let targetForm = null;
+		const confirmBtn = document.getElementById('confirmDeleteBtn');
+		const deleteButtons = document.querySelectorAll('.delete-btn');
+
+		function submitTarget(){
+			if(targetForm) targetForm.submit();
+		}
+
+		deleteButtons.forEach(btn => {
+			btn.addEventListener('click', function(){
+				targetForm = this.closest('form');
+				// Try Bootstrap modal if available
+				try {
+					const modal = new bootstrap.Modal(modalEl);
+					modal.show();
+					confirmBtn.onclick = function(){
+						modal.hide();
+						submitTarget();
+					};
+				} catch(e) {
+					// Fallback to native confirm if Bootstrap not present
+					const ok = window.confirm("This will delete the customer's account. This action is irreversible and the customer won't be able to log in anymore.");
+					if(ok) submitTarget();
+				}
+			});
+		});
+	})();
+</script>
+

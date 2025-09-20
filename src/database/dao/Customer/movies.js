@@ -2,45 +2,51 @@ import query from "../../db.js";
 
 export const getTop10Films = (callback) => {
   const sql = `
-(
-    SELECT 
-        f.film_id,
-        f.title,
-        f.description,
-        fi.image_url,
-        COUNT(r.rental_id) AS rental_count,
-        'last_7_days' AS source
-    FROM film f
-    JOIN film_image fi on f.film_id = fi.film_id
-    JOIN inventory i ON f.film_id = i.film_id
-    JOIN rental r ON i.inventory_id = r.inventory_id
-    WHERE r.rental_date BETWEEN DATE_SUB(
-            (SELECT MAX(r2.rental_date) FROM rental r2),
-            INTERVAL 7 DAY
-        )
-        AND (SELECT MAX(r2.rental_date) FROM rental r2)
-    GROUP BY f.film_id, f.title, f.description, fi.image_url 
-    ORDER BY rental_count DESC
-    LIMIT 6
-)
-UNION
-(
-    SELECT 
-        f.film_id,
-        f.title,
-        fi.image_url,
-        f.description,
-        COUNT(r.rental_id) AS rental_count,
-        'all_time' AS source
-    FROM film f
-    JOIN film_image fi on f.film_id = fi.film_id
-    JOIN inventory i ON f.film_id = i.film_id
-    JOIN rental r ON i.inventory_id = r.inventory_id
-    GROUP BY f.film_id, f.title, f.description, fi.image_url 
-    ORDER BY rental_count DESC
-    LIMIT 6
-)
-LIMIT 6;
+    SELECT *
+    FROM (
+        -- Last 7 days top rentals
+        SELECT *
+        FROM (
+            SELECT 
+                f.film_id,
+                f.title,
+                f.description,
+                fi.image_url,
+                COUNT(r.rental_id) AS rental_count,
+                'last_7_days' AS source
+            FROM film f
+            JOIN film_image fi ON f.film_id = fi.film_id
+            JOIN inventory i ON f.film_id = i.film_id
+            JOIN rental r ON i.inventory_id = r.inventory_id
+            WHERE r.rental_date BETWEEN DATE_SUB((SELECT MAX(r2.rental_date) FROM rental r2), INTERVAL 7 DAY)
+                                    AND (SELECT MAX(r2.rental_date) FROM rental r2)
+            GROUP BY f.film_id, f.title, f.description, fi.image_url 
+            ORDER BY rental_count DESC
+            LIMIT 6
+        ) AS last7
+
+        UNION ALL
+
+        -- All-time top rentals
+        SELECT *
+        FROM (
+            SELECT 
+                f.film_id,
+                f.title,
+                f.description,
+                fi.image_url,
+                COUNT(r.rental_id) AS rental_count,
+                'all_time' AS source
+            FROM film f
+            JOIN film_image fi ON f.film_id = fi.film_id
+            JOIN inventory i ON f.film_id = i.film_id
+            JOIN rental r ON i.inventory_id = r.inventory_id
+            GROUP BY f.film_id, f.title, f.description, fi.image_url 
+            ORDER BY rental_count DESC
+            LIMIT 6
+        ) AS alltime
+    ) AS combined
+    LIMIT 6;
     `;
   query(sql, [], callback);
 };

@@ -101,25 +101,26 @@ const customerDao = {
       query(sql, [userId], callback);
   },
   getCustomerActiveRentals: function(userId, callback){
-    const sql = `
-      select r.rental_date,
-        f.rental_duration,
-        f.replacement_cost,
-        f.title,
-        f.film_id,
-        s.store_name,
-        p.amount 
-      from rental r 
-      join inventory i on r.inventory_id = i.inventory_id 
-      join film f on i.film_id = f.film_id 
-      join store s on i.store_id = s.store_id
-      join payment p on r.rental_id = p.rental_id 
-      join customer c on r.customer_id = c.customer_id 
-      join user u on c.user_id = u.user_id 
-      where c.user_id = ?
-      and r.return_date is null
-    `;
-    query(sql, [userId], callback);
+      const sql = `
+        SELECT 
+            r.rental_date,
+            f.rental_duration,
+            f.replacement_cost,
+            f.title,
+            f.film_id,
+            s.store_name,
+            p.amount
+        FROM rental r
+        JOIN inventory i ON r.inventory_id = i.inventory_id
+        JOIN film f ON i.film_id = f.film_id
+        JOIN store s ON i.store_id = s.store_id
+        LEFT JOIN payment p ON r.rental_id = p.rental_id
+        JOIN customer c ON r.customer_id = c.customer_id
+        JOIN user u ON c.user_id = u.user_id
+        WHERE c.user_id = ?
+          AND r.return_date IS NULL
+      `;
+      query(sql, [userId], callback);
   },
   updateUserAddress: function(userId, address, district, cityId, postalCode, phone, callback){
     const sql = `

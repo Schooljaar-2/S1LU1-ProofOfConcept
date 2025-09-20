@@ -16,6 +16,7 @@ import {toggleRetireByInventoryId} from "../services/staff/retireInventoryById.s
 import {findCustomerByFirstLastOrEmail} from "../services/staff/customerSearch.service.js"
 import {toggleCustomerActivityService} from "../services/staff/toggleCustomerActive.service.js"
 import {deleteCustomerService} from "../services/staff/deleteCustomer.service.js"
+import {makeNewRentalService} from "../services/staff/makeNewRental.service.js"
 
 export function staffPage(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
@@ -339,14 +340,14 @@ export function manageInventories(req, res, next) {
 
   const movieID = req.params.movieID;
   const storeId = req.query.storeId;
-  console.log(storeId);
+  // console.log(storeId);
 
   getInventoryInformationPerStore(storeId, movieID, (err, result) => {
     if (err) {
       err.status = err.status || 500;
       return next(err);
     }
-    console.log(result);
+    // console.log(result);
     const { stores, inventoryStore, movieInfo } = result;
     res.render("./staff/manageMovies/manageInventory.hbs", {
       stores,
@@ -540,4 +541,80 @@ export function handleTakeInRental(req, res, next){
     }
     res.redirect(`/dashboard/manageOrCreateMovies/manage/inventory/${selectedMovie}?storeId=${selectedStore}`);
   })
+}
+
+export function selectRentingCustomer(req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+
+  // Grab inventoryid from query string and parse as int
+  const inventoryId = parseInt(req.query.inventoryId, 10);
+
+  // Setting params for customer search service.
+  const searchterm = req.query.search || "";
+  let isActive = parseInt(req.query.active, 10);
+  if (isNaN(isActive)) isActive = "";
+  // 'offset' in query is treated as row offset (0, 10, 20, ...)
+  let rowOffset = parseInt(req.query.offset, 10);
+  if (isNaN(rowOffset)) rowOffset = 0;
+  // Service expects page index and multiplies by 10 internally
+  const pageIndex = Math.floor(rowOffset / 10);
+
+  findCustomerByFirstLastOrEmail(searchterm, isActive, pageIndex, (err, serviceResult) => {
+    if (err) {
+      err.status = err.status || 500;
+      return next(err);
+    }
+    const PAGE_SIZE = 10;
+    const totalCustomers = Array.isArray(serviceResult.customerCount) && serviceResult.customerCount[0]
+      ? Number(serviceResult.customerCount[0].total_customers || serviceResult.customerCount[0].totalCustomers || 0)
+      : 0;
+    const actualOffset = Number(serviceResult.offset || 0);
+    const rangeStart = totalCustomers > 0 ? actualOffset + 1 : 0;
+    const rangeEnd = Math.min(actualOffset + PAGE_SIZE, totalCustomers);
+    const activeStr = (isActive === "" || isActive === null || isActive === undefined) ? "" : String(isActive);
+
+    res.render("./staff/manageCustomers/manageCustomersForRent.hbs", {
+      serviceResult,
+      query: { search: searchterm, active: activeStr, offset: actualOffset },
+      totalCustomers,
+      pageSize: PAGE_SIZE,
+      rangeStart,
+      rangeEnd,
+      inventoryId
+    });
+  });
+}
+
+export function handleMakeRental(req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+
+  const userId = req.session.user_id;
+  const customerId = parseInt(req.body.customerId, 10);
+  const inventoryId = parseInt(req.body.inventoryId, 10);
+
+  if (!customerId) {
+    const error = new Error("customerId is required");
+    error.status = 400;
+    return next(error);
+  }
+  if (!inventoryId) {
+    const error = new Error("inventoryId is required");
+    error.status = 400;
+    return next(error);
+  }
+
+  makeNewRentalService(userId, customerId, inventoryId, (err, result) => {
+    if (err) {
+      err.status = err.status || 500;
+      return next(err);
+    }
+    res.redirect(`/dashboard/manageOrCreateMovies/manage/inventory/${inventoryId}`);
+  });
+
 }
