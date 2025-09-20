@@ -38,3 +38,4 @@ next-env.d.ts
 # Cypress generated files
 cypress/videos/
 cypress/screenshots/
+cypress.env.json
