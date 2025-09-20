@@ -14,6 +14,7 @@ import {editMovieService} from "../services/staff/editMovie.service.js"
 import {toggleRetireByInventoryId} from "../services/staff/retireInventoryById.service.js"
 import {findCustomerByFirstLastOrEmail} from "../services/staff/customerSearch.service.js"
 import {toggleCustomerActivityService} from "../services/staff/toggleCustomerActive.service.js"
+import {deleteCustomerService} from "../services/staff/deleteCustomer.service.js"
 
 export function staffPage(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
@@ -416,12 +417,21 @@ export function manageCustomers(req, res, next){
 }
 
 export function handlePostCustomerEdit (req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
   const userId = req.body.userId;
 
   res.redirect(`/customer/updateProfile/${userId}`);
 }
 
 export function handleToggleCustomerActivity (req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+  
   const customerId = req.body.customerId;
   if(!customerId){
     const error = new Error("Customer ID is required");
@@ -435,4 +445,25 @@ export function handleToggleCustomerActivity (req, res, next){
     }
     res.redirect(`/dashboard/manageCustomers?search=${response.customerEmail}`);
   });
+}
+
+export function handleCustomerDelete(req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+
+  const userId = req.body.userId;
+  if(!userId){
+    const error = new Error("userId is required");
+    error.status = 400;
+    return next(error);
+  }
+  deleteCustomerService(userId, (err, response) => {
+    if(err){
+      err.status = err.status || 500;
+      return next(err);
+    }
+    res.redirect("/dashboard/manageCustomers");
+  })
 }

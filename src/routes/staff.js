@@ -12,7 +12,8 @@ import {
   manageCustomers,
   handlePostRetireInventoryId,
   handlePostCustomerEdit,
-  handleToggleCustomerActivity
+  handleToggleCustomerActivity,
+  handleCustomerDelete,
 } from "../controllers/staffController.js";
 const router = express.Router();
 
@@ -36,5 +37,6 @@ router.get("/dashboard/manageCustomers", manageCustomers);
 
 router.post("/dashboard/manageCustomers/edit", handlePostCustomerEdit);
 router.post("/dashboard/manageCustomers/active", handleToggleCustomerActivity);
+router.post("/dashboard/manageCustomers/delete", handleCustomerDelete);
 
 export default router;

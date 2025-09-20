@@ -1,6 +1,6 @@
-<div class="container pt-2 pb-5">
+<div class="container-fluid pt-2 pb-5">
 	<!-- Filter/Search Bar (copied from manageMoviesSearch) -->
-	<form id="customerFilterForm" method="get" class="bg-dark p-3 rounded shadow mb-3 w-100" style="margin-left: 0;">
+	<form id="customerFilterForm" method="get" class="bg-dark p-3 rounded shadow mb-3" style="max-width: 1400px; width: 100%; margin: 0 auto;">
 		<div class="d-flex align-items-end gap-2 w-100">
 			<div class="flex-grow-1">
 				<label for="search" class="form-label text-light">Search</label>
@@ -20,11 +20,12 @@
 		</div>
 	</form>
 	<!-- Customers Table: Placeholder data -->
-	<div class="w-100">
-	<table class="table table-dark table-hover align-middle mt-2" style="background-color: #181818; color: #fff;">
+	<div style="width: 100%; max-width: 1400px; margin: 0 auto;">
+	<table class="table table-dark table-hover align-middle mt-2" style="background-color: #181818; color: #fff; width: 100%; min-width: 1200px;">
 	<thead class="table-dark">
 		<tr>
 			<th scope="col" class="text-white">Customer ID</th>
+			<th scope="col" class="text-white">User ID</th>
 			<th scope="col" class="text-white">First Name</th>
 			<th scope="col" class="text-white">Last Name</th>
 			<th scope="col" class="text-white">Email</th>
@@ -38,6 +39,7 @@
 		{{#each serviceResult.customers}}
 		<tr>
 			<td class="text-white">{{this.customer_id}}</td>
+			<td class="text-white">{{this.user_id}}</td>
 			<td class="text-white">{{this.first_name}}</td>
 			<td class="text-white">{{this.last_name}}</td>
 			<td class="text-white">{{this.email}}</td>
@@ -78,7 +80,7 @@
 			</td>
 		</tr>
 		{{else}}
-		<tr><td colspan="7" class="text-center text-muted">No customers found.</td></tr>
+		<tr><td colspan="9" class="text-center text-muted">No customers found.</td></tr>
 		{{/each}}
 	</tbody>
 	</table>
