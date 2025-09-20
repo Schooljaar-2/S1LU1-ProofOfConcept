@@ -52,24 +52,26 @@
 			<td class="text-white">{{this.store_name}}</td>
 
 			<td class="text-end">
-				<form method="post" action="/dashboard/manageOrCreateMovies/manage/inventory/rentCopy/makeRental" class="rent-form">
-					<input type="hidden" name="customerId" value="{{this.customer_id}}" />
-					<input type="hidden" name="inventoryId" value="{{../inventoryId}}" />
-					<input type="hidden" name="movieId" value="{{../movieId}}" />
-					<input type="hidden" name="storeId" value="{{../storeId}}" />
-                    <input type="hidden" name="rentalDuration" value="{{../rentalDuration}}" />
-                    <input type="hidden" name="rentalRate" value="{{../rentalRate}}" />
-                    <input type="hidden" name="replacementCost" value="{{../replacementCost}}" />
-					<button type="button" class="btn btn-outline-info btn-sm rent-btn"
-						data-customer-name="{{this.first_name}} {{this.last_name}}"
-						data-customer-id="{{this.customer_id}}"
-						data-rental-duration="{{../rentalDuration}}"
-						data-rental-rate="{{../rentalRate}}"
-						data-replacement-cost="{{../replacementCost}}"
-					>
-						Rent to
-					</button>
-				</form>
+				{{#if this.customer_id}}
+					<form method="post" action="/dashboard/manageOrCreateMovies/manage/inventory/rentCopy/makeRental" class="rent-form">
+						<input type="hidden" name="customerId" value="{{this.customer_id}}" />
+						<input type="hidden" name="inventoryId" value="{{../inventoryId}}" />
+						<input type="hidden" name="movieId" value="{{../movieId}}" />
+						<input type="hidden" name="storeId" value="{{../storeId}}" />
+                        <input type="hidden" name="rentalDuration" value="{{../rentalDuration}}" />
+                        <input type="hidden" name="rentalRate" value="{{../rentalRate}}" />
+                        <input type="hidden" name="replacementCost" value="{{../replacementCost}}" />
+						<button type="button" class="btn btn-outline-info btn-sm rent-btn"
+							data-customer-name="{{this.first_name}} {{this.last_name}}"
+							data-customer-id="{{this.customer_id}}"
+							data-rental-duration="{{../rentalDuration}}"
+							data-rental-rate="{{../rentalRate}}"
+							data-replacement-cost="{{../replacementCost}}"
+						>
+							Rent to
+						</button>
+					</form>
+				{{/if}}
 			</td>
 		</tr>
 		{{else}}

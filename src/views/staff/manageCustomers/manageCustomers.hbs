@@ -58,20 +58,22 @@
 			</td>
 			<td class="text-end">
 				<div class="d-flex justify-content-end gap-2">
-					<form method="post" action="/dashboard/manageCustomers/active">
-						<input type="hidden" name="customerId" value="{{this.customer_id}}" />
-						{{#if this.active}}
-							<input type="hidden" name="active" value="0" />
-							<button type="submit" class="btn btn-outline-warning btn-sm">Set Inactive</button>
-						{{else}}
-							<input type="hidden" name="active" value="1" />
-							<button type="submit" class="btn btn-outline-warning btn-sm">Set Active</button>
-						{{/if}}
-					</form>
-					<form method="post" action="/dashboard/manageCustomers/edit">
-						<input type="hidden" name="userId" value="{{this.user_id}}" />
-						<button type="submit" class="btn btn-warning btn-sm">Edit Customer</button>
-					</form>
+					{{#if this.customer_id}}
+						<form method="post" action="/dashboard/manageCustomers/active">
+							<input type="hidden" name="customerId" value="{{this.customer_id}}" />
+							{{#if this.active}}
+								<input type="hidden" name="active" value="0" />
+								<button type="submit" class="btn btn-outline-warning btn-sm">Set Inactive</button>
+							{{else}}
+								<input type="hidden" name="active" value="1" />
+								<button type="submit" class="btn btn-outline-warning btn-sm">Set Active</button>
+							{{/if}}
+						</form>
+						<form method="post" action="/dashboard/manageCustomers/edit">
+							<input type="hidden" name="userId" value="{{this.user_id}}" />
+							<button type="submit" class="btn btn-warning btn-sm">Edit Customer</button>
+						</form>
+					{{/if}}
 					<form method="post" action="/dashboard/manageCustomers/delete" class="delete-form">
 						<input type="hidden" name="userId" value="{{this.user_id}}" />
 						<button type="button" class="btn btn-danger btn-sm delete-btn">Delete</button>
