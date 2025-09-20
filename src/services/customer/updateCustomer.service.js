@@ -1,4 +1,4 @@
-import customerDao from "../../database/dao/Customer/customer.js";
+import customerDao from "../../database/dao/customer/customer.js";
 
 const updateCustomerProfileService = (firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, callback) => {
 	// 1: Check if the country exists

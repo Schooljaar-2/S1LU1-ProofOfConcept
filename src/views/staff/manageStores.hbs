@@ -1,0 +1,117 @@
+<div class="container py-4">
+  <div class="bg-dark rounded shadow p-4">
+    <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between mb-3">
+      <div>
+        <h2 class="text-danger fw-bold mb-1">Store Dashboard</h2>
+        {{#if stats}}
+          <div class="text-muted small">Currently viewing: <span class="text-light fw-semibold">{{stats.store_name}}</span></div>
+        {{/if}}
+      </div>
+      <form method="GET" class="d-flex align-items-end mt-3 mt-lg-0">
+        <div class="me-2" style="min-width: 240px;">
+          <label for="storeSelect" class="form-label text-light">Select Store</label>
+          <select id="storeSelect" name="storeId" class="form-select">
+            {{#each stores}}
+              <option value="{{store_id}}" {{#if (eq ../selectedStore store_id)}}selected{{/if}}>{{store_name}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-warning fw-bold ms-2">Apply</button>
+      </form>
+    </div>
+
+    {{#if stats}}
+      <!-- KPI Row -->
+      <div class="row g-3 mb-3">
+        <div class="col-12 col-lg-4">
+          <div class="kpi-card kpi-revenue h-100">
+            <div class="kpi-icon"><i class="bi bi-cash-stack"></i></div>
+            <div class="kpi-body">
+              <div class="kpi-title">Total Revenue</div>
+              <div class="kpi-value">€{{stats.total_revenue}}</div>
+              <div class="kpi-sub">Across all time</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="kpi-card kpi-active h-100">
+            <div class="kpi-icon"><i class="bi bi-bag-check"></i></div>
+            <div class="kpi-body">
+              <div class="kpi-title">Active Rentals</div>
+              <div class="kpi-value">{{stats.active_rentals}}</div>
+              <div class="kpi-sub">Checked out now</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="kpi-card kpi-overdue h-100">
+            <div class="kpi-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+            <div class="kpi-body">
+              <div class="kpi-title">Overdue Rentals</div>
+              <div class="kpi-value">{{stats.overdue_rentals}}</div>
+              <div class="kpi-sub">Past due date</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="soft-divider" />
+
+      <!-- Detail Grid -->
+      <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="stat-card h-100">
+            <div class="stat-header"><i class="bi bi-people-fill me-2"></i>Total Customers</div>
+            <div class="stat-value">{{stats.total_customers}}</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="stat-card h-100">
+            <div class="stat-header"><i class="bi bi-collection-play me-2"></i>Total Rentals</div>
+            <div class="stat-value">{{stats.total_rentals}}</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="stat-card h-100">
+            <div class="stat-header"><i class="bi bi-calendar-week me-2"></i>Revenue (7 days)</div>
+            <div class="stat-value">€{{stats.revenue_last_7d}}</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="stat-card h-100">
+            <div class="stat-header"><i class="bi bi-calendar3 me-2"></i>Revenue (30 days)</div>
+            <div class="stat-value">€{{stats.revenue_last_30d}}</div>
+          </div>
+        </div>
+      </div>
+    {{else}}
+      <div class="alert alert-info">No stats found for this store.</div>
+    {{/if}}
+  </div>
+</div>
+
+<style>
+  .kpi-card { display: flex; gap: 1rem; align-items: center; padding: 1rem 1.25rem; border-radius: 0.75rem; background: #25292e; box-shadow: 0 6px 24px rgba(0,0,0,0.25); border: 1px solid #333; transition: transform .15s ease, box-shadow .15s ease; }
+  .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.3); }
+  .kpi-icon { font-size: 2rem; line-height: 1; }
+  .kpi-body { display: flex; flex-direction: column; }
+  .kpi-title { color: #c8cdd3; font-size: 0.9rem; letter-spacing: 0.3px; }
+  .kpi-value { color: #fff; font-size: 1.8rem; font-weight: 800; letter-spacing: 0.5px; }
+  .kpi-sub { color: #9aa0a6; font-size: 0.85rem; }
+
+  .kpi-revenue { background: linear-gradient(135deg, #2b2f36 0%, #2e3138 50%, #2f343a 100%); border-color: #3b434c; }
+  .kpi-revenue .kpi-icon { color: #ffc107; }
+
+  .kpi-active { background: linear-gradient(135deg, #26343a 0%, #23393f 50%, #213e45 100%); border-color: #2f5964; }
+  .kpi-active .kpi-icon { color: #17a2b8; }
+
+  .kpi-overdue { background: linear-gradient(135deg, #3a2626 0%, #3f2323 50%, #452121 100%); border-color: #5e2c2c; }
+  .kpi-overdue .kpi-icon { color: #dc3545; }
+
+  .soft-divider { border-color: #333; opacity: 0.5; margin: 1.25rem 0; }
+
+  .stat-card { background: #1e2227; border: 1px solid #2b2f36; border-radius: 0.75rem; padding: 1rem 1.25rem; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transition: transform .15s ease, box-shadow .15s ease; }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+  .stat-header { color: #c8cdd3; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; font-size: 0.85rem; }
+  .stat-value { color: #fff; font-size: 1.6rem; font-weight: 800; margin-top: 0.25rem; }
+</style>

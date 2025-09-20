@@ -5,11 +5,12 @@ import {
   getAllMovieRatings,
   getFilteredMovies,
   getFilteredMoviesCount,
-} from "../database/dao/Customer/movies.js";
-import customerDao from "../database/dao/Customer/customer.js";
+} from "../database/dao/customer/movies.js";
+import customerDao from "../database/dao/customer/customer.js";
 import createNewCustomerProfile from "../services/customer/addNewCustomer.service.js";
 import {getAllUserRentalInformation, markOverdueActiveRentals} from "../services/customer/getCustomerRentalInformation.service.js"
 import updateCustomerProfileService from "../services/customer/updateCustomer.service.js"
+import {checkAuthorisation} from "../services/auth.service.js"
 
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
@@ -51,7 +52,14 @@ export function moviePage(req, res, next) {
         if (movieData.actors) {
           movieData.actors = toPascalCase(movieData.actors);
         }
-
+        // Use aggregated categories field from DAO
+        if (movieData.categories && typeof movieData.categories === 'string') {
+          movieData.categories = movieData.categories.split(',').map(c => c.trim());
+        } else if (!movieData.categories) {
+          movieData.categories = [];
+        }
+        
+        // console.log(movieData);
         res.render("./customer/moviePage.hbs", {
           movie: movieData,
           availability,
@@ -78,9 +86,9 @@ export function movies(req, res, next) {
   const rating = req.query.rating || "";
   const category = req.query.category || "";
   const orderBy = req.query.sort || "";
-  var pagination = parseInt(req.query.pagination, 10);
+  var pagination = parseInt(req.query.pagination, 0);
 
-  if (isNaN(pagination) || pagination <= 0) pagination = 10;
+  if (isNaN(pagination) || pagination < 0) pagination = 0;
 
   // console.log(pagination)
 
@@ -112,7 +120,8 @@ export function movies(req, res, next) {
         }
         const amount = count[0].total_count;
         // console.log(amount);
-        if (pagination > amount) pagination = amount;
+        const maxPage = Math.floor(amount / 10);
+        if (pagination > maxPage) pagination = maxPage;
 
         getFilteredMovies(
           title,
@@ -147,11 +156,7 @@ export function movies(req, res, next) {
 }
 
 export function loggedInCustomer(req, res, next) {
-  if (!req.session.logged_in) {
-    res.redirect("/login");
-    return;
-  }
-  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+  if (!checkAuthorisation(req, "CUSTOMER")) {
     res.redirect("/login");
     return;
   }
@@ -178,17 +183,13 @@ export function loggedInCustomer(req, res, next) {
       }
       markOverdueActiveRentals(rentalInformation);
       // console.log(customerInfo[0]);
-      res.render("./customer/customer.hbs", { customerInfo: customerInfo[0], rentalInformation });
+      res.render("./customer/customer.hbs", { customerInfo: customerInfo[0], rentalInformation, userId });
     });
   });
 }
 
 export function customerCreateProfile(req, res, next) {
-  if (!req.session.logged_in) {
-    res.redirect("/login");
-    return;
-  }
-  if (req.session.role !== "CUSTOMER" || !req.session.role) {
+  if (!checkAuthorisation(req, "CUSTOMER")) {
     res.redirect("/login");
     return;
   }
@@ -221,6 +222,10 @@ export function customerCreateProfile(req, res, next) {
 }
 
 export function createProfileSendForm(req, res, next) {
+  if (!checkAuthorisation(req, "CUSTOMER")) {
+    res.redirect("/login");
+    return;
+  }
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const phone = req.body.phone;
@@ -242,17 +247,22 @@ export function createProfileSendForm(req, res, next) {
 }
 
 export function updateCustomerProfile(req, res, next){
-    if (!req.session.logged_in) {
-    res.redirect("/login");
-    return;
+  if (!(checkAuthorisation(req, "CUSTOMER") || checkAuthorisation(req, "STAFF"))) {
+      res.redirect("/login");
+      return;
   }
-  if (req.session.role !== "CUSTOMER" || !req.session.role) {
-    res.redirect("/login");
-    return;
-  }
+  
+  const urlUserId = parseInt(req.params.userId, 10);
+  var userId = req.session.user_id;
 
   //If user info exists go back
-  const userId = req.session.user_id;
+  if(req.session.role === "CUSTOMER" && userId !== urlUserId){
+      res.redirect("/customer");
+      return;
+  }
+  if(req.session.role === "STAFF") userId = urlUserId;
+ 
+  
   customerDao.getAllCustomerPersonalInformationByUserId(userId, (err, customerInfo) => {
     if (err) {
       const error = new Error("User ID not found");
@@ -289,12 +299,22 @@ export function updateCustomerProfile(req, res, next){
         };
         return next(error);
       }
+      info.user_id = userId;
+      // console.log(customerInfo);
       res.render("./customer/updateProfile.hbs", { stores, customerInfo: info });
     });
   });
 }
 
 export function updateCustomerProfileSendForm(req, res, next){
+  console.log("ROUTE HIT");
+
+  if (!(checkAuthorisation(req, "CUSTOMER") || checkAuthorisation(req, "STAFF"))) {
+      res.redirect("/login");
+      return;
+  }
+
+
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const phone = req.body.phone;
@@ -305,8 +325,24 @@ export function updateCustomerProfileSendForm(req, res, next){
   const city = req.body.city;
   const country = req.body.country;
   const storeId = req.body.store;
+  let user_id;
+  if (req.session.role === "STAFF") {
+    user_id = parseInt(req.params.userId, 10);
+    if (isNaN(user_id)) {
+      const error = new Error("Invalid user ID");
+      error.status = 400;
+      return next(error);
+    }
+  } else {
+    user_id = req.session.user_id;
+    if(user_id !== req.session.user_id){
+      // Should never happen, but guard anyway
+      return res.redirect("/customer");
+    }
+  }
 
-  updateCustomerProfileService(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, req.session.user_id, storeId, (err, result) => {
+  console.log("Updating user_id:", user_id);
+  updateCustomerProfileService(firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, (err, result) => {
     if (err) {
       err.status = 500;
       return next(err);

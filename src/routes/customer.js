@@ -14,9 +14,9 @@ router.get("/movies", movies);
 router.get("/movies/:movieID", moviePage);
 router.get("/customer", loggedInCustomer);
 router.get("/customer/createProfile", customerCreateProfile);
-router.get("/customer/updateProfile", updateCustomerProfile);
+router.get("/customer/updateProfile/:userId", updateCustomerProfile);
 
 router.post("/customer/createProfile", createProfileSendForm);
-router.post("/customer/updateProfile", updateCustomerProfileSendForm);
-
+router.post('/customer/updateProfile', updateCustomerProfileSendForm);
+router.post('/customer/updateProfile/:userId', updateCustomerProfileSendForm);
 export default router;

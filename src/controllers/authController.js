@@ -1,12 +1,19 @@
 import { handleRegister, handleLogin } from "../services/auth.service.js";
 
 export function login(req, res) {
+  if(req.session.logged_in){
+    res.redirect("/");
+    return;
+  }
   const success = req.query.success ? "Register successful" : null;
-  // console.log(success);
   res.render("./auth/login", { success, err: null });
 }
 
 export function register(req, res) {
+    if(req.session.logged_in){
+      res.redirect("/");
+      return;
+    }
   res.render("./auth/register", { err: null });
 }
 
@@ -19,7 +26,7 @@ export function postLogin(req, res, next) {
   handleLogin(credentials, (err, result) => {
     if (err) {
       // If it's an expected login error, show it on the login page
-      return res.render("./auth/login", { err: err.message || "Incorrect e-mail or password", success: null });
+      return res.render("./auth/login", { err: err.message || "Incorrect e-mail or password", success: null, email: credentials.email });
     }
     // On successful login, redirect to homepage and update session object
     req.session.logged_in = true;
@@ -32,15 +39,15 @@ export function postLogin(req, res, next) {
 
 export function postRegister(req, res, next) {
   const credentials = {
-    email: req.body.email,
-    password: req.body.password,
-    username: req.body.username,
+    email: req.body.registerEmail,
+    password: req.body.registerPassword,
+    username: req.body.registerUsername,
   };
 
   handleRegister(credentials, (err, result) => {
     if (err) {
       // If it's an expected register error, show it on the register page
-      return res.render("./auth/register", { err: err.message });
+      return res.render("./auth/register", { err: err.message, email: credentials.email, username: credentials.username });
     }
     // Redirect to login page with success query param
     res.redirect("/login?success=1");

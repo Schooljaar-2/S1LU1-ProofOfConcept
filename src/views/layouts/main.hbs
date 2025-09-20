@@ -38,20 +38,31 @@
             <a class="nav-link" href="/about">About</a>
           </li>
           {{#if loggedInUser}}
-          {{#if (eq loggedInUser.role "CUSTOMER")}}
-          <li class="nav-item">
-            <a class="nav-link username-btn px-3" href="/customer">{{loggedInUser.username}}</a>
-          </li>
-          {{else}}
-          <!-- Add other roles here if needed -->
+            {{#if (eq loggedInUser.role "STAFF")}}
+              <li class="nav-item">
+                <a class="nav-link fw-bold" href="/dashboard" style="color: #ff3333;">Staff-Dashboard</a>
+              </li>
+            {{/if}}
           {{/if}}
+          {{#if loggedInUser}}
+            {{#if (eq loggedInUser.role "CUSTOMER")}}
+              <li class="nav-item">
+                <a class="nav-link username-btn px-3" href="/customer">{{loggedInUser.username}}</a>
+              </li>
+            {{else if (eq loggedInUser.role "STAFF")}}
+              <li class="nav-item">
+                <a class="nav-link username-btn staff-username px-3" href="/staff">{{loggedInUser.username}}</a>
+              </li>
+            {{else}}
+              <!-- Add other roles here if needed -->
+            {{/if}}
           {{else}}
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/register">Register</a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/register">Register</a>
+            </li>
           {{/if}}
         </ul>
       </div>
@@ -81,6 +92,11 @@
       /* Amber text */
       border-radius: 0.25rem;
       transition: color 0.2s;
+    }
+
+    .staff-username {
+      color: #ff3333 !important;
+      font-weight: bold !important;
     }
 
     .username-btn:hover,

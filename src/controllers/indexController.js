@@ -1,4 +1,4 @@
-import { getTop10Films } from "../database/dao/Customer/movies.js";
+import { getTop10Films } from "../database/dao/customer/movies.js";
 
 // Split for carousel
 function chunkArray(arr, size) {

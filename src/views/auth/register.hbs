@@ -6,22 +6,22 @@
     </div>
     {{/if}}
     <h2 class="mb-4 text-center text-warning">Register</h2>
-    <form method="POST" action="register" onsubmit="return checkPasswords();">
+  <form method="POST" action="register" onsubmit="return checkPasswords();" autocomplete="off">
       <div class="mb-3">
         <label for="email" class="form-label" style="color: #fff;"><b>E-mail:</b></label>
-        <input type="email" class="form-control" id="email" name="email" required value="{{email}}" />
+  <input type="email" class="form-control" id="registerEmail" name="registerEmail" required autocomplete="off" value="{{email}}" />
       </div>
       <div class="mb-3">
         <label for="username" class="form-label" style="color: #fff;"><b>Username:</b></label>
-        <input type="text" class="form-control" id="username" name="username" required value="{{username}}" />
+  <input type="text" class="form-control" id="registerUsername" name="registerUsername" required autocomplete="off" value="{{username}}" />
       </div>
       <div class="mb-3">
         <label for="password" class="form-label" style="color: #fff;"><b>Password:</b></label>
-        <input type="password" class="form-control" id="password" name="password" required />
+  <input type="password" class="form-control" id="registerPassword" name="registerPassword" required autocomplete="off" />
       </div>
       <div class="mb-3">
         <label for="confirmPassword" class="form-label" style="color: #fff;"><b>Confirm Password:</b></label>
-        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required />
+  <input type="password" class="form-control" id="registerConfirmPassword" name="registerConfirmPassword" required autocomplete="off" />
       </div>
       <div id="passwordError" class="text-danger mb-3" style="display:none;">Passwords do not match.</div>
       <button type="submit" class="btn btn-warning w-100">Register</button>

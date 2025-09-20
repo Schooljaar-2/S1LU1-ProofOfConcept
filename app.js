@@ -8,6 +8,7 @@ import session from "express-session";
 import indexRouter from "./src/routes/index.js";
 import authRouter from "./src/routes/auth.js";
 import customerRouter from "./src/routes/customer.js";
+import staffRouter from "./src/routes/staff.js"
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(
 );
 
 // View config
+
 const handlebars = create({
   extname: "hbs",
   layoutsDir: path.join("src/views/layouts"),
@@ -38,7 +40,20 @@ const handlebars = create({
       return v1 === v2 ? options.fn(this) : options.inverse(this);
     },
     eq: function (a, b) {
-      return a === b;
+      return a == b;
+    },
+    arrayify: function(val) {
+      if (Array.isArray(val)) return val;
+      if (val === undefined || val === null) return [];
+      return [val];
+    },
+    isSelected: function(values, test) {
+      if (Array.isArray(values)) return values.includes(test) || values.includes(String(test));
+      return values == test;
+    },
+    lookupActor: function(actors, id) {
+      const found = Array.isArray(actors) ? actors.find(a => String(a.actor_id) === String(id)) : null;
+      return found ? `${found.first_name} ${found.last_name}` : id;
     },
     formatDate: function(date) {
       if (!date) return '';
@@ -47,6 +62,28 @@ const handlebars = create({
       // Format: YYYY-MM-DD HH:mm
       const pad = n => n.toString().padStart(2, '0');
       return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    },
+    categoryName: function(id) {
+      const map = {
+        '1': 'Action',
+        '2': 'Animation',
+        '3': 'Children',
+        '4': 'Classics',
+        '5': 'Comedy',
+        '6': 'Documentary',
+        '7': 'Drama',
+        '8': 'Family',
+        '9': 'Foreign',
+        '10': 'Games',
+        '11': 'Horror',
+        '12': 'Music',
+        '13': 'New',
+        '14': 'Sci-Fi',
+        '15': 'Sports',
+        '16': 'Travel'
+      };
+      const key = String(id);
+      return map[key] || id;
     },
   },
 });
@@ -73,6 +110,7 @@ app.use((req, res, next) => {
 app.use("/", indexRouter);
 app.use("/", authRouter);
 app.use("/", customerRouter);
+app.use("/", staffRouter);
 
 // Error handling
 app.use((req, res, next) => {
