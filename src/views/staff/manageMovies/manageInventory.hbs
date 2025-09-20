@@ -41,7 +41,7 @@
 						<tr>
 							<th>Inventory ID**</th>
 							<th>Status</th>
-							<th>Customer ID</th>
+							<th>Customer ID (active rent or last renter)</th>
 							<th>Overdue</th>
 							<th>Retired</th>
 							<th>Actions</th>
@@ -110,7 +110,7 @@
 												<button type="submit" class="btn btn-outline-warning btn-sm">Take in rental</button>
 											</form>
 										{{else}}
-											<a href="/dashboard/manageOrCreateMovies/manage/inventory/rentCopy?inventoryId={{inventory_id}}" class="btn btn-warning btn-sm">Rent to customer</a>
+											<a href="/dashboard/manageOrCreateMovies/manage/inventory/rentCopy?inventoryId={{inventory_id}}&movieId={{../movieInfo.film_id}}&storeId={{../selectedStore}}&rentalDuration={{../rentalDuration}}&rentalRate={{../rentalRate}}&replacementCost={{../replacementCost}}" class="btn btn-warning btn-sm">Rent to customer</a>
 										{{/if}}
 									{{/if}}
 								</td>

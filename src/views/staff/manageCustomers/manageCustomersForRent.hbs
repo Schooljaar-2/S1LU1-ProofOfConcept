@@ -16,6 +16,11 @@
 			</div>
 			<input type="hidden" id="offset" name="offset" value="{{query.offset}}" />
 			<input type="hidden" id="inventoryId" name="inventoryId" value="{{inventoryId}}" />
+			<input type="hidden" id="movieId" name="movieId" value="{{query.movieId}}" />
+			<input type="hidden" id="storeId" name="storeId" value="{{query.storeId}}" />
+			<input type="hidden" id="rentalDuration" name="rentalDuration" value="{{query.rentalDuration}}" />
+			<input type="hidden" id="rentalRate" name="rentalRate" value="{{query.rentalRate}}" />
+			<input type="hidden" id="replacementCost" name="replacementCost" value="{{query.replacementCost}}" />
 			<button type="submit" class="btn btn-danger fw-bold">Apply</button>
 			<button type="button" id="clearFilters" class="btn btn-outline-danger fw-bold">Clear</button>
 		</div>
@@ -47,10 +52,23 @@
 			<td class="text-white">{{this.store_name}}</td>
 
 			<td class="text-end">
-				<form method="post" action="/dashboard/manageOrCreateMovies/manage/inventory/rentCopy/makeRental">
+				<form method="post" action="/dashboard/manageOrCreateMovies/manage/inventory/rentCopy/makeRental" class="rent-form">
 					<input type="hidden" name="customerId" value="{{this.customer_id}}" />
 					<input type="hidden" name="inventoryId" value="{{../inventoryId}}" />
-					<button type="submit" class="btn btn-outline-info btn-sm">Rent to</button>
+					<input type="hidden" name="movieId" value="{{../movieId}}" />
+					<input type="hidden" name="storeId" value="{{../storeId}}" />
+                    <input type="hidden" name="rentalDuration" value="{{../rentalDuration}}" />
+                    <input type="hidden" name="rentalRate" value="{{../rentalRate}}" />
+                    <input type="hidden" name="replacementCost" value="{{../replacementCost}}" />
+					<button type="button" class="btn btn-outline-info btn-sm rent-btn"
+						data-customer-name="{{this.first_name}} {{this.last_name}}"
+						data-customer-id="{{this.customer_id}}"
+						data-rental-duration="{{../rentalDuration}}"
+						data-rental-rate="{{../rentalRate}}"
+						data-replacement-cost="{{../replacementCost}}"
+					>
+						Rent to
+					</button>
 				</form>
 			</td>
 		</tr>
@@ -158,6 +176,71 @@
 					// Fallback to native confirm if Bootstrap not present
 					const ok = window.confirm("This will delete the customer's account. This action is irreversible and the customer won't be able to log in anymore.");
 					if(ok) submitTarget();
+				}
+			});
+		});
+	})();
+</script>
+
+<!-- Rent Confirmation Modal -->
+<div class="modal fade" id="rentConfirmModal" tabindex="-1" aria-labelledby="rentConfirmModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-header border-secondary">
+				<h5 class="modal-title text-info" id="rentConfirmModalLabel">Confirm Rental</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to rent this copy to <span id="rentCustomerName" class="fw-bold"></span> (ID: <span id="rentCustomerId"></span>)?</p>
+				<ul class="mb-0">
+					<li>Rental rate: <span id="rentRate" class="fw-bold text-warning"></span></li>
+					<li>Rental duration: <span id="rentDuration" class="fw-bold text-warning"></span> days</li>
+					<li>Replacement cost: <span id="rentReplacement" class="fw-bold text-warning"></span></li>
+				</ul>
+			</div>
+			<div class="modal-footer border-secondary">
+				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-info" id="confirmRentBtn">Yes, make rental</button>
+			</div>
+		</div>
+	</div>
+  
+</div>
+
+<script>
+	(function(){
+		const rentModalEl = document.getElementById('rentConfirmModal');
+		const confirmRentBtn = document.getElementById('confirmRentBtn');
+		const nameEl = document.getElementById('rentCustomerName');
+		const idEl = document.getElementById('rentCustomerId');
+		const rateEl = document.getElementById('rentRate');
+		const durationEl = document.getElementById('rentDuration');
+		const replacementEl = document.getElementById('rentReplacement');
+		let targetRentForm = null;
+
+		function submitRent(){ if(targetRentForm) targetRentForm.submit(); }
+
+		document.querySelectorAll('.rent-btn').forEach(btn => {
+			btn.addEventListener('click', function(){
+				targetRentForm = this.closest('form');
+				nameEl.textContent = this.dataset.customerName || '';
+				idEl.textContent = this.dataset.customerId || '';
+				const rateVal = this.dataset.rentalRate;
+				rateEl.textContent = rateVal ? `${rateVal} $` : '';
+				durationEl.textContent = this.dataset.rentalDuration || '';
+				const replVal = this.dataset.replacementCost;
+				replacementEl.textContent = replVal ? `${replVal} $` : '';
+
+				try{
+					const modal = new bootstrap.Modal(rentModalEl);
+					modal.show();
+					confirmRentBtn.onclick = function(){
+						modal.hide();
+						submitRent();
+					};
+				}catch(e){
+					const ok = window.confirm(`Are you sure?\nRental rate: ${rateEl.textContent}\nRental duration: ${durationEl.textContent} days\nReplacement cost: ${replacementEl.textContent}`);
+					if(ok) submitRent();
 				}
 			});
 		});

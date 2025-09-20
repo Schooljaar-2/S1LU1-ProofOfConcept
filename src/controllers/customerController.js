@@ -59,7 +59,7 @@ export function moviePage(req, res, next) {
           movieData.categories = [];
         }
         
-        console.log(movieData);
+        // console.log(movieData);
         res.render("./customer/moviePage.hbs", {
           movie: movieData,
           availability,
@@ -300,7 +300,7 @@ export function updateCustomerProfile(req, res, next){
         return next(error);
       }
       info.user_id = userId;
-      console.log(customerInfo);
+      // console.log(customerInfo);
       res.render("./customer/updateProfile.hbs", { stores, customerInfo: info });
     });
   });

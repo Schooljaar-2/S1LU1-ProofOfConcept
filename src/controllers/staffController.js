@@ -238,7 +238,7 @@ export function editMovies(req, res, next){
           .map(cat => categoryNameToId[cat])
           .filter(Boolean);
       }
-      console.log(oldValues);
+      // console.log(oldValues);
       res.render("./staff/manageMovies/updateMovie.hbs", {oldValues, actors, movieID});
     });
   });
@@ -297,7 +297,7 @@ export function handlePostEditMovie(req, res, next){
       }).filter(Boolean);
     }
 
-    console.log(category);
+    // console.log(category);
     editMovieService(
       movie_id,
       title,
@@ -321,7 +321,7 @@ export function handlePostEditMovie(req, res, next){
               actorsErr.status = 500;
               return next(actorsErr);
             }
-            console.log(err);
+            // console.log(err);
             res.render("./staff/manageMovies/updateMovie.hbs", {actors, oldValues: req.body, err: err.message || err});
           });
           return;
@@ -349,11 +349,21 @@ export function manageInventories(req, res, next) {
     }
     // console.log(result);
     const { stores, inventoryStore, movieInfo } = result;
+    const mi = (Array.isArray(movieInfo) ? movieInfo[0] : movieInfo) || {};
+    const rentalDuration = mi.rental_duration ?? mi.rentalDuration ?? null;
+    const rentalRate = mi.rental_rate ?? mi.rentalRate ?? null;
+    const replacementCost = mi.replacement_cost ?? mi.replacementCost ?? null;
+
+
+    const selectedStoreNormalized = storeId || 1;
     res.render("./staff/manageMovies/manageInventory.hbs", {
       stores,
-      selectedStore: storeId,
+      selectedStore: selectedStoreNormalized,
       inventoryInformation: inventoryStore || [],
-      movieInfo: movieInfo[0]
+      movieInfo: mi,
+      rentalDuration,
+      rentalRate,
+      replacementCost
     });
   });
 }
@@ -551,6 +561,15 @@ export function selectRentingCustomer(req, res, next){
 
   // Grab inventoryid from query string and parse as int
   const inventoryId = parseInt(req.query.inventoryId, 10);
+  // Also capture movie and store context for proper redirect later
+  const movieId = parseInt(req.query.movieId, 10);
+  const storeIdRaw = parseInt(req.query.storeId, 10);
+  const storeId = Number.isFinite(storeIdRaw) && storeIdRaw > 0 ? storeIdRaw : 1;
+
+  // Also capture rental metadata from query (camelCase)
+  const rentalDuration = req.query.rentalDuration;
+  const rentalRate = req.query.rentalRate;
+  const replacementCost = req.query.replacementCost;
 
   // Setting params for customer search service.
   const searchterm = req.query.search || "";
@@ -578,12 +597,17 @@ export function selectRentingCustomer(req, res, next){
 
     res.render("./staff/manageCustomers/manageCustomersForRent.hbs", {
       serviceResult,
-      query: { search: searchterm, active: activeStr, offset: actualOffset },
+      query: { search: searchterm, active: activeStr, offset: actualOffset, rentalDuration, rentalRate, replacementCost, movieId, storeId },
       totalCustomers,
       pageSize: PAGE_SIZE,
       rangeStart,
       rangeEnd,
-      inventoryId
+      inventoryId,
+      movieId,
+      storeId,
+      rentalDuration,
+      rentalRate,
+      replacementCost
     });
   });
 }
@@ -597,6 +621,8 @@ export function handleMakeRental(req, res, next){
   const userId = req.session.user_id;
   const customerId = parseInt(req.body.customerId, 10);
   const inventoryId = parseInt(req.body.inventoryId, 10);
+  const movieId = parseInt(req.body.movieId, 10);
+  const storeId = parseInt(req.body.storeId, 10);
 
   if (!customerId) {
     const error = new Error("customerId is required");
@@ -608,13 +634,23 @@ export function handleMakeRental(req, res, next){
     error.status = 400;
     return next(error);
   }
+  if (!movieId) {
+    const error = new Error("movieId is required for redirect");
+    error.status = 400;
+    return next(error);
+  }
+  if (!storeId) {
+    const error = new Error("storeId is required for redirect");
+    error.status = 400;
+    return next(error);
+  }
 
   makeNewRentalService(userId, customerId, inventoryId, (err, result) => {
     if (err) {
       err.status = err.status || 500;
       return next(err);
     }
-    res.redirect(`/dashboard/manageOrCreateMovies/manage/inventory/${inventoryId}`);
+    res.redirect(`/dashboard/manageOrCreateMovies/manage/inventory/${movieId}?storeId=${storeId}`);
   });
 
 }

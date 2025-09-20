@@ -49,7 +49,7 @@ export function findCustomerByFirstLastOrEmail(searchterm, active, offset, callb
                 }
             });
         }
-        console.log(customers);
+        // console.log(customers);
         return callback(null, {customers, offset, customerCount});
     });
     });

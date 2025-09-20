@@ -10,9 +10,9 @@ export function makeNewRentalService(userId, customerId, inventoryId, callback){
             };
             return callback(error, null);
         }
-        
+
         const foundStaffId = staffId[0].staff_id;
-        console.log(foundStaffId);
+        // console.log(foundStaffId);
 
         inventoryDao.createRental(inventoryId, customerId, foundStaffId, (errorCreateRental, createdRental) => {
             if (errorCreateRental) {

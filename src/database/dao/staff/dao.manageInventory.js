@@ -20,7 +20,10 @@ const inventoryDao = {
                         AND NOW() > DATE_ADD(r.rental_date, INTERVAL f.rental_duration DAY)
                         THEN 'Yes'
                     ELSE 'No'
-                END AS overdue
+                END AS overdue,
+                f.rental_duration,
+                f.rental_rate,
+                f.replacement_cost
             FROM inventory i
             JOIN store s ON i.store_id = s.store_id
             JOIN film f ON i.film_id = f.film_id
@@ -46,7 +49,8 @@ const inventoryDao = {
     },
     getMovieTitleAndYear: function(movieId, callback){
         const sql = `
-            select f.title, f.release_year, f.film_id
+            select f.title, f.release_year, f.film_id,
+                   f.rental_duration, f.rental_rate, f.replacement_cost
             from film f
             where f.film_id = ?
         `;
