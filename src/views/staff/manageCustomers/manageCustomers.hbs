@@ -30,6 +30,7 @@
 			<th scope="col" class="text-white">Email</th>
 			<th scope="col" class="text-white">Active</th>
 			<th scope="col" class="text-white">Store</th>
+			<th scope="col" class="text-white">Active Rentals</th>
 			<th scope="col" class="text-white">Actions</th>
 		</tr>
 	</thead>
@@ -42,6 +43,17 @@
 			<td class="text-white">{{this.email}}</td>
 			<td class="text-white">{{#if this.active}}Active{{else}}Inactive{{/if}}</td>
 			<td class="text-white">{{this.store_name}}</td>
+			<td>
+				{{#if this.active_film_ids.length}}
+					<div class="d-flex flex-wrap gap-1">
+						{{#each this.active_film_ids}}
+							<a href="/dashboard/manageOrCreateMovies/manage/inventory/{{this}}?storeId={{../store_id}}" class="btn btn-outline-info btn-sm">{{this}}</a>
+						{{/each}}
+					</div>
+				{{else}}
+					<span class="text-white">No active rentals</span>
+				{{/if}}
+			</td>
 			<td class="text-end">
 				<div class="d-flex justify-content-end gap-2">
 					<form method="post" action="/dashboard/manageCustomers/active">
