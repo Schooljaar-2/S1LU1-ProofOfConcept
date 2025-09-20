@@ -11,6 +11,8 @@
 				.table-inventory .overdue-no { color: #ffffff; }
 				.table-inventory .actions .btn-outline-warning { border-color: #ffc107; color: #ffc107; }
 				.table-inventory .actions .btn-outline-warning:hover { background-color: #ffc107; color: #212529; }
+				.table-inventory .rent-highlight { color: #ffffff; font-weight: 700; }
+				.table-inventory .rent-muted { color: #9aa0a6; font-weight: 400; }
 			</style>
 
 			<h2 class="text-danger fw-bold mb-2">Manage Inventory</h2>
@@ -41,7 +43,8 @@
 						<tr>
 							<th>Inventory ID**</th>
 							<th>Status</th>
-							<th>Customer ID (active rent or last renter)</th>
+							<th>Customer ID (<span class="rent-highlight">active renter</span> or <span class="rent-muted">last renter</span>)</th>
+							<th>Customer Email</th>
 							<th>Overdue</th>
 							<th>Retired</th>
 							<th>Actions</th>
@@ -83,7 +86,20 @@
 										</span>
 									{{/if}}
 								</td>
-								<td>{{customer_id}}</td>
+								<td>
+									{{#if (eq status 'Rented')}}
+										<span class="rent-highlight">{{customer_id}}</span>
+									{{else}}
+										<span class="rent-muted">{{customer_id}}</span>
+									{{/if}}
+								</td>
+								<td>
+									{{#if (eq status 'Rented')}}
+										<span class="rent-highlight">{{customer_email}}</span>
+									{{else}}
+										<span class="rent-muted">{{customer_email}}</span>
+									{{/if}}
+								</td>
 								<td>
 									{{#if (eq overdue 'Yes')}}
 										<span class="overdue-yes">Yes</span>

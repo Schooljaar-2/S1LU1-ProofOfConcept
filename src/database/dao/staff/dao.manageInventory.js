@@ -14,6 +14,7 @@ const inventoryDao = {
                 END AS status,
                 r.rental_id,
                 r.customer_id,
+                u.email AS customer_email,
                 CASE 
                     WHEN r.rental_id IS NOT NULL 
                         AND r.return_date IS NULL 
@@ -34,6 +35,8 @@ const inventoryDao = {
                     FROM rental r2
                     WHERE r2.inventory_id = i.inventory_id
                 )
+            LEFT JOIN customer c ON r.customer_id = c.customer_id
+            LEFT JOIN user u ON c.user_id = u.user_id
             WHERE i.film_id = ?
             AND i.store_id = ?
             ORDER BY i.inventory_id;
@@ -100,6 +103,22 @@ const inventoryDao = {
             VALUES (NOW(), ?, ?, ?, NOW())
         `;
         query(sql, [inventoryId, customerId, staffId], callback);
+    },
+    getRentalRateByInventoryId: function(inventoryId, callback) {
+        const sql = `
+            SELECT f.rental_rate
+            FROM inventory i
+            JOIN film f ON i.film_id = f.film_id
+            WHERE i.inventory_id = ?
+        `;
+        query(sql, [inventoryId], callback);
+    },
+    createPayment: function(customerId, staffId, rentalId, amount, callback) {
+        const sql = `
+            INSERT INTO payment (customer_id, staff_id, rental_id, amount, payment_date, last_update)
+            VALUES (?, ?, ?, ?, NOW(), NOW())
+        `;
+        query(sql, [customerId, staffId, rentalId, amount], callback);
     },
 };
 
