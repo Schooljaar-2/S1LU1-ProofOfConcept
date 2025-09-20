@@ -1,6 +1,6 @@
 import customerDao from "../../database/dao/customer/customer.js";
 
-
+// For country and city, check if they already exist with same name (and for city same countryId), otherwise add them. For the rest it's simple insert functs from dao. 
 const createNewCustomerProfile = (firstName, lastName, phone, district, street, houseNumber, postalCode, city, country, user_id, storeId, callback) => {
     // 1: Check if the country exists
     customerDao.checkIfCountryExists(country, (err, countryChecked) => {

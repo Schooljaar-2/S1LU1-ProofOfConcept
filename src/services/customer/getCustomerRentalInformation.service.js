@@ -1,5 +1,6 @@
 import customerDao from "../../database/dao/customer/customer.js";
 
+// Get active rentals and rental history per userId
 export const getAllUserRentalInformation = (userId, callback) => {
     customerDao.getCustomerRentalHistory(userId, (err, rentalHistory) => {
         if (err) {
@@ -25,6 +26,7 @@ export const getAllUserRentalInformation = (userId, callback) => {
     });
 }
 
+// Check today's date and the rental duration and the rental create data and find out if there are rentals overdue or not. If so, mark them. 
 export const markOverdueActiveRentals = (rentalInformation) => {
   const today = new Date();
   rentalInformation.activeRentals.forEach(rental => {

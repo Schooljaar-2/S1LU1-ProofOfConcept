@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import authDao from "../database/dao/auth.js";
 
+// use credentials.email to chekc if email exists in user table. Then hash password with bcrypt to check if hash = hash from database. 
 export const handleLogin = (credentials, callback) => {
   try {
     // Check if email exists
@@ -61,6 +62,7 @@ export const handleLogin = (credentials, callback) => {
   }
 };
 
+// Post credentials from register form into database. Password gets hashed wth bcrypt before sending to database
 export const handleRegister = async (credentials, callback) => {
   try {
     // Check e-mail availability
@@ -137,6 +139,7 @@ export const handleRegister = async (credentials, callback) => {
   }
 };
 
+// Check if user session role is equal to role param
 export const checkAuthorisation = (request, role) => {
   if (!request.session.logged_in) {
     return false;

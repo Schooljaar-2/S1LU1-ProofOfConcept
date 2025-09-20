@@ -1,5 +1,6 @@
 import manageMoviesDao from "../../database/dao/staff/dao.ManageMovies.js"
 
+// Same as create movie, except update statements...
 export const editMovieService = (
     movie_id,
     title,

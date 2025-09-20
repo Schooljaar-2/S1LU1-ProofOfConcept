@@ -12,6 +12,7 @@ import {getAllUserRentalInformation, markOverdueActiveRentals} from "../services
 import updateCustomerProfileService from "../services/customer/updateCustomer.service.js"
 import {checkAuthorisation} from "../services/auth.service.js"
 
+// Get the movie ID from URL params and use DAO funct to select info of that movie
 export function moviePage(req, res, next) {
   const movieID = req.params.movieID;
 
@@ -69,6 +70,7 @@ export function moviePage(req, res, next) {
   });
 }
 
+// Get filter params from URL and get all movies that fall inside filter and send them to the handlebars page.
 export function movies(req, res, next) {
   const orderOptions = [
     "f.title ASC",
@@ -155,6 +157,7 @@ export function movies(req, res, next) {
   });
 }
 
+// Check if a customer is logged in and then render his/her profile page. DAO funct based of off session user_id
 export function loggedInCustomer(req, res, next) {
   if (!checkAuthorisation(req, "CUSTOMER")) {
     res.redirect("/login");
@@ -188,6 +191,7 @@ export function loggedInCustomer(req, res, next) {
   });
 }
 
+// Check if customer is logged in and send him to handlebar pag with many inputs to finish registration as customer. After this customer table is filled besides the already filled in user table
 export function customerCreateProfile(req, res, next) {
   if (!checkAuthorisation(req, "CUSTOMER")) {
     res.redirect("/login");
@@ -221,6 +225,7 @@ export function customerCreateProfile(req, res, next) {
   });
 }
 
+// ↑↑↑Send the form from customer create profile controller page. Many validations are already done inside html. Then use DAO funct to fill in customer table. 
 export function createProfileSendForm(req, res, next) {
   if (!checkAuthorisation(req, "CUSTOMER")) {
     res.redirect("/login");
@@ -246,6 +251,7 @@ export function createProfileSendForm(req, res, next) {
   });
 }
 
+// Go to the same form from the create profile, but now filled in with existing information already filled in before. Can now be altered and then send with update funct from DAO. 
 export function updateCustomerProfile(req, res, next){
   if (!(checkAuthorisation(req, "CUSTOMER") || checkAuthorisation(req, "STAFF"))) {
       res.redirect("/login");
@@ -306,6 +312,7 @@ export function updateCustomerProfile(req, res, next){
   });
 }
 
+// ↑↑↑Sends the form and uses the DAO functs
 export function updateCustomerProfileSendForm(req, res, next){
   console.log("ROUTE HIT");
 

@@ -1,5 +1,6 @@
 import inventoryDao from "../../database/dao/staff/dao.manageInventory.js";
 
+// Using inventoryId create a new rental coupled to a customer. 
 export function makeNewRentalService(userId, customerId, inventoryId, callback){
     inventoryDao.getStaffIdByUserId(userId, (errorStaffId, staffId) => {
         if (errorStaffId) {

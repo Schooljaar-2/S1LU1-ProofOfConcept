@@ -7,7 +7,7 @@
 						<h2 class="mb-0" style="color:#ffc107;">About CineRent</h2>
 						<span class="badge bg-secondary">Customer scope</span>
 					</div>
-					<p class="text-light-50 mb-4">Deze pagina beschrijft de huidige user-stories en acceptatiecriteria voor de klantrol (Customer). Staff-functionaliteit wordt later toegevoegd.</p>
+					<p class="text-light-50 mb-4">Deze pagina beschrijft de huidige user-stories en acceptatiecriteria voor zowel de klantrol (Customer) als voor medewerkers (Staff). Toen ik dit project begon was mijn focus vooral gericht op de customers. Maar om meer te leren en ook gebruik te kunnen maken van authorisatie, heb ik ook een omgeving in mijn website ontwikkeld voor de staff (medewerkers).</p>
 
 					<hr class="border-secondary" />
 
@@ -107,10 +107,127 @@
 
 					<hr class="border-secondary" />
 
+					<h4 class="mt-4 mb-3" style="color:#ffc107;">User Stories — Staff</h4>
+
+					<!-- ST1 -->
+					<div class="mb-4">
+						<h5 class="mb-2">ST1: Als medewerker wil ik per film en winkel de inventaris beheren</h5>
+						<p class="text-secondary mb-2">Zodat ik snel kan zien welke exemplaren beschikbaar, verhuurd of buiten gebruik zijn en kan doorsturen naar de juiste acties.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Overzichtspagina toont per exemplaar: status, laatste/actieve huurder, klant-ID en klant e-mail.</li>
+								<li>Kopteksten en rijen geven duidelijk onderscheid: actieve huurder vet/wit, laatste huurder grijs.</li>
+								<li>Actieknoppen: <i>Rent to</i>, <i>Take In</i>, <i>Retire</i>, <i>Add Copy</i> (alleen zichtbaar waar logisch van toepassing).</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- ST2 -->
+					<div class="mb-4">
+						<h5 class="mb-2">ST2: Als medewerker wil ik een verhuur kunnen aanmaken met een bevestiging</h5>
+						<p class="text-secondary mb-2">Zodat ik fouten voorkom en direct de betaling kan registreren.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Klantselectiepagina behoudt context via hidden velden en filters; <i>Rent to</i>-knop is verborgen als <code>customer_id</code> ontbreekt.</li>
+								<li>Bevestigingsmodal toont film, klant, winkel en bedragen (huurprijs <code>$</code>, vervangingskosten <code>$</code>), met duidelijke call-to-action.</li>
+								<li>Verhuur wordt aangemaakt via <code>POST /staff/rentCopy/makeRental</code>; server valideert verplichte velden en parseert IDs.</li>
+								<li>Als een film wordt verhuurt voegt de service een <code>payment</code> toe op basis van <code>rental_rate</code>.</li>
+								<li>Na succes redirect naar <code>/staff/inventory/:movieId?storeId=</code> met correcte IDs; Zo kan medewerker zien dat de rental correct is uitgevoerd.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- ST3 -->
+					<div class="mb-4">
+						<h5 class="mb-2">ST3: Als medewerker wil ik een verhuur kunnen innemen</h5>
+						<p class="text-secondary mb-2">Zodat exemplaren weer beschikbaar komen en overdues worden opgeheven.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Inname-actie werkt via <code>POST</code> endpoint dat <code>return_date</code> zet en status bijwerkt.</li>
+								<li>Na succes wordt terug genavigeerd naar de inventarispagina van dezelfde film/winkel.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- ST4 -->
+					<div class="mb-4">
+						<h5 class="mb-2">ST4: Als medewerker wil ik voorraad kunnen beheren</h5>
+						<p class="text-secondary mb-2">Zodat ik exemplaren kan toevoegen of buiten gebruik kan stellen.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li><code>Add Copy</code> voegt een nieuw <code>inventory</code>-record toe voor de geselecteerde film/winkel.</li>
+								<li><code>Retire</code> markeert een exemplaar als buiten gebruik; actie is alleen zichtbaar wanneer toepasbaar.</li>
+								<li>Beide acties gebruiken <code>POST</code>, valideren input en redirecten terug naar de betreffende inventarislijst.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- ST5 -->
+					<div class="mb-4">
+						<h5 class="mb-2">ST5: Als medewerker wil ik klanten kunnen beheren</h5>
+						<p class="text-secondary mb-2">Zodat ik profielen kan inzien en bewerken binnen geldende beperkingen.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Lijst toont klanten met relevante velden; acties <i>Set Active</i> en <i>Edit</i> zijn verborgen als <code>customer_id</code> ontbreekt; klant heeft zijn/haar profiel nog niet afgerond.</li>
+								<li>Klanten tonen aan of hun actieve rentals hebben. Indien van toepassing ziet de medewerker een knop die leidt naar deze rental om deze te beheren.</li>
+								<li>Verwijderen van een klant vraagt om bevestiging via modal.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- ST6 -->
+					<div class="mb-4">
+						<h5 class="mb-2">ST6: Als medewerker wil ik een store-dashboard met statistieken</h5>
+						<p class="text-secondary mb-2">Zodat ik prestaties kan monitoren en snel kan bijsturen.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Op de store-dashboard pagina bevindt zich een form waarin de gebruiker een winkel kan selecteren om te filteren.</li>
+								<li>Per store worden relevante gegevens via de DAO opgehaald en op een overzichtelijke manier getoond aan de gebruiker.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- ST7 -->
+					<div class="mb-4">
+						<h5 class="mb-2">ST7: Als medewerker wil ik veilig kunnen inloggen</h5>
+						<p class="text-secondary mb-2">Zodat mijn staff-account goed beveiligd is en ik alleen toegang heb tot staff-functionaliteiten.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Login via <code>/login</code> met e-mail en wachtwoord (service: <code>auth.service.js</code>), waarbij de <code>role</code> van de gebruiker <code>"STAFF"</code> is.</li>
+								<li>Bij succesvol inloggen worden sessievariabelen gezet (<code>logged_in</code>, <code>role</code>=<code>"STAFF"</code>, <code>user_id</code>, <code>username</code>) en volgt redirect naar een staff-pagina (bijv. dashboard of inventarisbeheer).</li>
+								<li>Beveiligde staff-routes controleren op <code>req.session.logged_in</code> en <code>role === "STAFF"</code> (bijv. via <code>checkAuthorisation(req, 'STAFF')</code>).</li>
+								<li>Logout via <code>/logout</code> wist de sessie en redirect naar <code>/</code>.</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- ST8 -->
+					<div class="mb-4">
+						<h5 class="mb-2">ST8: Als medewerker wil ik consistente foutafhandeling ervaren</h5>
+						<p class="text-secondary mb-2">Zodat ik begrijpelijke meldingen krijg wanneer er iets misgaat binnen staff-onderdelen.</p>
+						<div class="bg-secondary bg-opacity-25 rounded p-3">
+							<b>Acceptatiecriteria:</b>
+							<ul class="mb-0">
+								<li>Staff-controllers gebruiken <code>next(error)</code> met correcte statuscodes (400, 404, 500) waar toepasselijk; geen gevoelige details in responses.</li>
+								<li>Validatie- en DB-fouten uit services/DAO geven nette foutobjecten terug die door de controller afgehandeld worden.</li>
+								<li>Views tonen duidelijke lege-staten en foutmeldingen voor staff-acties (bijv. “Geen inventaris gevonden” of “Actie niet toegestaan”).</li>
+							</ul>
+						</div>
+					</div>
+
+					<hr class="border-secondary" />
+
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<h5 class="mb-1" style="color:#ffc107;">Toekomst — Staff scope</h5>
-							<p class="mb-0 text-secondary">Film uitlenen/innemen, klanten- en voorraadbeheer, rapportages en staff-dashboard.</p>
+							<h5 class="mb-1" style="color:#ffc107;">Naar de applicatie</h5>
+							<p class="mb-0 text-secondary">Ga terug naar de startpagina om de functionaliteiten te verkennen.</p>
 						</div>
 						<a href="/" class="btn btn-warning">Terug naar Home</a>
 					</div>

@@ -1,5 +1,6 @@
 import manageMoviesDao from "../../database/dao/staff/dao.ManageMovies.js"
 
+// Couple the many to many tables and add information inside film table itself. 
 export const createNewMovieService = (
     title,
     description,

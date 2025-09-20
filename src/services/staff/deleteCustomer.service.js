@@ -1,5 +1,6 @@
 import manageCustomerDao from "../../database/dao/staff/dao.manageCustomers.js";
 
+// Delete user from user table and also user id from customer table if the customer finished his/her profile. 
 export function deleteCustomerService(userId, callback) {
   manageCustomerDao.getUserCustomerId(
     userId,

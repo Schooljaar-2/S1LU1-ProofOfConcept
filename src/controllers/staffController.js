@@ -19,6 +19,7 @@ import {deleteCustomerService} from "../services/staff/deleteCustomer.service.js
 import {makeNewRentalService} from "../services/staff/makeNewRental.service.js"
 import storeDashboardDao from "../database/dao/staff/dao.storeDashboard.js";
 
+// Get staff personal info and render info page
 export function staffPage(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
         res.redirect("/login");
@@ -36,6 +37,7 @@ export function staffPage(req, res, next){
     });
 }
 
+// Render the staff dashboard (staff only)
 export function dashboard(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
         res.redirect("/login");
@@ -45,6 +47,7 @@ export function dashboard(req, res, next){
     res.render("./staff/dashboard.hbs");
 }
 
+// Render page to manage movies or create a new one
 export function manageOrCreateMovies(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
         res.redirect("/login");
@@ -53,6 +56,7 @@ export function manageOrCreateMovies(req, res, next){
     res.render("./staff/manageMovies/manageOrCreateMovies.hbs");
 }
 
+// Get all actors and render form to add a new movie
 export function createNewMovie(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
         res.redirect("/login");
@@ -67,6 +71,7 @@ export function createNewMovie(req, res, next){
     });
 }
 
+// ↑↑↑ Handle POST from create new movie form, validate and insert
 export function handlePostCreateNewMovie(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
         res.redirect("/login");
@@ -105,6 +110,7 @@ export function handlePostCreateNewMovie(req, res, next){
     });
 }
 
+// Show overview of movies with filters, sorting and pagination
 export function manageMovies(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
         res.redirect("/login");
@@ -196,6 +202,7 @@ export function manageMovies(req, res, next){
       });
 }
 
+// Get selected movie info and render edit form
 export function editMovies(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
         res.redirect("/login");
@@ -245,6 +252,7 @@ export function editMovies(req, res, next){
   });
 }
 
+// ↑↑↑ Handle POST for editing movie, update movie in DB
 export function handlePostEditMovie(req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -333,6 +341,7 @@ export function handlePostEditMovie(req, res, next){
   });
 }
 
+// Get inventory for a movie in a store and render overview
 export function manageInventories(req, res, next) {
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -369,6 +378,7 @@ export function manageInventories(req, res, next) {
   });
 }
 
+// ↑↑↑ Toggle retire state for an inventory item (POST), then redirect back to inventory
 export function handlePostRetireInventoryId(req, res, next) {
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -389,6 +399,7 @@ export function handlePostRetireInventoryId(req, res, next) {
   });
 }
 
+// Show customers overview with search and filter options (active/inactive)
 export function manageCustomers(req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -430,6 +441,7 @@ export function manageCustomers(req, res, next){
   });
 }
 
+// Redirect to selected customer's profile edit page
 export function handlePostCustomerEdit (req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -440,6 +452,7 @@ export function handlePostCustomerEdit (req, res, next){
   res.redirect(`/customer/updateProfile/${userId}`);
 }
 
+// ↑↑↑ Toggle customer active/inactive (POST), then redirect back to search result
 export function handleToggleCustomerActivity (req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -461,6 +474,7 @@ export function handleToggleCustomerActivity (req, res, next){
   });
 }
 
+// ↑↑↑ Delete customer from database (POST), then redirect to customers overview
 export function handleCustomerDelete(req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -482,6 +496,7 @@ export function handleCustomerDelete(req, res, next){
   })
 }
 
+// ↑↑↑ Add a new inventory copy for a movie in a store (POST)
 export function handleAddCopyToInventory(req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -515,6 +530,7 @@ export function handleAddCopyToInventory(req, res, next){
   })
 }
 
+// ↑↑↑ Process a rental return, set return_date and redirect back
 export function handleTakeInRental(req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -554,6 +570,7 @@ export function handleTakeInRental(req, res, next){
   })
 }
 
+// Show customer selection page for rental, with filters and context (movie, store, rental terms)
 export function selectRentingCustomer(req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -613,6 +630,7 @@ export function selectRentingCustomer(req, res, next){
   });
 }
 
+// ↑↑↑ Create a new rental (POST), validate input and redirect back to inventory
 export function handleMakeRental(req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
@@ -656,6 +674,7 @@ export function handleMakeRental(req, res, next){
 
 }
 
+// Get store stats and render dashboard for the selected store
 export function manageStores(req, res, next){
   if (!checkAuthorisation(req, "STAFF")) {
     res.redirect("/login");
