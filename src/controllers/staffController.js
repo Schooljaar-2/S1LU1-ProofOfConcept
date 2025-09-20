@@ -17,6 +17,7 @@ import {findCustomerByFirstLastOrEmail} from "../services/staff/customerSearch.s
 import {toggleCustomerActivityService} from "../services/staff/toggleCustomerActive.service.js"
 import {deleteCustomerService} from "../services/staff/deleteCustomer.service.js"
 import {makeNewRentalService} from "../services/staff/makeNewRental.service.js"
+import storeDashboardDao from "../database/dao/staff/dao.storeDashboard.js";
 
 export function staffPage(req, res, next){
     if (!checkAuthorisation(req, "STAFF")) {
@@ -653,4 +654,28 @@ export function handleMakeRental(req, res, next){
     res.redirect(`/dashboard/manageOrCreateMovies/manage/inventory/${movieId}?storeId=${storeId}`);
   });
 
+}
+
+export function manageStores(req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+  const selectedStoreRaw = parseInt(req.query.storeId, 10);
+  const selectedStore = Number.isFinite(selectedStoreRaw) && selectedStoreRaw > 0 ? selectedStoreRaw : 1;
+
+  storeDashboardDao.getStores((errStores, stores) => {
+    if (errStores) {
+      errStores.status = 500;
+      return next(errStores);
+    }
+    storeDashboardDao.getStoreStats(selectedStore, (errStats, rows) => {
+      if (errStats) {
+        errStats.status = 500;
+        return next(errStats);
+      }
+      const stats = Array.isArray(rows) && rows[0] ? rows[0] : null;
+      res.render("./staff/manageStores.hbs", { stores, selectedStore, stats });
+    });
+  });
 }

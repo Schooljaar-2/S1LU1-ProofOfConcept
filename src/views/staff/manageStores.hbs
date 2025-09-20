@@ -1,0 +1,80 @@
+<div class="container py-4">
+  <div class="bg-dark rounded shadow p-4">
+    <h2 class="text-danger fw-bold mb-3">Store Dashboard</h2>
+
+    <form method="GET" class="d-flex align-items-end mb-4">
+      <div class="me-2" style="min-width: 220px;">
+        <label for="storeSelect" class="form-label text-light">Select Store</label>
+        <select id="storeSelect" name="storeId" class="form-select">
+          {{#each stores}}
+            <option value="{{store_id}}" {{#if (eq ../selectedStore store_id)}}selected{{/if}}>{{store_name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-warning fw-bold ms-2">Apply</button>
+    </form>
+
+    {{#if stats}}
+      <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card bg-secondary text-light h-100">
+            <div class="card-body">
+              <h5 class="card-title">Total Customers</h5>
+              <p class="display-6 fw-bold">{{stats.total_customers}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card bg-secondary text-light h-100">
+            <div class="card-body">
+              <h5 class="card-title">Total Rentals</h5>
+              <p class="display-6 fw-bold">{{stats.total_rentals}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card bg-secondary text-light h-100">
+            <div class="card-body">
+              <h5 class="card-title">Active Rentals</h5>
+              <p class="display-6 fw-bold">{{stats.active_rentals}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card bg-secondary text-light h-100">
+            <div class="card-body">
+              <h5 class="card-title">Overdue Rentals</h5>
+              <p class="display-6 fw-bold">{{stats.overdue_rentals}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card bg-secondary text-light h-100">
+            <div class="card-body">
+              <h5 class="card-title">Total Revenue</h5>
+              <p class="display-6 fw-bold">€{{stats.total_revenue}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card bg-secondary text-light h-100">
+            <div class="card-body">
+              <h5 class="card-title">Revenue (Last 7 days)</h5>
+              <p class="display-6 fw-bold">€{{stats.revenue_last_7d}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card bg-secondary text-light h-100">
+            <div class="card-body">
+              <h5 class="card-title">Revenue (Last 30 days)</h5>
+              <p class="display-6 fw-bold">€{{stats.revenue_last_30d}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{else}}
+      <div class="alert alert-info">No stats found for this store.</div>
+    {{/if}}
+  </div>
+</div>

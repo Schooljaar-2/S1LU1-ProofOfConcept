@@ -18,12 +18,14 @@ import {
   handleTakeInRental,
   selectRentingCustomer,
   handleMakeRental,
+  manageStores,
 } from "../controllers/staffController.js";
 const router = express.Router();
 
 // Base
 router.get("/dashboard", dashboard);
 router.get("/staff", staffPage);
+router.get("/dashboard/manageStores", manageStores);
 
 // Manage movies and inventory
 router.get("/dashboard/manageOrCreateMovies", manageOrCreateMovies);
