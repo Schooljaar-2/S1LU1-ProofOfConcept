@@ -114,17 +114,25 @@
 					</tbody>
 				</table>
 			</div>
-						<div class="small text-secondary mt-2">
-							**Marking an inventory copy as retired will make the movie unavavailable to rent. This could be due to it being broken, lost, etc...
-						</div>
-						<button class="btn btn-warning fw-bold mt-2 add-inventory-btn">
-							Add new Copy to Inventory at store:
-							{{#each stores}}
-								{{#if (eq ../selectedStore store_id)}}{{store_name}}{{/if}}
-							{{/each}}
-						</button>
+			<div class="small text-secondary mt-2">
+				**Marking an inventory copy as retired will make the movie unavavailable to rent. This could be due to it being broken, lost, etc...
+			</div>
 		{{else}}
 			<div class="alert alert-info text-center">No inventory found for this store.</div>
 		{{/if}}
+		<form method="POST" action="/dashboard/manageOrCreateMovies/manage/inventory/addCopy" class="mt-2">
+			<input type="hidden" name="storeId" value="{{#if selectedStore}}{{selectedStore}}{{else}}1{{/if}}" />
+			<input type="hidden" name="movieId" value="{{movieInfo.film_id}}" />
+			<button type="submit" class="btn btn-warning fw-bold add-inventory-btn">
+				Add new Copy to Inventory at store:
+				{{#if selectedStore}}
+					{{#each stores}}
+						{{#if (eq ../selectedStore store_id)}}{{store_name}}{{/if}}
+					{{/each}}
+				{{else}}
+					CineRent - Dongen
+				{{/if}}
+			</button>
+		</form>
 	</div>
 </div>

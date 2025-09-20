@@ -1,5 +1,6 @@
 import manageMoviesDao from "../database/dao/staff/dao.ManageMovies.js"
 import staffPersonalDao from "../database/dao/staff/dao.staffPersonalInfo.js"
+import inventoryDao from "../database/dao/staff/dao.manageInventory.js";
 import {
   getAllMovieCategories,
   getAllMovieRatings,
@@ -465,5 +466,38 @@ export function handleCustomerDelete(req, res, next){
       return next(err);
     }
     res.redirect("/dashboard/manageCustomers");
+  })
+}
+
+export function handleAddCopyToInventory(req, res, next){
+  if (!checkAuthorisation(req, "STAFF")) {
+    res.redirect("/login");
+    return;
+  }
+
+  const selectedStore = parseInt(req.body.storeId, 10);
+  const selectedMovie = parseInt(req.body.movieId, 10);
+  console.log(selectedStore);
+  console.log(selectedMovie);
+
+  if(!selectedStore){
+    const error = new Error("storeId is required");
+    error.status = 400;
+    return next(error);
+  }
+  if(!selectedMovie){
+    const error = new Error("movieId is required");
+    error.status = 400;
+    return next(error);
+  }
+
+  inventoryDao.createNewInventoryCopy(selectedMovie, selectedStore, (err, response) => {
+    if(err){
+      const error = new Error("Error adding inventory copy");
+      error.status = 500;
+      error.message = err;
+      return next(error);
+    }
+    res.redirect(`/dashboard/manageOrCreateMovies/manage/inventory/${selectedMovie}?storeId=${selectedStore}`);
   })
 }

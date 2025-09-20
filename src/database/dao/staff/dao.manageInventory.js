@@ -64,6 +64,13 @@ const inventoryDao = {
             WHERE inventory_id = ?;
         `;
         query(sql, [retire, inventoryId], callback);
+    },
+    createNewInventoryCopy: function(filmId, storeId, callback){
+        const sql = `
+            INSERT INTO inventory (film_id, store_id, last_update)
+            VALUES (?, ?, NOW());
+        `;
+        query(sql, [filmId, storeId], callback);
     }
 };
 
