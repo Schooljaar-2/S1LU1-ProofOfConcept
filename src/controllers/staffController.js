@@ -410,13 +410,17 @@ export function manageCustomers(req, res, next){
   const searchterm = req.query.search || "";
   let isActive = parseInt(req.query.active, 10);
   if (isNaN(isActive)) isActive = "";
+  // Overdue-first toggle (checkbox or 1/0)
+  const overdueParam = req.query.overdue;
+  let overdueFirst = 0;
+  if (overdueParam === '1' || overdueParam === 'true' || overdueParam === 'on') overdueFirst = 1;
   // 'offset' in query is treated as row offset (0, 10, 20, ...)
   let rowOffset = parseInt(req.query.offset, 10);
   if (isNaN(rowOffset)) rowOffset = 0;
   // Service expects page index and multiplies by 10 internally
   const pageIndex = Math.floor(rowOffset / 10);
   
-  findCustomerByFirstLastOrEmail(searchterm, isActive, pageIndex, (err, serviceResult) => {
+  findCustomerByFirstLastOrEmail(searchterm, isActive, pageIndex, overdueFirst, (err, serviceResult) => {
     if (err) {
       err.status = err.status || 500;
       return next(err);
@@ -428,11 +432,9 @@ export function manageCustomers(req, res, next){
     const actualOffset = Number(serviceResult.offset || 0);
     const rangeStart = totalCustomers > 0 ? actualOffset + 1 : 0;
     const rangeEnd = Math.min(actualOffset + PAGE_SIZE, totalCustomers);
-    const activeStr = (isActive === "" || isActive === null || isActive === undefined) ? "" : String(isActive);
-
     res.render("./staff/manageCustomers/manageCustomers.hbs", {
       serviceResult,
-      query: { search: searchterm, active: activeStr, offset: actualOffset },
+      query: serviceResult.query,
       totalCustomers,
       pageSize: PAGE_SIZE,
       rangeStart,

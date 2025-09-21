@@ -8,8 +8,14 @@ function getInventoryInformationPerStore(storeId, movieId, callback) {
       return callback(errorStores, null);
     }
 
-    if (!storeId || storeId < 1 || storeId > stores.length) storeId = 1;
-    inventoryDao.getFilmInventoryInformationByMovieIdAndStoreId(movieId, storeId, (errorInventory, inventoryStore) => {
+    // Normalize storeId against actual store IDs, default to first store
+    const parsed = parseInt(storeId, 10);
+    const storeIds = Array.isArray(stores) ? stores.map(s => s.store_id) : [];
+    const validStoreId = Number.isFinite(parsed) && storeIds.includes(parsed)
+      ? parsed
+      : (storeIds.length > 0 ? storeIds[0] : 1);
+
+    inventoryDao.getFilmInventoryInformationByMovieIdAndStoreId(movieId, validStoreId, (errorInventory, inventoryStore) => {
       if(errorInventory){
         errorInventory.status = 500;
         return callback(errorInventory, null);
