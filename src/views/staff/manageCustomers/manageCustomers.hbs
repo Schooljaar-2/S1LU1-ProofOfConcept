@@ -6,6 +6,13 @@
 				<label for="search" class="form-label text-light">Search</label>
 				<input type="text" class="form-control" id="search" name="search" placeholder="Search for customers by first name, last name, or email..." value="{{query.search}}">
 			</div>
+			<div style="min-width: 180px;">
+				<label for="hasActive" class="form-label text-light">Has active rentals</label>
+				<select class="form-select" id="hasActive" name="hasActive">
+					<option value="" {{#if query.hasActive}}{{else}}selected{{/if}}>All</option>
+					<option value="1" {{#if (eq query.hasActive "1")}}selected{{/if}}>Yes</option>
+				</select>
+			</div>
 			<div style="min-width: 160px;">
 				<label for="overdue" class="form-label text-light">Overdue first</label>
 				<select class="form-select" id="overdue" name="overdue">
@@ -116,6 +123,7 @@
 	const offsetInput = document.getElementById('offset');
 	const searchInput = document.getElementById('search');
 	const activeSelect = document.getElementById('active');
+	const hasActiveSelect = document.getElementById('hasActive');
 	const clearBtn = document.getElementById('clearFilters');
     const currentOffset = parseInt(offsetInput.value || '0', 10);
 		const total = {{totalCustomers}};
@@ -132,6 +140,7 @@
 		clearBtn.addEventListener('click', function(){
 			searchInput.value = '';
 			document.getElementById('overdue').value = '';
+			hasActiveSelect.value = '';
 			activeSelect.value = '';
 			offsetInput.value = 0;
 			form.submit();

@@ -410,6 +410,10 @@ export function manageCustomers(req, res, next){
   const searchterm = req.query.search || "";
   let isActive = parseInt(req.query.active, 10);
   if (isNaN(isActive)) isActive = "";
+  // Has active rentals filter ('' or '1')
+  const hasActiveParam = req.query.hasActive;
+  let hasActive = null;
+  if (hasActiveParam === '1' || hasActiveParam === 'true' || hasActiveParam === 'on') hasActive = 1;
   // Overdue-first toggle (checkbox or 1/0)
   const overdueParam = req.query.overdue;
   let overdueFirst = 0;
@@ -420,7 +424,7 @@ export function manageCustomers(req, res, next){
   // Service expects page index and multiplies by 10 internally
   const pageIndex = Math.floor(rowOffset / 10);
   
-  findCustomerByFirstLastOrEmail(searchterm, isActive, pageIndex, overdueFirst, (err, serviceResult) => {
+  findCustomerByFirstLastOrEmail(searchterm, isActive, hasActive, pageIndex, overdueFirst, (err, serviceResult) => {
     if (err) {
       err.status = err.status || 500;
       return next(err);
@@ -601,7 +605,8 @@ export function selectRentingCustomer(req, res, next){
   // Service expects page index and multiplies by 10 internally
   const pageIndex = Math.floor(rowOffset / 10);
 
-  findCustomerByFirstLastOrEmail(searchterm, isActive, pageIndex, (err, serviceResult) => {
+  // For renting flow we don't enforce hasActive or overdue; default hasActive=null and overdueFirst=0
+  findCustomerByFirstLastOrEmail(searchterm, isActive, null, pageIndex, 0, (err, serviceResult) => {
     if (err) {
       err.status = err.status || 500;
       return next(err);

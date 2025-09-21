@@ -1,7 +1,7 @@
 import query from "../../db.js";
 
 const manageCustomerDao = {
-    searchCustomers: function(searchTerm, active, offset, overdueFirst, callback) {
+    searchCustomers: function(searchTerm, active, hasActive, offset, overdueFirst, callback) {
     if (active !== 0 && active !== 1) active = null; // ignore filter if not 0 or 1
 
     const sql = `
@@ -60,8 +60,9 @@ const manageCustomerDao = {
             OR c.last_name LIKE CONCAT('%', ?, '%') 
             OR ? IS NULL OR ? = ''
         )
-        AND (? IS NULL OR c.active = ?)
-        GROUP BY u.user_id
+    AND (? IS NULL OR c.active = ?)
+    GROUP BY u.user_id
+    ${hasActive ? "HAVING COUNT(r.rental_id) > 0" : ""}
         ORDER BY (CASE WHEN ? = 1 THEN has_overdue ELSE 0 END) DESC, first_name ASC, last_name ASC
         LIMIT 10 OFFSET ?;
     `;
@@ -69,17 +70,18 @@ const manageCustomerDao = {
     const overdueParam = (overdueFirst === 1) ? 1 : 0;
     query(sql, [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, active, active, overdueParam, offset], callback);
     },
-    countCustomers: function(searchTerm, active, callback) {
+    countCustomers: function(searchTerm, active, hasActive, callback) {
         if (active !== 0 && active !== 1) active = null; // ignore filter if not 0 or 1
 
         const sql = `
-            SELECT COUNT(*) AS total_customers
+            SELECT COUNT(DISTINCT u.user_id) AS total_customers
             FROM user u
             LEFT JOIN customer c ON c.user_id = u.user_id
             LEFT JOIN address a ON c.address_id = a.address_id
             LEFT JOIN city ci ON a.city_id = ci.city_id
             LEFT JOIN country co ON ci.country_id = co.country_id
             LEFT JOIN store s ON c.store_id = s.store_id
+            LEFT JOIN rental r ON c.customer_id = r.customer_id AND r.return_date IS NULL
             WHERE u.role = 'CUSTOMER'
             AND (
                 u.email LIKE CONCAT('%', ?, '%')
@@ -88,6 +90,7 @@ const manageCustomerDao = {
                 OR ? IS NULL OR ? = ''
             )
             AND (? IS NULL OR COALESCE(c.active, 0) = ?)
+            ${hasActive ? "AND r.rental_id IS NOT NULL" : ""}
         `;
         query(sql, [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, active, active], callback);
     },

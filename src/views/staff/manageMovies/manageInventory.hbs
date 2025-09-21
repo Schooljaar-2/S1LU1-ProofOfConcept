@@ -95,9 +95,9 @@
 								</td>
 								<td>
 									{{#if (eq status 'Rented')}}
-										<span class="rent-highlight">{{customer_email}}</span>
+										<a href="/dashboard/manageCustomers?search={{customer_email}}&overdue=&active=&offset=0" class="rent-highlight text-decoration-underline">{{customer_email}}</a>
 									{{else}}
-										<span class="rent-muted">{{customer_email}}</span>
+										<a href="/dashboard/manageCustomers?search={{customer_email}}&overdue=&active=&offset=0" class="rent-muted text-decoration-underline">{{customer_email}}</a>
 									{{/if}}
 								</td>
 								<td>
