@@ -24,8 +24,8 @@ De volledige user-stories en acceptatiecriteria staan op de About-pagina (`/abou
 ## Snel starten
 
 ### Vereisten
-- Node.js 18+ (LTS aangeraden)
-- MySQL met Sakila-schema (of compatibele dataset)
+- Node.js 18+ 
+- MySQL met Sakila-schema 
 
 ### Installatie
 ```cmd
