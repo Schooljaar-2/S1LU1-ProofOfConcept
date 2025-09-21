@@ -1,6 +1,6 @@
 # S1LU1-ProofOfConcept
 
-Een Node.js/Express webapplicatie voor een filmverhuurzaak. Ontwikkeld voor zowel het gebruikersperspectief van een klant als een medewerker. Gebruikt de relatioenele MySQL Sakila database.
+Een Node.js/Express webapplicatie voor een filmverhuurzaak. Ontwikkeld voor zowel het gebruikersperspectief van een klant als een medewerker. Gebruikt (een aangepaste) relationele MySQL Sakila database scheme.
 
 ## Features
 
@@ -25,7 +25,7 @@ De volledige user-stories en acceptatiecriteria staan op de About-pagina (`/abou
 
 ### Vereisten
 - Node.js 18+ 
-- MySQL met Sakila-schema 
+- MySQL met (aangepast) Sakila-schema 
 
 ### Installatie
 ```cmd
@@ -36,29 +36,29 @@ npm install
 Minimaal nodig voor sessies en database-connectie.
 
 ```env
-# Sessies
+- Sessies
 COOKIE_SECRET=eenLangRandomGeheim
 
-# Kies omgeving (anything anders dan 'online' = lokaal)
+- Kies omgeving (iets anders dan 'online' = lokaal)
 DEV_ENVIRONMENT=local
 
-# Lokaal DB-profiel
+- Lokaal DB-profiel
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=...
 DB_NAME=sakila
 DB_PORT=3306
 
-# Online DB-profiel (indien gebruikt)
+- Online DB-profiel (indien gebruikt)
 DB_ONLINE_HOST=...
 DB_ONLINE_USER=...
 DB_ONLINE_PASSWORD=...
 DB_ONLINE_NAME=...
 DB_ONLINE_PORT=...
 
-### Runnen
+- Runnen
 Ontwikkelmodus (met live reload):
-```cmd
+```
 npm run dev
 ```
 
