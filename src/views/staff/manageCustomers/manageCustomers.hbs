@@ -7,6 +7,13 @@
 				<input type="text" class="form-control" id="search" name="search" placeholder="Search for customers by first name, last name, or email..." value="{{query.search}}">
 			</div>
 			<div style="min-width: 160px;">
+				<label for="overdue" class="form-label text-light">Overdue first</label>
+				<select class="form-select" id="overdue" name="overdue">
+					<option value="" {{#if query.overdue}}{{else}}selected{{/if}}>No</option>
+					<option value="1" {{#if (eq query.overdue "1")}}selected{{/if}}>Yes</option>
+				</select>
+			</div>
+			<div style="min-width: 160px;">
 				<label for="active" class="form-label text-light">Active</label>
 				<select class="form-select" id="active" name="active">
 					<option value="" {{#if query.active}}{{else}}selected{{/if}}>All active states</option>
@@ -46,10 +53,10 @@
 			<td class="{{#if this.active}}text-white{{else}}text-danger fw-bold{{/if}}">{{#if this.active}}Active{{else}}Inactive{{/if}}</td>
 			<td class="text-white">{{this.store_name}}</td>
 			<td>
-				{{#if this.active_film_ids.length}}
+				{{#if this.active_rentals.length}}
 					<div class="d-flex flex-wrap gap-1">
-						{{#each this.active_film_ids}}
-							<a href="/dashboard/manageOrCreateMovies/manage/inventory/{{this}}?storeId={{../store_id}}" class="btn btn-outline-info btn-sm">{{this}}</a>
+						{{#each this.active_rentals}}
+							<a href="/dashboard/manageOrCreateMovies/manage/inventory/{{this.filmId}}?storeId={{../store_id}}" class="btn btn-sm {{#if this.overdue}}btn-danger{{else}}btn-outline-info{{/if}}">{{this.filmId}}</a>
 						{{/each}}
 					</div>
 				{{else}}
@@ -124,6 +131,7 @@
 		// Clear filters: set fields to defaults and submit
 		clearBtn.addEventListener('click', function(){
 			searchInput.value = '';
+			document.getElementById('overdue').value = '';
 			activeSelect.value = '';
 			offsetInput.value = 0;
 			form.submit();

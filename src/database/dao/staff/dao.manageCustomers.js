@@ -1,11 +1,11 @@
 import query from "../../db.js";
 
 const manageCustomerDao = {
-    searchCustomers: function(searchTerm, active, offset, callback) {
+    searchCustomers: function(searchTerm, active, offset, overdueFirst, callback) {
     if (active !== 0 && active !== 1) active = null; // ignore filter if not 0 or 1
 
     const sql = `
-        SELECT 
+                SELECT 
             COALESCE(c.customer_id, NULL) AS customer_id,
             u.user_id,
             COALESCE(c.first_name, 'Profile') AS first_name,
@@ -19,7 +19,22 @@ const manageCustomerDao = {
             COALESCE(ci.city, NULL) AS city,
             COALESCE(co.country, NULL) AS country,
             COALESCE(s.store_name, NULL) AS store_name,
-            GROUP_CONCAT(i.film_id ORDER BY r.rental_date DESC SEPARATOR ', ') AS active_film_ids
+                        GROUP_CONCAT(i.film_id ORDER BY r.rental_date DESC SEPARATOR ',') AS active_film_ids,
+                                    GROUP_CONCAT(
+                            CASE 
+                                WHEN r.rental_id IS NOT NULL 
+                                    AND r.return_date IS NULL 
+                                    AND NOW() > DATE_ADD(r.rental_date, INTERVAL f.rental_duration DAY)
+                                THEN '1' ELSE '0' END
+                            ORDER BY r.rental_date DESC SEPARATOR ','
+                                    ) AS active_overdue_flags,
+                                    MAX(
+                                    CASE 
+                                        WHEN r.rental_id IS NOT NULL 
+                                            AND r.return_date IS NULL 
+                                            AND NOW() > DATE_ADD(r.rental_date, INTERVAL f.rental_duration DAY)
+                                        THEN 1 ELSE 0 END
+                                ) AS has_overdue
         FROM user u
         LEFT JOIN customer c 
             ON c.user_id = u.user_id
@@ -36,6 +51,8 @@ const manageCustomerDao = {
             AND r.return_date IS NULL -- only active rentals
         LEFT JOIN inventory i 
             ON r.inventory_id = i.inventory_id
+        LEFT JOIN film f
+            ON i.film_id = f.film_id
         WHERE u.role = 'CUSTOMER'
         AND (
             u.email LIKE CONCAT('%', ?, '%')
@@ -45,11 +62,12 @@ const manageCustomerDao = {
         )
         AND (? IS NULL OR c.active = ?)
         GROUP BY u.user_id
-        ORDER BY first_name ASC, last_name ASC
+        ORDER BY (CASE WHEN ? = 1 THEN has_overdue ELSE 0 END) DESC, first_name ASC, last_name ASC
         LIMIT 10 OFFSET ?;
     `;
 
-    query(sql, [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, active, active, offset], callback);
+    const overdueParam = (overdueFirst === 1) ? 1 : 0;
+    query(sql, [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, active, active, overdueParam, offset], callback);
     },
     countCustomers: function(searchTerm, active, callback) {
         if (active !== 0 && active !== 1) active = null; // ignore filter if not 0 or 1
